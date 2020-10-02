@@ -5,11 +5,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thetechannel.android.planit.data.Day
 import com.thetechannel.android.planit.data.Task
+import com.thetechannel.android.planit.data.TaskDetail
 import com.thetechannel.android.planit.data.TaskType
 import com.thetechannel.android.planit.util.Converters
 
 @Database(
-    entities = [Day::class, TaskType::class, Task::class],
+    entities = arrayOf(Day::class, TaskType::class, Task::class),
     version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class PlanItDatabase : RoomDatabase() {

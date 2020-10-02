@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.thetechannel.android.planit.data.Day
 import com.thetechannel.android.planit.data.Task
+import com.thetechannel.android.planit.data.TaskDetail
 import com.thetechannel.android.planit.data.TaskType
 import java.util.*
 
@@ -57,6 +58,18 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE day = :day")
     fun observeByDay(day: Date): LiveData<List<Task>>
 
+    @Query("SELECT " +
+                    "t.id AS id, " +
+                    "name, " +
+                    "start_at AS work_start, " +
+                    "(start_at + work_lapse) AS work_end, " +
+                    "(start_at + work_lapse) AS break_start, " +
+                    "(start_at + work_lapse + break_lapse) AS break_end " +
+                "FROM tasks t " +
+                "INNER JOIN task_types tp ON t.type_id = tp.id " +
+                "WHERE t.id = :id")
+    fun observeTaskDetailsByTaskId(id: String): LiveData<TaskDetail>
+
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getById(id: String): Task?
 
@@ -65,6 +78,18 @@ interface TasksDao {
 
     @Query("SELECT * FROM tasks")
     suspend fun getAll(): List<Task>
+
+    @Query("SELECT " +
+            "t.id AS id, " +
+            "name, " +
+            "start_at AS work_start, " +
+            "(start_at + work_lapse) AS work_end, " +
+            "(start_at + work_lapse) AS break_start, " +
+            "(start_at + work_lapse + break_lapse) AS break_end " +
+            "FROM tasks t " +
+            "INNER JOIN task_types tp ON t.type_id = tp.id " +
+            "WHERE t.id = :id")
+    fun getTaskDetailsByTaskId(id: String): TaskDetail
 
     @Insert
     suspend fun insert(task: Task)
