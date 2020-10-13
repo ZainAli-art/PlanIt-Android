@@ -5,9 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.thetechannel.android.planit.data.POMODORRO
-import com.thetechannel.android.planit.data.TaskType
-import com.thetechannel.android.planit.data.source.local.PlanItDatabase
+import com.thetechannel.android.planit.data.source.database.DbTaskType
+import com.thetechannel.android.planit.data.source.database.PlanItDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -18,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.sql.Time
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -43,12 +41,12 @@ class TaskTypesDaoTest {
 
     @Test
     fun insertTaskType_getById() = runBlockingTest {
-        val taskType = TaskType(2, "test", Time(5000), Time(2000))
+        val taskType = DbTaskType(2, "test", 5000, 2000)
         database.taskTypesDao().insert(taskType)
 
         val loadedTaskType = database.taskTypesDao().getById(taskType.id)
 
-        assertThat<TaskType>(loadedTaskType as TaskType, notNullValue())
+        assertThat<DbTaskType>(loadedTaskType as DbTaskType, notNullValue())
         assertThat(loadedTaskType.id, `is`(taskType.id))
         assertThat(loadedTaskType.name, `is`(taskType.name))
         assertThat(loadedTaskType.workLapse, `is`(taskType.workLapse))

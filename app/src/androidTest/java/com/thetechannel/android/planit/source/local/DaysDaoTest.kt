@@ -6,8 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import org.hamcrest.MatcherAssert.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.thetechannel.android.planit.data.Day
-import com.thetechannel.android.planit.data.source.local.PlanItDatabase
+import com.thetechannel.android.planit.data.source.database.DbDay
+import com.thetechannel.android.planit.data.source.database.PlanItDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -38,13 +38,13 @@ class DaysDaoTest {
 
     @Test
     fun insertDay_getByDate() = runBlockingTest {
-        val day = Day()
+        val day = DbDay(System.currentTimeMillis(), 0, 0)
 
         database.daysDao().insert(day)
 
         val loadedDay = database.daysDao().getByDate(day.date)
 
-        assertThat<Day>(loadedDay as Day, notNullValue())
+        assertThat<DbDay>(loadedDay as DbDay, notNullValue())
         assertThat(loadedDay.date, `is`(day.date))
         assertThat(loadedDay.startAt, `is`(day.startAt))
         assertThat(loadedDay.endAt, `is`(day.endAt))

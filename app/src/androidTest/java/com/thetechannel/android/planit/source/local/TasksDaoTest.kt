@@ -5,10 +5,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.thetechannel.android.planit.data.Task
-import com.thetechannel.android.planit.data.TaskDetail
-import com.thetechannel.android.planit.data.TaskType
-import com.thetechannel.android.planit.data.source.local.PlanItDatabase
+import com.thetechannel.android.planit.data.source.database.DbTask
+import com.thetechannel.android.planit.data.source.database.DbTaskDetail
+import com.thetechannel.android.planit.data.source.database.DbTaskType
+import com.thetechannel.android.planit.data.source.database.PlanItDatabase
+import com.thetechannel.android.planit.data.source.network.POMODORRO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
@@ -18,7 +19,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.sql.Time
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -43,12 +43,12 @@ class TasksDaoTest {
 
     @Test
     fun insertTask_getById() = runBlockingTest {
-        val task = Task("TASK1")
+        val task = DbTask("TASK1", System.currentTimeMillis(), 0, 0)
         database.tasksDao().insert(task)
 
         val loadedTask = database.tasksDao().getById(task.id)
 
-        assertThat<Task>(loadedTask as Task, notNullValue())
+        assertThat<DbTask>(loadedTask as DbTask, notNullValue())
         assertThat(loadedTask.id, `is`(task.id))
         assertThat(loadedTask.day, `is`(task.day))
         assertThat(loadedTask.startAt, `is`(task.startAt))
@@ -57,7 +57,7 @@ class TasksDaoTest {
 
     @Test
     fun insertAndDeleteTask_getTaskById_returnsNull() = runBlockingTest {
-        val task = Task()
+        val task = DbTask("task_1", 1, 0, POMODORRO)
         database.tasksDao().insert(task)
         database.tasksDao().delete(task)
 
@@ -67,20 +67,20 @@ class TasksDaoTest {
 
     @Test
     fun insertTaskAndTaskType_returnTaskDetails() = runBlockingTest {
-        val task = Task("TASK1")
-        val taskType = TaskType()
+        val task = DbTask("TASK1", 0, 0, POMODORRO)
+        val taskType = DbTaskType(POMODORRO, "pomodorro", 0, 0)
         database.tasksDao().insert(task)
         database.taskTypesDao().insert(taskType)
 
         val taskDetail = database.tasksDao().getTaskDetailsByTaskId(task.id)
 
-        assertThat<TaskDetail>(taskDetail, notNullValue())
+        assertThat<DbTaskDetail>(taskDetail, notNullValue())
         assertThat(taskDetail.id, `is`(task.id))
         assertThat(taskDetail.name, `is`(taskType.name))
         assertThat(taskDetail.workStart, `is`(task.startAt))
-        assertThat(taskDetail.workEnd, `is`(Time(task.startAt.time + taskType.workLapse.time)))
-        assertThat(taskDetail.breakStart, `is`(Time(task.startAt.time + taskType.workLapse.time)))
-        assertThat(taskDetail.breakEnd, `is`(Time(
-            task.startAt.time + taskType.workLapse.time + taskType.breakLapse.time)))
+        assertThat(taskDetail.workEnd, `is`(task.startAt + taskType.workLapse))
+        assertThat(taskDetail.breakStart, `is`(task.startAt + taskType.workLapse))
+        assertThat(taskDetail.breakEnd, `is`(
+            task.startAt + taskType.workLapse + taskType.breakLapse))
     }
 }
