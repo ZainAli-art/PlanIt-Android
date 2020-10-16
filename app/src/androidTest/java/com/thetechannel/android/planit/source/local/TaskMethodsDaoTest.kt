@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.thetechannel.android.planit.data.source.database.DbTaskType
+import com.thetechannel.android.planit.data.source.database.DbTaskMethod
 import com.thetechannel.android.planit.data.source.database.PlanItDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class TaskTypesDaoTest {
+class TaskMethodsDaoTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -41,15 +41,16 @@ class TaskTypesDaoTest {
 
     @Test
     fun insertTaskType_getById() = runBlockingTest {
-        val taskType = DbTaskType(2, "test", 5000, 2000)
-        database.taskTypesDao().insert(taskType)
+        val taskMetod = DbTaskMethod(2, "test", 5000, 2000, "https://www.google.com")
+        database.taskMethodsDao.insert(taskMetod)
 
-        val loadedTaskType = database.taskTypesDao().getById(taskType.id)
+        val loadedTaskType = database.taskMethodsDao.getById(taskMetod.id)
 
-        assertThat<DbTaskType>(loadedTaskType as DbTaskType, notNullValue())
-        assertThat(loadedTaskType.id, `is`(taskType.id))
-        assertThat(loadedTaskType.name, `is`(taskType.name))
-        assertThat(loadedTaskType.workLapse, `is`(taskType.workLapse))
-        assertThat(loadedTaskType.breakLapse, `is`(taskType.breakLapse))
+        assertThat<DbTaskMethod>(loadedTaskType as DbTaskMethod, notNullValue())
+        assertThat(loadedTaskType.id, `is`(taskMetod.id))
+        assertThat(loadedTaskType.name, `is`(taskMetod.name))
+        assertThat(loadedTaskType.workLapse, `is`(taskMetod.workLapse))
+        assertThat(loadedTaskType.breakLapse, `is`(taskMetod.breakLapse))
+        assertThat(loadedTaskType.iconUrl, `is`(taskMetod.iconUrl))
     }
 }

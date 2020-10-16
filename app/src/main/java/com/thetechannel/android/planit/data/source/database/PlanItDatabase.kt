@@ -4,10 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [DbDay::class, DbTaskType::class, DbTask::class],
+    entities = [DbDay::class, DbCategory::class, DbTaskMethod::class, DbTask::class],
     version = 1, exportSchema = false)
 abstract class PlanItDatabase : RoomDatabase() {
-    abstract fun daysDao(): DaysDao
-    abstract fun taskTypesDao(): TaskTypesDao
-    abstract fun tasksDao(): TasksDao
+    abstract val daysDao: DaysDao
+    abstract val taskMethodsDao: TaskMethodsDao
+    abstract val tasksDao: TasksDao
+    abstract val categoriesDao: CategoriesDao
 }

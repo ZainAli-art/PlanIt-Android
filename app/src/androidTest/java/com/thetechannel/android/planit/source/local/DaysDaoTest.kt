@@ -40,9 +40,9 @@ class DaysDaoTest {
     fun insertDay_getByDate() = runBlockingTest {
         val day = DbDay(System.currentTimeMillis(), 0, 0)
 
-        database.daysDao().insert(day)
+        database.daysDao.insert(day)
 
-        val loadedDay = database.daysDao().getByDate(day.date)
+        val loadedDay = database.daysDao.getByDate(day.date)
 
         assertThat<DbDay>(loadedDay as DbDay, notNullValue())
         assertThat(loadedDay.date, `is`(day.date))

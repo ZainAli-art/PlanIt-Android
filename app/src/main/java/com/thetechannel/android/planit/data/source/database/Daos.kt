@@ -1,10 +1,22 @@
 package com.thetechannel.android.planit.data.source.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+
+@Dao
+interface CategoriesDao {
+    @Query("SELECT * FROM categories")
+    fun observeAll(): LiveData<List<DbCategory>>
+
+    @Query("SELECT * FROM categories")
+    suspend fun getAll(): List<DbCategory>
+
+    @Insert
+    suspend fun insert(category: DbCategory)
+
+    @Delete
+    suspend fun delete(category: DbCategory)
+}
 
 @Dao
 interface DaysDao {
@@ -25,21 +37,27 @@ interface DaysDao {
 }
 
 @Dao
-interface TaskTypesDao {
-    @Query("SELECT * FROM task_types")
-    fun observeAll(): LiveData<List<DbTaskType>>
+interface TaskMethodsDao {
+    @Query("SELECT * FROM task_methods")
+    fun observeAll(): LiveData<List<DbTaskMethod>>
 
-    @Query("SELECT * FROM task_types")
-    suspend fun getAll(): List<DbTaskType>
+    @Query("SELECT * FROM task_methods")
+    suspend fun getAll(): List<DbTaskMethod>
 
-    @Query("SELECT * FROM task_types WHERE id = :id")
-    fun observeById(id: Int): LiveData<DbTaskType>
+    @Query("SELECT * FROM task_methods WHERE id = :id")
+    fun observeById(id: Int): LiveData<DbTaskMethod>
 
-    @Query("SELECT * FROM task_types WHERE id = :id")
-    suspend fun getById(id: Int): DbTaskType?
+    @Query("SELECT * FROM task_methods WHERE id = :id")
+    suspend fun getById(id: Int): DbTaskMethod?
 
     @Insert
-    suspend fun insert(taskType: DbTaskType)
+    suspend fun insert(taskMetod: DbTaskMethod)
+
+    @Update
+    suspend fun update(taskMetod: DbTaskMethod)
+
+    @Delete
+    suspend fun delete(taskMetod: DbTaskMethod)
 }
 
 @Dao
@@ -53,16 +71,25 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE day = :day")
     fun observeByDay(day: Long): LiveData<List<DbTask>>
 
-    @Query("SELECT " +
-                    "t.id AS id, " +
-                    "name, " +
-                    "start_at AS work_start, " +
-                    "(start_at + work_lapse) AS work_end, " +
-                    "(start_at + work_lapse) AS break_start, " +
-                    "(start_at + work_lapse + break_lapse) AS break_end " +
-                "FROM tasks t " +
-                "INNER JOIN task_types tp ON t.type_id = tp.id " +
-                "WHERE t.id = :id")
+    @Query(
+        """
+        SELECT 
+            t.id AS id, 
+            c.name AS category, 
+            m.name AS method, 
+            m.icon_url AS method_icon_url, 
+            (m.work_lapse + m.break_lapse) AS time_lapse, 
+            t.title AS title, 
+            t.start_at AS work_start, 
+            (t.start_at + m.work_lapse) AS work_end, 
+            (t.start_at + m.work_lapse) AS break_start, 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+        FROM tasks t 
+        JOIN categories c ON t.cat_id = c.id 
+        JOIN task_methods m ON t.method_id = m.id
+        WHERE t.id = :id
+    """
+    )
     fun observeTaskDetailsByTaskId(id: String): LiveData<DbTaskDetail>
 
     @Query("SELECT * FROM tasks WHERE id = :id")
@@ -74,16 +101,25 @@ interface TasksDao {
     @Query("SELECT * FROM tasks")
     suspend fun getAll(): List<DbTask>
 
-    @Query("SELECT " +
-            "t.id AS id, " +
-            "name, " +
-            "start_at AS work_start, " +
-            "(start_at + work_lapse) AS work_end, " +
-            "(start_at + work_lapse) AS break_start, " +
-            "(start_at + work_lapse + break_lapse) AS break_end " +
-            "FROM tasks t " +
-            "INNER JOIN task_types tp ON t.type_id = tp.id " +
-            "WHERE t.id = :id")
+    @Query(
+        """
+        SELECT 
+            t.id AS id, 
+            c.name AS category, 
+            m.name AS method, 
+            m.icon_url AS method_icon_url, 
+            (m.work_lapse + m.break_lapse) AS time_lapse, 
+            t.title AS title, 
+            t.start_at AS work_start, 
+            (t.start_at + m.work_lapse) AS work_end, 
+            (t.start_at + m.work_lapse) AS break_start, 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+        FROM tasks t 
+        JOIN categories c ON t.cat_id = c.id 
+        JOIN task_methods m ON t.method_id = m.id
+        WHERE t.id = :id
+    """
+    )
     fun getTaskDetailsByTaskId(id: String): DbTaskDetail
 
     @Insert

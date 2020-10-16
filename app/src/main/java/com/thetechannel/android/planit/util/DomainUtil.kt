@@ -1,11 +1,18 @@
 package com.thetechannel.android.planit.util
 
+import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Day
 import com.thetechannel.android.planit.data.source.domain.Task
-import com.thetechannel.android.planit.data.source.domain.TaskType
+import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.data.source.network.NetworkCategory
 import com.thetechannel.android.planit.data.source.network.NetworkDay
 import com.thetechannel.android.planit.data.source.network.NetworkTask
-import com.thetechannel.android.planit.data.source.network.NetworkTaskType
+import com.thetechannel.android.planit.data.source.network.NetworkTaskMethod
+
+fun Category.toDataTransferObject() = NetworkCategory(
+    id = id,
+    name = name
+)
 
 fun Day.toDataTransferObject() = NetworkDay(
     date = date,
@@ -17,12 +24,15 @@ fun Task.toDataTransferObject() = NetworkTask(
     id = id,
     day = day,
     startAt = startAt,
-    typeId = typeId
+    methodId = methodId,
+    title = title,
+    catId = catId
 )
 
-fun TaskType.toDataTransferObject() = NetworkTaskType(
+fun TaskMethod.toDataTransferObject() = NetworkTaskMethod(
     id = id,
     name = name,
     workLapse = workLapse,
-    breakLapse = breakLapse
+    breakLapse = breakLapse,
+    iconUrl = iconUrl.toString()
 )
