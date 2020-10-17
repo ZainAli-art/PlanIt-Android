@@ -10,7 +10,7 @@ import com.thetechannel.android.planit.data.source.network.NetworkTask
 import com.thetechannel.android.planit.data.source.network.NetworkTaskMethod
 
 fun Category.toDataTransferObject() = NetworkCategory(
-    id = id,
+    id = id.data,
     name = name
 )
 
@@ -30,7 +30,7 @@ fun Task.toDataTransferObject() = NetworkTask(
 )
 
 fun TaskMethod.toDataTransferObject() = NetworkTaskMethod(
-    id = id,
+    id = id.data,
     name = name,
     workLapse = workLapse,
     breakLapse = breakLapse,

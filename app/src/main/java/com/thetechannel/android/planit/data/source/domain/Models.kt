@@ -5,7 +5,7 @@ import java.sql.Time
 import java.util.*
 
 data class Category(
-    var id: Int,
+    var id: CategoryId,
     var name: String
 )
 
@@ -26,7 +26,7 @@ data class Task(
 )
 
 data class TaskMethod(
-    var id: Int,
+    var id: TaskMethodId,
     var name: String,
     var workLapse: Time,
     var breakLapse: Time,
