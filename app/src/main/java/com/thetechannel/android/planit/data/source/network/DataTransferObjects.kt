@@ -29,7 +29,7 @@ data class NetworkTask(
 
 data class NetworkTaskMethod(
     @SerializedName("id") val id: Int = TaskMethodId.POMODORO.data,
-    @SerializedName("name") val name: String = "pomodorro",
+    @SerializedName("name") val name: String = "pomodoro",
     @SerializedName("work_lapse") val workLapse: Time = Time(twentyFiveMins),
     @SerializedName("break_lapse") val breakLapse: Time = Time(fiveMins),
     @SerializedName("icon_url") val iconUrl: String = ""

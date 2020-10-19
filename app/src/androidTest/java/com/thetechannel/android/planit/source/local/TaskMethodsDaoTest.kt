@@ -41,16 +41,16 @@ class TaskMethodsDaoTest {
 
     @Test
     fun insertTaskType_getById() = runBlockingTest {
-        val taskMetod = DbTaskMethod(2, "test", 5000, 2000, "https://www.google.com")
-        database.taskMethodsDao.insert(taskMetod)
+        val taskMethod = DbTaskMethod(2, "test", 5000, 2000, "https://www.google.com")
+        database.taskMethodsDao.insert(taskMethod)
 
-        val loadedTaskType = database.taskMethodsDao.getById(taskMetod.id)
+        val loadedTaskType = database.taskMethodsDao.getById(taskMethod.id)
 
         assertThat<DbTaskMethod>(loadedTaskType as DbTaskMethod, notNullValue())
-        assertThat(loadedTaskType.id, `is`(taskMetod.id))
-        assertThat(loadedTaskType.name, `is`(taskMetod.name))
-        assertThat(loadedTaskType.workLapse, `is`(taskMetod.workLapse))
-        assertThat(loadedTaskType.breakLapse, `is`(taskMetod.breakLapse))
-        assertThat(loadedTaskType.iconUrl, `is`(taskMetod.iconUrl))
+        assertThat(loadedTaskType.id, `is`(taskMethod.id))
+        assertThat(loadedTaskType.name, `is`(taskMethod.name))
+        assertThat(loadedTaskType.workLapse, `is`(taskMethod.workLapse))
+        assertThat(loadedTaskType.breakLapse, `is`(taskMethod.breakLapse))
+        assertThat(loadedTaskType.iconUrl, `is`(taskMethod.iconUrl))
     }
 }

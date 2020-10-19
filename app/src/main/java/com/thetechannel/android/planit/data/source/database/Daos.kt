@@ -51,13 +51,13 @@ interface TaskMethodsDao {
     suspend fun getById(id: Int): DbTaskMethod?
 
     @Insert
-    suspend fun insert(taskMetod: DbTaskMethod)
+    suspend fun insert(taskMethod: DbTaskMethod)
 
     @Update
-    suspend fun update(taskMetod: DbTaskMethod)
+    suspend fun update(taskMethod: DbTaskMethod)
 
     @Delete
-    suspend fun delete(taskMetod: DbTaskMethod)
+    suspend fun delete(taskMethod: DbTaskMethod)
 }
 
 @Dao

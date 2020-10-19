@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">PlanIt</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="study">Study</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="pomodoro_duration">30 min</string>
+    <string name="digital_time">17:00 - 17:30</string>
+    <string name="task_title">Prepare Maths Assignment</string>
+    <string name="category">Category</string>
+    <string name="method">Method</string>
+    <string name="title_hint">Title...</string>
+    <string name="schedule">Schedule</string>
+    <string name="overview">Overview</string>
+    <string name="pending_tasks">Pending\nTasks</string>
+    <string name="tasks_completed_today">Completed\nToday</string>
+    <string name="completed_tasks">Completed\nTasks</string>
+    <string name="today">Today</string>
+    <string name="performance">Performance</string>
+    <string name="week_button_text">Weekly</string>
+    <string name="month_button_text">Monthly</string>
 </resources>

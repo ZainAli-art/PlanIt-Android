@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="primaryColor">#fafafa</color>
+    <color name="primaryLightColor">#ffffff</color>
+    <color name="primaryDarkColor">#c7c7c7</color>
+    <color name="secondaryColor">#03a9f4</color>
+    <color name="secondaryLightColor">#67daff</color>
+    <color name="secondaryDarkColor">#007ac1</color>
+    <color name="primaryTextColor">#212121</color>
+    <color name="secondaryTextColor">#fafafa</color>
+
+    <color name="taskDurationBackgroundColor">#C4C4C4</color>
+    <color name="theme_orange">#EE8100</color>
+    <color name="theme_green">#1FB640</color>
+    <color name="light_gray">#E5E5E5</color>
 </resources>
