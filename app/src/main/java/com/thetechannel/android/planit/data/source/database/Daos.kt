@@ -129,7 +129,7 @@ interface TasksDao {
         WHERE t.id = :id
     """
     )
-    fun getTaskDetailsByTaskId(id: String): DbTaskDetail
+    suspend fun getTaskDetailsByTaskId(id: String): DbTaskDetail
 
     @Insert
     suspend fun insert(task: DbTask)
