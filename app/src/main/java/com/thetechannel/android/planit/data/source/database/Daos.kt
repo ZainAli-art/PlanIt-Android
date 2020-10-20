@@ -8,11 +8,20 @@ interface CategoriesDao {
     @Query("SELECT * FROM categories")
     fun observeAll(): LiveData<List<DbCategory>>
 
+    @Query("SELECT * FROM categories WHERE id = :id")
+    fun observeById(id: Int): LiveData<DbCategory>
+
     @Query("SELECT * FROM categories")
     suspend fun getAll(): List<DbCategory>
 
+    @Query("SELECT * FROM categories WHERE id = :id")
+    suspend fun getById(id: Int): DbCategory?
+
     @Insert
     suspend fun insert(category: DbCategory)
+
+    @Insert
+    suspend fun insertAll(vararg categories: DbCategory)
 
     @Delete
     suspend fun delete(category: DbCategory)
