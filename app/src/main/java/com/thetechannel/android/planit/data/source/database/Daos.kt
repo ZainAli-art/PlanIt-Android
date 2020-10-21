@@ -28,24 +28,6 @@ interface CategoriesDao {
 }
 
 @Dao
-interface DaysDao {
-    @Query("SELECT * FROM days")
-    fun observeAll(): LiveData<List<DbDay>>
-
-    @Query("SELECT * FROM days WHERE date = :date")
-    fun observeByDate(date: Long): LiveData<DbDay>
-
-    @Query("SELECT * FROM days")
-    suspend fun getAll(): List<DbDay>
-
-    @Query("SELECT * FROM days WHERE date = :date")
-    suspend fun getByDate(date: Long): DbDay?
-
-    @Insert
-    suspend fun insert(day: DbDay)
-}
-
-@Dao
 interface TaskMethodsDao {
     @Query("SELECT * FROM task_methods")
     fun observeAll(): LiveData<List<DbTaskMethod>>

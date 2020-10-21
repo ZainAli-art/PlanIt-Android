@@ -11,12 +11,6 @@ data class NetworkCategory(
     @SerializedName("name") val name: String = "Study"
 )
 
-data class NetworkDay(
-    @SerializedName("date") val date: Date = Calendar.getInstance().time,
-    @SerializedName("start_at") val startAt: Time = Time(System.currentTimeMillis()),
-    @SerializedName("end_at") val endAt: Time = Time(System.currentTimeMillis())
-)
-
 data class NetworkTask(
     @SerializedName("id") var id: String = UUID.randomUUID().toString(),
     @SerializedName("day") var day: Date = Calendar.getInstance().time,

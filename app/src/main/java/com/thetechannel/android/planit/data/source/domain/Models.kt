@@ -9,12 +9,6 @@ data class Category(
     var name: String
 )
 
-data class Day(
-    var date: Date,
-    var startAt: Time,
-    var endAt: Time
-)
-
 data class Task(
     var id: String,
     var day: Date,

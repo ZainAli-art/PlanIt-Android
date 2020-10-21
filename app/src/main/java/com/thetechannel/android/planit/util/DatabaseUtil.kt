@@ -11,12 +11,6 @@ fun DbCategory.toDomainModel() = Category(
     name = name
 )
 
-fun DbDay.toDomainModel() = Day(
-    date = Date(date),
-    startAt = Time(startAt),
-    endAt = Time(endAt)
-)
-
 fun DbTask.toDomainModel() = Task(
     id = id,
     day = Date(day),

@@ -20,10 +20,6 @@ interface LocalDataSource {
 
     fun observeCategoryById(id: Int): LiveData<Result<DbCategory>>
 
-    fun observeAllDays(): LiveData<Result<List<DbDay>>>
-
-    fun observeDayByDate(date: Long): LiveData<Result<DbDay>>
-
     suspend fun getAllTaskMethods(): Result<List<DbTaskMethod>>
 
     suspend fun getTaskMethodById(id: Int): Result<DbTaskMethod?>
@@ -40,10 +36,6 @@ interface LocalDataSource {
 
     suspend fun getCategoryById(id: Int): Result<DbCategory?>
 
-    suspend fun getAllDays(): Result<List<DbDay>>
-
-    suspend fun getDayByDate(date: Long): Result<DbDay?>
-
     suspend fun insertTaskMethod(taskMethod: DbTaskMethod)
 
     suspend fun insertTask(task: DbTask)
@@ -51,8 +43,6 @@ interface LocalDataSource {
     suspend fun insertCategory(category: DbCategory)
 
     suspend fun insertAllCategories(vararg categories: DbCategory)
-
-    suspend fun insertDay(day: DbDay)
 
     suspend fun updateTaskMethod(taskMethod: DbTaskMethod)
 

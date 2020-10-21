@@ -8,10 +8,6 @@ interface NetworkDataSource {
 
     suspend fun getCategoryById(id: Int): Result<NetworkCategory>
 
-    suspend fun getAllDays(): Result<List<NetworkDay>>
-
-    suspend fun getDayByDate(date: Date): Result<NetworkDay>
-
     suspend fun getAllTaskMethods(): Result<List<NetworkTaskMethod>>
 
     suspend fun getTaskMethodById(): Result<NetworkTaskMethod>
@@ -21,8 +17,6 @@ interface NetworkDataSource {
     suspend fun getTaskById(id: Int): Result<NetworkTask>
 
     suspend fun getTaskByDay(day: Date): Result<NetworkTask>
-
-    suspend fun insertDay(day: NetworkDay)
 
     suspend fun insertCategory(category: NetworkCategory)
 

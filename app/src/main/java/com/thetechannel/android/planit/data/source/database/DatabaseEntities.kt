@@ -10,13 +10,6 @@ data class DbCategory(
     @ColumnInfo(name = "name") val name: String
 )
 
-@Entity(tableName = "days")
-data class DbDay(
-    @PrimaryKey @ColumnInfo(name = "date") val date: Long,
-    @ColumnInfo(name = "start_at") val startAt: Long,
-    @ColumnInfo(name = "end_at") val endAt: Long
-)
-
 @Entity(tableName = "tasks")
 data class DbTask(
     @PrimaryKey @ColumnInfo(name = "id")  var id: String,
