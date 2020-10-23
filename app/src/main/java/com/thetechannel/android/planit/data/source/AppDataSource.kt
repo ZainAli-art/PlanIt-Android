@@ -1,58 +1,59 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
-import com.thetechannel.android.planit.data.Result;
-import com.thetechannel.android.planit.data.source.database.DbCategory
+import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.database.DbTask
-import com.thetechannel.android.planit.data.source.database.DbTaskDetail
-import com.thetechannel.android.planit.data.source.database.DbTaskMethod
+import com.thetechannel.android.planit.data.source.domain.Category
+import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskDetail
+import com.thetechannel.android.planit.data.source.domain.TaskMethod
 
 interface AppDataSource {
-    fun observeAllTaskMethods(): LiveData<Result<List<DbTaskMethod>>>
+    fun observeAllCategories(): LiveData<Result<List<Category>>>
 
-    fun observeTaskMethodById(id: Int): LiveData<Result<DbTaskMethod>>
+    fun observeCategoryById(id: Int): LiveData<Result<Category>>
 
-    fun observeAllTasks(): LiveData<Result<List<DbTask>>>
+    fun observeAllTaskMethods(): LiveData<Result<List<TaskMethod>>>
 
-    fun observeTaskById(id: String): LiveData<Result<DbTask>>
+    fun observeTaskMethodById(id: Int): LiveData<Result<TaskMethod>>
 
-    fun observeTaskByDay(day: Long): LiveData<Result<List<DbTask>>>
+    fun observeAllTasks(): LiveData<Result<List<Task>>>
 
-    fun observeTaskDetailsByTaskId(id: String): LiveData<Result<DbTaskDetail>>
+    fun observeTaskById(id: String): LiveData<Result<Task>>
 
-    fun observeAllCategories(): LiveData<Result<List<DbCategory>>>
+    fun observeTaskByDay(day: Long): LiveData<Result<List<Task>>>
 
-    fun observeCategoryById(id: Int): LiveData<Result<DbCategory>>
+    fun observeTaskDetailsByTaskId(id: String): LiveData<Result<TaskDetail>>
 
-    suspend fun getAllTaskMethods(): Result<List<DbTaskMethod>>
+    suspend fun getAllCategories(): Result<List<Category>>
 
-    suspend fun getTaskMethodById(id: Int): Result<DbTaskMethod?>
+    suspend fun getCategoryById(id: Int): Result<Category?>
 
-    suspend fun getTaskById(id: String): Result<DbTask?>
+    suspend fun getAllTaskMethods(): Result<List<TaskMethod>>
 
-    suspend fun getTaskByDay(day: Long): Result<List<DbTask>>
+    suspend fun getTaskMethodById(id: Int): Result<TaskMethod?>
 
-    suspend fun getAllTasks(): Result<List<DbTask>>
+    suspend fun getTaskById(id: String): Result<Task?>
 
-    suspend fun getTaskDetailsByTaskId(id: String): Result<DbTaskDetail>
+    suspend fun getTaskByDay(day: Long): Result<List<Task>>
 
-    suspend fun getAllCategories(): Result<List<DbCategory>>
+    suspend fun getAllTasks(): Result<List<Task>>
 
-    suspend fun getCategoryById(id: Int): Result<DbCategory?>
+    suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail>
 
-    suspend fun insertTaskMethod(taskMethod: DbTaskMethod)
+    suspend fun insertCategory(category: Category)
+
+    suspend fun insertCategories(vararg categories: Category)
+
+    suspend fun insertTaskMethod(taskMethod: TaskMethod)
 
     suspend fun insertTask(task: DbTask)
 
-    suspend fun insertCategory(category: DbCategory)
+    suspend fun updateTaskMethod(taskMethod: TaskMethod)
 
-    suspend fun insertAllCategories(vararg categories: DbCategory)
+    suspend fun deleteCategory(category: Category)
 
-    suspend fun updateTaskMethod(taskMethod: DbTaskMethod)
-
-    suspend fun deleteTaskMethod(taskMethod: DbTaskMethod)
+    suspend fun deleteTaskMethod(taskMethod: TaskMethod)
 
     suspend fun deleteTask(task: DbTask)
-
-    suspend fun deleteCategory(category: DbCategory)
 }
