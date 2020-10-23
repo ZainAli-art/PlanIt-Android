@@ -1,7 +1,7 @@
 package com.thetechannel.android.planit.data.source.network
 
 import com.google.gson.annotations.SerializedName
-import java.sql.Time
+import java.sql.Timestamp
 import java.util.*
 
 data class NetworkCategory(
@@ -12,7 +12,7 @@ data class NetworkCategory(
 data class NetworkTask(
     @SerializedName("id") var id: String = UUID.randomUUID().toString(),
     @SerializedName("day") var day: Date = Calendar.getInstance().time,
-    @SerializedName("start_at") var startAt: Time = Time(System.currentTimeMillis()),
+    @SerializedName("start_at") var startAt: Timestamp = Timestamp(System.currentTimeMillis()),
     @SerializedName("method_id") var methodId: Int = 1,
     @SerializedName("title") var title: String = "",
     @SerializedName("cat_id") var catId: Int = 1,
@@ -22,8 +22,8 @@ data class NetworkTask(
 data class NetworkTaskMethod(
     @SerializedName("id") val id: Int = 1,
     @SerializedName("name") val name: String = "pomodoro",
-    @SerializedName("work_lapse") val workLapse: Time = Time(twentyFiveMins),
-    @SerializedName("break_lapse") val breakLapse: Time = Time(fiveMins),
+    @SerializedName("work_lapse") val workLapse: Timestamp = Timestamp(twentyFiveMins),
+    @SerializedName("break_lapse") val breakLapse: Timestamp = Timestamp(fiveMins),
     @SerializedName("icon_url") val iconUrl: String = ""
 )
 
