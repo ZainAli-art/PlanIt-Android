@@ -6,12 +6,20 @@ import java.net.URI
 import java.sql.Time
 import java.util.*
 
-fun DbCategory.toDomainModel() = Category(
+fun DbCategory.asDomainModel() = Category(
     id = id,
     name = name
 )
 
-fun DbTask.toDomainModel() = Task(
+fun DbTaskMethod.asDomainModel() = TaskMethod(
+    id = id,
+    name = name,
+    workLapse = Time(workLapse),
+    breakLapse = Time(breakLapse),
+    iconUrl = URI(iconUrl)
+)
+
+fun DbTask.asDomainModel() = Task(
     id = id,
     day = Date(day),
     startAt = Time(startAt),
@@ -21,15 +29,7 @@ fun DbTask.toDomainModel() = Task(
     completed = completed
 )
 
-fun DbTaskMethod.toDomainModel() = TaskMethod(
-    id = id,
-    name = name,
-    workLapse = Time(workLapse),
-    breakLapse = Time(breakLapse),
-    iconUrl = URI(iconUrl)
-)
-
-fun DbTaskDetail.toDomainModel() = TaskDetail(
+fun DbTaskDetail.asDomainModel() = TaskDetail(
     id,
     category,
     method,

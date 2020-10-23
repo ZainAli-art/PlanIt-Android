@@ -7,12 +7,20 @@ import com.thetechannel.android.planit.data.source.network.NetworkCategory
 import com.thetechannel.android.planit.data.source.network.NetworkTask
 import com.thetechannel.android.planit.data.source.network.NetworkTaskMethod
 
-fun NetworkCategory.toDatabaseEntity() = DbCategory(
+fun NetworkCategory.asDatabaseEntity() = DbCategory(
     id = id,
     name = name
 )
 
-fun NetworkTask.toDatabaseEntity() = DbTask(
+fun NetworkTaskMethod.asDatabaseEntity() = DbTaskMethod(
+    id = id,
+    name = name,
+    workLapse = workLapse.time,
+    breakLapse = breakLapse.time,
+    iconUrl = iconUrl
+)
+
+fun NetworkTask.asDatabaseEntity() = DbTask(
     id = id,
     day = day.time,
     startAt = startAt.time,
@@ -20,12 +28,4 @@ fun NetworkTask.toDatabaseEntity() = DbTask(
     title = title,
     catId = catId,
     completed = completed
-)
-
-fun NetworkTaskMethod.toDatabaseEntity() = DbTaskMethod(
-    id = id,
-    name = name,
-    workLapse = workLapse.time,
-    breakLapse = breakLapse.time,
-    iconUrl = iconUrl
 )

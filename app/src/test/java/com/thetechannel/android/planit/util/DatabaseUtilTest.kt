@@ -12,7 +12,7 @@ class DatabaseUtilTest {
     fun convertDbCategoryToDomain_convertBack_returnsTrueIfBothAreTransferable() {
         val dbCategory = DbCategory(1, "Business")
 
-        val domainCategory = dbCategory.toDomainModel()
+        val domainCategory = dbCategory.asDomainModel()
 
         assertThat(dbCategory.id, `is`(domainCategory.id))
         assertThat(dbCategory.name, `is`(domainCategory.name))
@@ -22,7 +22,7 @@ class DatabaseUtilTest {
     fun convertDbTaskMethodToDomain_convertBack_returnsTrueIfBothAreTransferable() {
         val dbMethod = DbTaskMethod(1, "pomodoro", 2500L, 1230L, "https://www.google.com");
 
-        val domainMethod = dbMethod.toDomainModel()
+        val domainMethod = dbMethod.asDomainModel()
 
         assertThat(dbMethod.id, `is`(domainMethod.id))
         assertThat(dbMethod.name, `is`(domainMethod.name))
@@ -35,7 +35,7 @@ class DatabaseUtilTest {
     fun convertDbTaskToDomain_convertBack_returnsTrueIfBothAreTransferable() {
         val dbTask = DbTask("task_1", 2, 0L, 1, "Maths Assignment", 1, false)
 
-        val domainTask = dbTask.toDomainModel()
+        val domainTask = dbTask.asDomainModel()
 
         assertThat(dbTask.id, `is`(domainTask.id))
         assertThat(dbTask.day, `is`(domainTask.day.time))

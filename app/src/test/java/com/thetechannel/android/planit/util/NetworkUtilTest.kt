@@ -12,7 +12,7 @@ class NetworkUtilTest {
     fun convertNetworkCategoryToDatabase_convertBack_returnsTrueIfBothAreTransferable() {
         val netCat = NetworkCategory(3, "Sport")
 
-        val dbCat = netCat.toDatabaseEntity()
+        val dbCat = netCat.asDatabaseEntity()
 
         assertThat(netCat.id, `is`(dbCat.id))
         assertThat(netCat.name, `is`(dbCat.name))
@@ -22,7 +22,7 @@ class NetworkUtilTest {
     fun convertNetworkTaskMethodToDatabase_convertBack_returnsTrueIfBothAreTransferable() {
         val netMethod = NetworkTaskMethod()
 
-        val dbMethod = netMethod.toDatabaseEntity()
+        val dbMethod = netMethod.asDatabaseEntity()
 
         assertThat(netMethod.id, `is`(dbMethod.id))
         assertThat(netMethod.name, `is`(dbMethod.name))
@@ -35,7 +35,7 @@ class NetworkUtilTest {
     fun convertNetworkTaskToDatabase_convertBack_returnsTrueIfBothAreTransferable() {
         val netTask = NetworkTask()
 
-        val dbTask = netTask.toDatabaseEntity()
+        val dbTask = netTask.asDatabaseEntity()
 
         assertThat(netTask.id, `is`(dbTask.id))
         assertThat(netTask.day.time, `is`(dbTask.day))
