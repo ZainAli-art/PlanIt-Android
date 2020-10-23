@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.thetechannel.android.planit.data.source.database.DbCategory
 import com.thetechannel.android.planit.data.source.database.PlanItDatabase
-import com.thetechannel.android.planit.data.source.domain.CategoryId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
@@ -38,7 +37,7 @@ class CategoriesDaoTest {
 
     @Test
     fun insertCategory_fetchById_returnsInsertedCategory() = runBlockingTest {
-        val category = DbCategory(CategoryId.STUDY.data, "Study")
+        val category = DbCategory(1, "Study")
 
         database.categoriesDao.insert(category)
 
@@ -52,10 +51,10 @@ class CategoriesDaoTest {
     @Test
     fun insertCategories_fetchAll_returnsAllInsertedCategories() = runBlockingTest {
         val categories = arrayOf(
-            DbCategory(CategoryId.STUDY.data, "Study"),
-            DbCategory(CategoryId.BUSINESS.data, "Business"),
-            DbCategory(CategoryId.SPORT.data, "Sport"),
-            DbCategory(CategoryId.HOBBY.data, "Hobby")
+            DbCategory(1, "Study"),
+            DbCategory(2, "Business"),
+            DbCategory(3, "Sport"),
+            DbCategory(4, "Hobby")
         )
         database.categoriesDao.insertAll(*categories)
 
@@ -73,7 +72,7 @@ class CategoriesDaoTest {
 
     @Test
     fun insertCategory_deleteItAndFetchById_returnsNull() = runBlockingTest {
-        val category = DbCategory(CategoryId.STUDY.data, "Study")
+        val category = DbCategory(1, "Study")
         database.categoriesDao.insert(category)
 
         database.categoriesDao.delete(category)

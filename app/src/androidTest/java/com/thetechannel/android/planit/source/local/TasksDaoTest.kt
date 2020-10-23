@@ -6,7 +6,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.thetechannel.android.planit.data.source.database.*
-import com.thetechannel.android.planit.data.source.domain.TaskMethodId.POMODORO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
@@ -39,7 +38,7 @@ class TasksDaoTest {
         )
             .build()
 
-        taskMethod = DbTaskMethod(POMODORO.data, "pomodoro", 0L, 0L, "https://www.google.com")
+        taskMethod = DbTaskMethod(1, "pomodoro", 0L, 0L, "https://www.google.com")
         category = DbCategory(STUDY, "Study")
         database.categoriesDao.insert(category)
         database.taskMethodsDao.insert(taskMethod)
@@ -54,7 +53,7 @@ class TasksDaoTest {
             "TASK1",
             System.currentTimeMillis(),
             0,
-            POMODORO.data,
+            1,
             "Maths Assignment",
             STUDY,
             false
@@ -79,7 +78,7 @@ class TasksDaoTest {
             "TASK1",
             System.currentTimeMillis(),
             0,
-            POMODORO.data,
+            1,
             "Maths Assignment",
             STUDY,
             false
@@ -94,7 +93,7 @@ class TasksDaoTest {
     @Test
     fun insertTaskAndTaskType_returnTaskDetails() = runBlockingTest {
         val task =
-            DbTask("TASK1", System.currentTimeMillis(), 0, POMODORO.data, "Maths Assignment", 1, false)
+            DbTask("TASK1", System.currentTimeMillis(), 0, 1, "Maths Assignment", 1, false)
         database.tasksDao.insert(task)
 
         val taskDetail = database.tasksDao.getTaskDetailsByTaskId(task.id)

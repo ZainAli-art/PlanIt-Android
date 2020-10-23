@@ -7,7 +7,7 @@ import java.sql.Time
 import java.util.*
 
 fun DbCategory.toDomainModel() = Category(
-    id = id.toCategoryId(),
+    id = id,
     name = name
 )
 
@@ -22,7 +22,7 @@ fun DbTask.toDomainModel() = Task(
 )
 
 fun DbTaskMethod.toDomainModel() = TaskMethod(
-    id = id.toTaskMethodId(),
+    id = id,
     name = name,
     workLapse = Time(workLapse),
     breakLapse = Time(breakLapse),

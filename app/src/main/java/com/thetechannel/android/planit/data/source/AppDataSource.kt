@@ -1,9 +1,13 @@
-package com.thetechannel.android.planit.data.source.database
+package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
 import com.thetechannel.android.planit.data.Result;
+import com.thetechannel.android.planit.data.source.database.DbCategory
+import com.thetechannel.android.planit.data.source.database.DbTask
+import com.thetechannel.android.planit.data.source.database.DbTaskDetail
+import com.thetechannel.android.planit.data.source.database.DbTaskMethod
 
-interface LocalDataSource {
+interface AppDataSource {
     fun observeAllTaskMethods(): LiveData<Result<List<DbTaskMethod>>>
 
     fun observeTaskMethodById(id: Int): LiveData<Result<DbTaskMethod>>
