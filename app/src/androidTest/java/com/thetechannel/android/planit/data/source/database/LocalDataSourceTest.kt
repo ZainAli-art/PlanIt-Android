@@ -60,4 +60,17 @@ class LocalDataSourceTest {
             assertThat(insertedCat.name, `is`(loadedCat.name))
         }
     }
+
+    @Test
+    fun insertCategory_fetchById_returnsInsertedCategory() = runBlocking {
+        val category = Category(1, "Business")
+        dataSource.insertCategory(category)
+
+        val result = dataSource.getCategoryById(category.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success<Category>
+
+        assertThat(category.id, `is`(result.data.id))
+        assertThat(category.name, `is`(result.data.name))
+    }
 }
