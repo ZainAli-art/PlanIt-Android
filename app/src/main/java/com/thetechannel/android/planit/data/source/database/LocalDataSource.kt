@@ -85,8 +85,14 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> {
-        TODO("Not yet implemented")
+    override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> = withContext(ioDispatcher) {
+        return@withContext try {
+            val dbTaskMethod = taskMethodsDao.getById(id)
+            if (dbTaskMethod == null) Result.Error(Exception("category id not found"))
+            else Result.Success(dbTaskMethod.asDomainModel())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTaskById(id: String): Result<Task?> {
@@ -115,8 +121,8 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun insertTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+    override suspend fun insertTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
+        taskMethodsDao.insert(taskMethod.asDatabaseEntity())
     }
 
     override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) = runBlocking {

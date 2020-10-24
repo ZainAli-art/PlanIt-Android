@@ -102,4 +102,21 @@ class LocalDataSourceTest {
             assertThat(insertedMethod.iconUrl, `is`(loadedMethod.iconUrl))
         }
     }
+
+    @Test
+    fun insertTaskMethod_fetchById_returnsTheInsertedMethod() = runBlocking {
+        val method = TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost"))
+        dataSource.insertTaskMethod(method)
+
+        val result = dataSource.getTaskMethodById(method.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success<TaskMethod>
+
+        val loaded = result.data
+        assertThat(method.id, `is`(loaded.id))
+        assertThat(method.name, `is`(loaded.name))
+        assertThat(method.workLapse, `is`(loaded.workLapse))
+        assertThat(method.breakLapse, `is`(loaded.breakLapse))
+        assertThat(method.iconUrl, `is`(loaded.iconUrl))
+    }
 }
