@@ -95,16 +95,30 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskById(id: String): Result<Task?> {
-        TODO("Not yet implemented")
+    override suspend fun getTaskById(id: String): Result<Task?> = withContext(ioDispatcher) {
+        return@withContext try {
+            val dbTask = tasksDao.getById(id)
+            if (dbTask == null ) Result.Error(Exception("category id not found"))
+            else Result.Success(dbTask.asDomainModel())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTaskByDay(day: Long): Result<List<Task>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllTasks(): Result<List<Task>> {
-        TODO("Not yet implemented")
+    override suspend fun getAllTasks(): Result<List<Task>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(
+                tasksDao.getAll().map {
+                    it.asDomainModel()
+                }
+            )
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail> {
@@ -131,8 +145,14 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun insertTask(task: DbTask) {
-        TODO("Not yet implemented")
+    override suspend fun insertTask(task: Task) = withContext(ioDispatcher) {
+        tasksDao.insert(task.asDatabaseEntity())
+    }
+
+    override suspend fun insertTasks(vararg tasks: Task) = withContext(ioDispatcher) {
+        for (task in tasks) {
+            tasksDao.insert(task.asDatabaseEntity())
+        }
     }
 
     override suspend fun updateTaskMethod(taskMethod: TaskMethod) {
@@ -147,7 +167,7 @@ class LocalDataSource(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTask(task: DbTask) {
+    override suspend fun deleteTask(task: Task) {
         TODO("Not yet implemented")
     }
 }

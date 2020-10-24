@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.domain.Category
+import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.runBlocking
@@ -17,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.net.URI
 import java.sql.Time
+import java.util.*
 
 class LocalDataSourceTest {
     @get:Rule
@@ -118,5 +120,53 @@ class LocalDataSourceTest {
         assertThat(method.workLapse, `is`(loaded.workLapse))
         assertThat(method.breakLapse, `is`(loaded.breakLapse))
         assertThat(method.iconUrl, `is`(loaded.iconUrl))
+    }
+
+    @Test
+    fun insertTasks_fetchAll_returnsAllInsertedTasks() = runBlocking {
+        val tasks = arrayOf(
+            Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false),
+            Task(UUID.randomUUID().toString(), Date(24L), Time(1540), 1, "Read Emails", 1, false),
+            Task(UUID.randomUUID().toString(), Date(25L), Time(100), 1, "Clean my room", 1, false)
+        )
+        dataSource.insertTasks(*tasks)
+
+        val result = dataSource.getAllTasks()
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val loaded = result.data
+        assertThat(tasks.size, `is`(loaded.size))
+        for (i in tasks.indices) {
+            val insertedTask = tasks.get(i)
+            val loadedTask = tasks.get(i)
+
+            assertThat(insertedTask.id, `is`(loadedTask.id))
+            assertThat(insertedTask.day, `is`(loadedTask.day))
+            assertThat(insertedTask.startAt, `is`(loadedTask.startAt))
+            assertThat(insertedTask.methodId, `is`(loadedTask.methodId))
+            assertThat(insertedTask.title, `is`(loadedTask.title))
+            assertThat(insertedTask.catId, `is`(loadedTask.catId))
+            assertThat(insertedTask.completed, `is`(loadedTask.completed))
+        }
+    }
+
+    @Test
+    fun insertTask_fetchById_returnsInsertedTask() = runBlocking {
+        val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false)
+        dataSource.insertTask(task)
+
+        val result = dataSource.getTaskById(task.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success<Task>
+
+        val loaded = result.data
+        assertThat(task.id, `is`(loaded.id))
+        assertThat(task.day, `is`(loaded.day))
+        assertThat(task.startAt, `is`(loaded.startAt))
+        assertThat(task.methodId, `is`(loaded.methodId))
+        assertThat(task.title, `is`(loaded.title))
+        assertThat(task.catId, `is`(loaded.catId))
+        assertThat(task.completed, `is`(loaded.completed))
     }
 }

@@ -2,7 +2,6 @@ package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.database.DbTask
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -49,7 +48,9 @@ interface AppDataSource {
 
     suspend fun insertTaskMethods(vararg taskMethods: TaskMethod)
 
-    suspend fun insertTask(task: DbTask)
+    suspend fun insertTask(task: Task)
+
+    suspend fun insertTasks(vararg tasks: Task)
 
     suspend fun updateTaskMethod(taskMethod: TaskMethod)
 
@@ -57,5 +58,5 @@ interface AppDataSource {
 
     suspend fun deleteTaskMethod(taskMethod: TaskMethod)
 
-    suspend fun deleteTask(task: DbTask)
+    suspend fun deleteTask(task: Task)
 }
