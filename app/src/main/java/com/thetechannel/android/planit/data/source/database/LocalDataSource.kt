@@ -68,8 +68,8 @@ class LocalDataSource(
     override suspend fun getCategoryById(id: Int): Result<Category?> = withContext(ioDispatcher) {
         return@withContext try {
             val dbCategory = categoryDao.getById(id)
-            if (dbCategory != null) Result.Success(dbCategory.asDomainModel())
-            else Result.Error(Exception("category id not found"))
+            if (dbCategory == null) Result.Error(Exception("category id not found"))
+            else Result.Success(dbCategory.asDomainModel())
         } catch (e: Exception) {
             return@withContext Result.Error(e)
         }
