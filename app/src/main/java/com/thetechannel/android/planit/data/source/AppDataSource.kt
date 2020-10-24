@@ -47,6 +47,8 @@ interface AppDataSource {
 
     suspend fun insertTaskMethod(taskMethod: TaskMethod)
 
+    suspend fun insertTaskMethods(vararg taskMethods: TaskMethod)
+
     suspend fun insertTask(task: DbTask)
 
     suspend fun updateTaskMethod(taskMethod: TaskMethod)

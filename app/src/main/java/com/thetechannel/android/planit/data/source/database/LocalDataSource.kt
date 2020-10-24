@@ -11,6 +11,7 @@ import com.thetechannel.android.planit.util.asDatabaseEntity
 import com.thetechannel.android.planit.util.asDomainModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 
@@ -68,14 +69,20 @@ class LocalDataSource(
         return@withContext try {
             val dbCategory = categoryDao.getById(id)
             if (dbCategory != null) Result.Success(dbCategory.asDomainModel())
-            else                    Result.Error(Exception("category id not found"))
+            else Result.Error(Exception("category id not found"))
         } catch (e: Exception) {
             return@withContext Result.Error(e)
         }
     }
 
-    override suspend fun getAllTaskMethods(): Result<List<TaskMethod>> {
-        TODO("Not yet implemented")
+    override suspend fun getAllTaskMethods(): Result<List<TaskMethod>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(taskMethodsDao.getAll().map {
+                it.asDomainModel()
+            })
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> {
@@ -110,6 +117,12 @@ class LocalDataSource(
 
     override suspend fun insertTaskMethod(taskMethod: TaskMethod) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) = runBlocking {
+        for (method in taskMethods) {
+            taskMethodsDao.insert(method.asDatabaseEntity())
+        }
     }
 
     override suspend fun insertTask(task: DbTask) {

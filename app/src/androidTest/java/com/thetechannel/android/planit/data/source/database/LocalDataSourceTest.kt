@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.domain.Category
+import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -14,6 +15,8 @@ import org.junit.Test
 
 import org.junit.Before
 import org.junit.Rule
+import java.net.URI
+import java.sql.Time
 
 class LocalDataSourceTest {
     @get:Rule
@@ -72,5 +75,31 @@ class LocalDataSourceTest {
 
         assertThat(category.id, `is`(result.data.id))
         assertThat(category.name, `is`(result.data.name))
+    }
+
+    @Test
+    fun insertTaskMethods_fetchAll_returnsAllTheInsertedMethods() = runBlocking {
+        val methods = arrayOf(
+            TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost")),
+            TaskMethod(2, "eat the devil", Time(60000L), Time(200L), URI("https://localhost"))
+        )
+        dataSource.insertTaskMethods(*methods)
+
+        val result = dataSource.getAllTaskMethods()
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val loaded = result.data
+        assertThat(methods.size, `is`(loaded.size))
+        for (i in methods.indices) {
+            val insertedMethod = methods.get(i)
+            val loadedMethod = loaded.get(i)
+
+            assertThat(insertedMethod.id, `is`(loadedMethod.id))
+            assertThat(insertedMethod.name, `is`(loadedMethod.name))
+            assertThat(insertedMethod.workLapse, `is`(loadedMethod.workLapse))
+            assertThat(insertedMethod.breakLapse, `is`(loadedMethod.breakLapse))
+            assertThat(insertedMethod.iconUrl, `is`(loadedMethod.iconUrl))
+        }
     }
 }
