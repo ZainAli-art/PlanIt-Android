@@ -169,4 +169,35 @@ class LocalDataSourceTest {
         assertThat(task.catId, `is`(loaded.catId))
         assertThat(task.completed, `is`(loaded.completed))
     }
+
+    @Test
+    fun insertTasks_fetchByDay_returnsInsertedTask() = runBlocking {
+        val day = Date(23L)
+
+        val tasks = arrayOf(
+            Task(UUID.randomUUID().toString(), day, Time(1500), 1, "Maths Assignment", 1, false),
+            Task(UUID.randomUUID().toString(), day, Time(1540), 1, "Read Emails", 1, false),
+            Task(UUID.randomUUID().toString(), day, Time(100), 1, "Clean my room", 1, false)
+        )
+        dataSource.insertTasks(*tasks)
+
+        val result = dataSource.getTasksByDay(day)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val loaded = result.data
+        assertThat(tasks.size, `is`(loaded.size))
+        for (i in tasks.indices) {
+            val insertedTask = tasks.get(i)
+            val loadedTask = tasks.get(i)
+
+            assertThat(insertedTask.id, `is`(loadedTask.id))
+            assertThat(insertedTask.day, `is`(loadedTask.day))
+            assertThat(insertedTask.startAt, `is`(loadedTask.startAt))
+            assertThat(insertedTask.methodId, `is`(loadedTask.methodId))
+            assertThat(insertedTask.title, `is`(loadedTask.title))
+            assertThat(insertedTask.catId, `is`(loadedTask.catId))
+            assertThat(insertedTask.completed, `is`(loadedTask.completed))
+        }
+    }
 }

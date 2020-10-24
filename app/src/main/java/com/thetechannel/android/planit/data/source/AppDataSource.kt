@@ -6,6 +6,7 @@ import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import java.util.*
 
 interface AppDataSource {
     fun observeAllCategories(): LiveData<Result<List<Category>>>
@@ -34,7 +35,7 @@ interface AppDataSource {
 
     suspend fun getTaskById(id: String): Result<Task?>
 
-    suspend fun getTaskByDay(day: Long): Result<List<Task>>
+    suspend fun getTasksByDay(day: Date): Result<List<Task>>
 
     suspend fun getAllTasks(): Result<List<Task>>
 

@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.util.*
 
 class LocalDataSource(
     private val categoryDao: CategoriesDao,
@@ -85,28 +86,35 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> = withContext(ioDispatcher) {
-        return@withContext try {
-            val dbTaskMethod = taskMethodsDao.getById(id)
-            if (dbTaskMethod == null) Result.Error(Exception("category id not found"))
-            else Result.Success(dbTaskMethod.asDomainModel())
-        } catch (e: Exception) {
-            Result.Error(e)
+    override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> =
+        withContext(ioDispatcher) {
+            return@withContext try {
+                val dbTaskMethod = taskMethodsDao.getById(id)
+                if (dbTaskMethod == null) Result.Error(Exception("category id not found"))
+                else Result.Success(dbTaskMethod.asDomainModel())
+            } catch (e: Exception) {
+                Result.Error(e)
+            }
         }
-    }
 
     override suspend fun getTaskById(id: String): Result<Task?> = withContext(ioDispatcher) {
         return@withContext try {
             val dbTask = tasksDao.getById(id)
-            if (dbTask == null ) Result.Error(Exception("category id not found"))
+            if (dbTask == null) Result.Error(Exception("category id not found"))
             else Result.Success(dbTask.asDomainModel())
         } catch (e: Exception) {
             Result.Error(e)
         }
     }
 
-    override suspend fun getTaskByDay(day: Long): Result<List<Task>> {
-        TODO("Not yet implemented")
+    override suspend fun getTasksByDay(day: Date): Result<List<Task>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(tasksDao.getByDay(day.time).map {
+                it.asDomainModel()
+            })
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getAllTasks(): Result<List<Task>> = withContext(ioDispatcher) {
