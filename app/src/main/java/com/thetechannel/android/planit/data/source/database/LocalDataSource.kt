@@ -22,6 +22,7 @@ class LocalDataSource(
     private val tasksDao: TasksDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : AppDataSource {
+
     override fun observeAllCategories(): LiveData<Result<List<Category>>> {
         TODO("Not yet implemented")
     }
@@ -129,8 +130,14 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail> {
-        TODO("Not yet implemented")
+    override suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(
+                tasksDao.getTaskDetailsByTaskId(id).asDomainModel()
+            )
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun insertCategory(category: Category) = withContext(ioDispatcher) {

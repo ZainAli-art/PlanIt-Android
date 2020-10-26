@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.runBlocking
@@ -213,5 +214,31 @@ class LocalDataSourceTest {
         assertThat(todayTask2.title, `is`(loadedTask2.title))
         assertThat(todayTask2.catId, `is`(loadedTask2.catId))
         assertThat(todayTask2.completed, `is`(loadedTask2.completed))
+    }
+
+    @Test
+    fun insertTask_fetchTaskDetailsById_returnsDetailsOfInsertedTask() = runBlocking {
+        val category = Category(1, "Study")
+        val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("https://localhost"))
+        val task = Task("task_id", Calendar.getInstance().time, Time(150L), method.id, "Maths Assignment", category.id, false)
+        dataSource.insertCategory(category)
+        dataSource.insertTaskMethod(method)
+        dataSource.insertTask(task)
+
+        val result = dataSource.getTaskDetailsByTaskId(task.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success<TaskDetail>
+        val detail = result.data
+
+        assertThat(detail.id, `is`(task.id))
+        assertThat(detail.categoryName, `is`(category.name))
+        assertThat(detail.methodName, `is`(method.name))
+        assertThat(detail.methodIconUrl, `is`(method.iconUrl))
+        assertThat(detail.timeLapse.time, `is`(method.workLapse.time + method.breakLapse.time))
+        assertThat(detail.title, `is`(task.title))
+        assertThat(detail.workStart, `is`(task.startAt))
+        assertThat(detail.workEnd.time, `is`(task.startAt.time + method.workLapse.time))
+        assertThat(detail.breakStart.time, `is`(task.startAt.time + method.workLapse.time))
+        assertThat(detail.breakEnd.time, `is`(task.startAt.time + method.workLapse.time + method.breakLapse.time))
     }
 }
