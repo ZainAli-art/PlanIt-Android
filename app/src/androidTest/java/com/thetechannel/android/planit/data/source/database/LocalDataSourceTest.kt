@@ -256,4 +256,16 @@ class LocalDataSourceTest {
         assertThat(loaded.id, `is`(task.id))
         assertThat(loaded.completed, `is`(true))
     }
+
+    @Test
+    fun insertCategory_deleteItAndFetchById_returnsNull() = runBlocking {
+        val category = Category(1, "Sport")
+        dataSource.insertCategory(category)
+
+        dataSource.deleteCategory(category)
+        val result = dataSource.getCategoryById(category.id)
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`("category id not found"))
+    }
 }

@@ -178,8 +178,8 @@ class LocalDataSource(
         tasksDao.updateCompleted(id, true)
     }
 
-    override suspend fun deleteCategory(category: Category) {
-        TODO("Not yet implemented")
+    override suspend fun deleteCategory(category: Category) = withContext(ioDispatcher) {
+        categoryDao.delete(category.asDatabaseEntity())
     }
 
     override suspend fun deleteTaskMethod(taskMethod: TaskMethod) {
