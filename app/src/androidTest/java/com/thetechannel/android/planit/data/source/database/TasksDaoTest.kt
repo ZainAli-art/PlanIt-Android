@@ -8,12 +8,15 @@ import androidx.test.filters.SmallTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -120,5 +123,25 @@ class TasksDaoTest {
                 task.startAt + taskMethod.workLapse + taskMethod.breakLapse
             )
         )
+    }
+
+    @Test
+    fun insertedIncompleted_updateTaskCompletedAndFetchById_returnsCompletedTask() = runBlockingTest {
+        val task = DbTask(
+            "TASK1",
+            System.currentTimeMillis(),
+            0,
+            1,
+            "Maths Assignment",
+            STUDY,
+            false
+        )
+        database.tasksDao.insert(task)
+
+        database.tasksDao.updateCompleted(task.id, true)
+        val loaded = database.tasksDao.getById(task.id)
+        assertThat<DbTask>(loaded as DbTask, `is`(CoreMatchers.notNullValue()))
+
+        assertThat(loaded.completed, `is`(true))
     }
 }
