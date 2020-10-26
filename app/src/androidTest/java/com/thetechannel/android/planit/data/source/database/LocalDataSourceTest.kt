@@ -281,4 +281,16 @@ class LocalDataSourceTest {
         result as Result.Error
         assertThat(result.exception.message, `is`("method id not found"))
     }
+
+    @Test
+    fun insertTask_deleteItAndFetchById_returnsNull() = runBlocking {
+        val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500L), 1, "Maths Assignment", 1, false)
+        dataSource.insertTask(task)
+
+        dataSource.deleteTask(task)
+        val result = dataSource.getTaskById(task.id)
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`("task id not found"))
+    }
 }
