@@ -63,6 +63,7 @@ class CategoriesDaoTest {
         database.categoriesDao.insertAll(*categories)
 
         val loaded = database.categoriesDao.getAll()
+        categories.sortBy { c -> c.name }
 
         MatcherAssert.assertThat(loaded.size, CoreMatchers.`is`(categories.size))
         for (i in categories.indices) {

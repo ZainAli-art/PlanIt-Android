@@ -53,6 +53,7 @@ class LocalDataSourceTest {
         val result = dataSource.getAllCategories()
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
+        categories.sortBy { c -> c.name }
 
         val loaded = result.data
 
@@ -90,6 +91,7 @@ class LocalDataSourceTest {
         val result = dataSource.getAllTaskMethods()
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
+        methods.sortBy { m -> m.name }
 
         val loaded = result.data
         assertThat(methods.size, `is`(loaded.size))

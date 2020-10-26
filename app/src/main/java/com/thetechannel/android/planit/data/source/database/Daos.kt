@@ -5,13 +5,13 @@ import androidx.room.*
 
 @Dao
 interface CategoriesDao {
-    @Query("SELECT * FROM categories")
+    @Query("SELECT * FROM categories ORDER BY name")
     fun observeAll(): LiveData<List<DbCategory>>
 
     @Query("SELECT * FROM categories WHERE id = :id")
     fun observeById(id: Int): LiveData<DbCategory>
 
-    @Query("SELECT * FROM categories")
+    @Query("SELECT * FROM categories ORDER BY name")
     suspend fun getAll(): List<DbCategory>
 
     @Query("SELECT * FROM categories WHERE id = :id")
@@ -29,10 +29,10 @@ interface CategoriesDao {
 
 @Dao
 interface TaskMethodsDao {
-    @Query("SELECT * FROM task_methods")
+    @Query("SELECT * FROM task_methods ORDER BY name")
     fun observeAll(): LiveData<List<DbTaskMethod>>
 
-    @Query("SELECT * FROM task_methods")
+    @Query("SELECT * FROM task_methods ORDER BY name")
     suspend fun getAll(): List<DbTaskMethod>
 
     @Query("SELECT * FROM task_methods WHERE id = :id")
@@ -53,13 +53,13 @@ interface TaskMethodsDao {
 
 @Dao
 interface TasksDao {
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks ORDER BY day, start_at")
     fun observeAll(): LiveData<List<DbTask>>
 
     @Query("SELECT * FROM tasks WHERE id = :id")
     fun observeById(id: String): LiveData<DbTask>
 
-    @Query("SELECT * FROM tasks WHERE day = :day")
+    @Query("SELECT * FROM tasks WHERE day = :day ORDER BY start_at")
     fun observeByDay(day: Long): LiveData<List<DbTask>>
 
     @Query(
@@ -89,7 +89,7 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE day = :day ORDER BY start_at")
     suspend fun getByDay(day: Long): List<DbTask>
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks ORDER BY day, start_at")
     suspend fun getAll(): List<DbTask>
 
     @Query(
