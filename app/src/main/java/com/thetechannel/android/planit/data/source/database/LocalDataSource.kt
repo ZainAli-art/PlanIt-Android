@@ -91,7 +91,7 @@ class LocalDataSource(
         withContext(ioDispatcher) {
             return@withContext try {
                 val dbTaskMethod = taskMethodsDao.getById(id)
-                if (dbTaskMethod == null) Result.Error(Exception("category id not found"))
+                if (dbTaskMethod == null) Result.Error(Exception("method id not found"))
                 else Result.Success(dbTaskMethod.asDomainModel())
             } catch (e: Exception) {
                 Result.Error(e)
@@ -182,8 +182,8 @@ class LocalDataSource(
         categoryDao.delete(category.asDatabaseEntity())
     }
 
-    override suspend fun deleteTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+    override suspend fun deleteTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
+        taskMethodsDao.delete(taskMethod.asDatabaseEntity())
     }
 
     override suspend fun deleteTask(task: Task) {

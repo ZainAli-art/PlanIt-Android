@@ -268,4 +268,17 @@ class LocalDataSourceTest {
         result as Result.Error
         assertThat(result.exception.message, `is`("category id not found"))
     }
+
+    @Test
+    fun insertTaskMethod_deleteItAndFetchById_returnsNull() = runBlocking {
+        val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("http://localhost"))
+        dataSource.insertTaskMethod(method)
+
+        dataSource.deleteTaskMethod(method)
+
+        val result = dataSource.getTaskMethodById(method.id)
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`("method id not found"))
+    }
 }
