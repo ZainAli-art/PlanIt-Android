@@ -53,7 +53,9 @@ interface AppDataSource {
 
     suspend fun insertTasks(vararg tasks: Task)
 
-    suspend fun updateTaskMethod(taskMethod: TaskMethod)
+    suspend fun completeTask(task: Task)
+
+    suspend fun completeTask(id: String)
 
     suspend fun deleteCategory(category: Category)
 

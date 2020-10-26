@@ -170,8 +170,12 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun updateTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+    override suspend fun completeTask(task: Task) = withContext(ioDispatcher) {
+        tasksDao.updateCompleted(task.id, true)
+    }
+
+    override suspend fun completeTask(id: String) = withContext(ioDispatcher) {
+        tasksDao.updateCompleted(id, true)
     }
 
     override suspend fun deleteCategory(category: Category) {

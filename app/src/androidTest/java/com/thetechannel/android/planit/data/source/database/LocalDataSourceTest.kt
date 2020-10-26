@@ -241,4 +241,19 @@ class LocalDataSourceTest {
         assertThat(detail.breakStart.time, `is`(task.startAt.time + method.workLapse.time))
         assertThat(detail.breakEnd.time, `is`(task.startAt.time + method.workLapse.time + method.breakLapse.time))
     }
+
+    @Test
+    fun insertTask_completeTheTaskAndFetchById_returnsCompletedTask() = runBlocking {
+        val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false)
+        dataSource.insertTask(task)
+
+        dataSource.completeTask(task)
+        val result = dataSource.getTaskById(task.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success<Task>
+
+        val loaded = result.data
+        assertThat(loaded.id, `is`(task.id))
+        assertThat(loaded.completed, `is`(true))
+    }
 }
