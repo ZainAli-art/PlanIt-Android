@@ -86,7 +86,7 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getById(id: String): DbTask?
 
-    @Query("SELECT * FROM tasks WHERE day = :day")
+    @Query("SELECT * FROM tasks WHERE day = :day ORDER BY start_at")
     suspend fun getByDay(day: Long): List<DbTask>
 
     @Query("SELECT * FROM tasks")

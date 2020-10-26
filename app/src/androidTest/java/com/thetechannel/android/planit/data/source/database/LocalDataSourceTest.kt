@@ -171,33 +171,45 @@ class LocalDataSourceTest {
     }
 
     @Test
-    fun insertTasks_fetchByDay_returnsInsertedTask() = runBlocking {
-        val day = Date(23L)
+    fun insertTasks_fetchByDay_returnsInsertedTasks() = runBlocking {
+        val today = Date(23L)
+        val yesterday = Date(22L)
+
+        val todayTask1 = Task(UUID.randomUUID().toString(), today, Time(1500L), 1, "Maths Assignment", 1, false)
+        val todayTask2 =  Task(UUID.randomUUID().toString(), today, Time(1540L), 1, "Read Emails", 1, false)
+        val yesterdayTask1 = Task(UUID.randomUUID().toString(), yesterday, Time(100L), 1, "Clean my room", 1, false)
 
         val tasks = arrayOf(
-            Task(UUID.randomUUID().toString(), day, Time(1500), 1, "Maths Assignment", 1, false),
-            Task(UUID.randomUUID().toString(), day, Time(1540), 1, "Read Emails", 1, false),
-            Task(UUID.randomUUID().toString(), day, Time(100), 1, "Clean my room", 1, false)
+            todayTask1,
+            todayTask2,
+            yesterdayTask1
         )
         dataSource.insertTasks(*tasks)
 
-        val result = dataSource.getTasksByDay(day)
+        val result = dataSource.getTasksByDay(today)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
 
         val loaded = result.data
-        assertThat(tasks.size, `is`(loaded.size))
-        for (i in tasks.indices) {
-            val insertedTask = tasks.get(i)
-            val loadedTask = tasks.get(i)
+        assertThat(loaded.size, `is`(2))
 
-            assertThat(insertedTask.id, `is`(loadedTask.id))
-            assertThat(insertedTask.day, `is`(loadedTask.day))
-            assertThat(insertedTask.startAt, `is`(loadedTask.startAt))
-            assertThat(insertedTask.methodId, `is`(loadedTask.methodId))
-            assertThat(insertedTask.title, `is`(loadedTask.title))
-            assertThat(insertedTask.catId, `is`(loadedTask.catId))
-            assertThat(insertedTask.completed, `is`(loadedTask.completed))
-        }
+        val loadedTask1 = loaded.get(0)
+        val loadedTask2 = loaded.get(1)
+
+        assertThat(todayTask1.id, `is`(loadedTask1.id))
+        assertThat(todayTask1.day, `is`(loadedTask1.day))
+        assertThat(todayTask1.startAt, `is`(loadedTask1.startAt))
+        assertThat(todayTask1.methodId, `is`(loadedTask1.methodId))
+        assertThat(todayTask1.title, `is`(loadedTask1.title))
+        assertThat(todayTask1.catId, `is`(loadedTask1.catId))
+        assertThat(todayTask1.completed, `is`(loadedTask1.completed))
+
+        assertThat(todayTask2.id, `is`(loadedTask2.id))
+        assertThat(todayTask2.day, `is`(loadedTask2.day))
+        assertThat(todayTask2.startAt, `is`(loadedTask2.startAt))
+        assertThat(todayTask2.methodId, `is`(loadedTask2.methodId))
+        assertThat(todayTask2.title, `is`(loadedTask2.title))
+        assertThat(todayTask2.catId, `is`(loadedTask2.catId))
+        assertThat(todayTask2.completed, `is`(loadedTask2.completed))
     }
 }
