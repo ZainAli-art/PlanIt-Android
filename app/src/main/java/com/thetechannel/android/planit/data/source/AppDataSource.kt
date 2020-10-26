@@ -21,7 +21,7 @@ interface AppDataSource {
 
     fun observeTaskById(id: String): LiveData<Result<Task>>
 
-    fun observeTaskByDay(day: Long): LiveData<Result<List<Task>>>
+    fun observeTaskByDay(day: Date): LiveData<Result<List<Task>>>
 
     fun observeTaskDetailsByTaskId(id: String): LiveData<Result<TaskDetail>>
 
