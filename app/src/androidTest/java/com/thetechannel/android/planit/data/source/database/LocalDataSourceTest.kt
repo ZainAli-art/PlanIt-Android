@@ -51,7 +51,7 @@ class LocalDataSourceTest {
         )
         dataSource.insertCategories(*categories)
 
-        val result = dataSource.getAllCategories()
+        val result = dataSource.getCategories()
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
         categories.sortBy { c -> c.name }
@@ -73,7 +73,7 @@ class LocalDataSourceTest {
         val category = Category(1, "Business")
         dataSource.insertCategory(category)
 
-        val result = dataSource.getCategoryById(category.id)
+        val result = dataSource.getCategory(category.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success<Category>
 
@@ -89,7 +89,7 @@ class LocalDataSourceTest {
         )
         dataSource.insertTaskMethods(*methods)
 
-        val result = dataSource.getAllTaskMethods()
+        val result = dataSource.getTaskMethods()
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
         methods.sortBy { m -> m.name }
@@ -113,7 +113,7 @@ class LocalDataSourceTest {
         val method = TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost"))
         dataSource.insertTaskMethod(method)
 
-        val result = dataSource.getTaskMethodById(method.id)
+        val result = dataSource.getTaskMethod(method.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success<TaskMethod>
 
@@ -134,7 +134,7 @@ class LocalDataSourceTest {
         )
         dataSource.insertTasks(*tasks)
 
-        val result = dataSource.getAllTasks()
+        val result = dataSource.getTasks()
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
 
@@ -159,7 +159,7 @@ class LocalDataSourceTest {
         val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false)
         dataSource.insertTask(task)
 
-        val result = dataSource.getTaskById(task.id)
+        val result = dataSource.getTask(task.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success<Task>
 
@@ -189,7 +189,7 @@ class LocalDataSourceTest {
         )
         dataSource.insertTasks(*tasks)
 
-        val result = dataSource.getTasksByDay(today)
+        val result = dataSource.getTasks(today)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
 
@@ -225,7 +225,7 @@ class LocalDataSourceTest {
         dataSource.insertTaskMethod(method)
         dataSource.insertTask(task)
 
-        val result = dataSource.getTaskDetailsByTaskId(task.id)
+        val result = dataSource.getTaskDetail(task.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success<TaskDetail>
         val detail = result.data
@@ -248,7 +248,7 @@ class LocalDataSourceTest {
         dataSource.insertTask(task)
 
         dataSource.completeTask(task)
-        val result = dataSource.getTaskById(task.id)
+        val result = dataSource.getTask(task.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success<Task>
 
@@ -263,7 +263,7 @@ class LocalDataSourceTest {
         dataSource.insertCategory(category)
 
         dataSource.deleteCategory(category)
-        val result = dataSource.getCategoryById(category.id)
+        val result = dataSource.getCategory(category.id)
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
         assertThat(result.exception.message, `is`("category id not found"))
@@ -276,7 +276,7 @@ class LocalDataSourceTest {
 
         dataSource.deleteTaskMethod(method)
 
-        val result = dataSource.getTaskMethodById(method.id)
+        val result = dataSource.getTaskMethod(method.id)
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
         assertThat(result.exception.message, `is`("method id not found"))
@@ -288,7 +288,7 @@ class LocalDataSourceTest {
         dataSource.insertTask(task)
 
         dataSource.deleteTask(task)
-        val result = dataSource.getTaskById(task.id)
+        val result = dataSource.getTask(task.id)
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
         assertThat(result.exception.message, `is`("task id not found"))

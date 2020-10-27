@@ -24,7 +24,7 @@ class LocalDataSource(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : AppDataSource {
 
-    override fun observeAllCategories(): LiveData<Result<List<Category>>> {
+    override fun observeCategories(): LiveData<Result<List<Category>>> {
         return categoriesDao.observeAll().map {
             Result.Success(
                 it.map {
@@ -34,13 +34,13 @@ class LocalDataSource(
         }
     }
 
-    override fun observeCategoryById(id: Int): LiveData<Result<Category>> {
+    override fun observeCategory(id: Int): LiveData<Result<Category>> {
         return categoriesDao.observeById(id).map {
             Result.Success(it.asDomainModel())
         }
     }
 
-    override fun observeAllTaskMethods(): LiveData<Result<List<TaskMethod>>> {
+    override fun observeTaskMethods(): LiveData<Result<List<TaskMethod>>> {
         return taskMethodsDao.observeAll().map {
             Result.Success(
                 it.map {
@@ -50,13 +50,13 @@ class LocalDataSource(
         }
     }
 
-    override fun observeTaskMethodById(id: Int): LiveData<Result<TaskMethod>> {
+    override fun observeTaskMethod(id: Int): LiveData<Result<TaskMethod>> {
         return taskMethodsDao.observeById(id).map {
             Result.Success(it.asDomainModel())
         }
     }
 
-    override fun observeAllTasks(): LiveData<Result<List<Task>>> {
+    override fun observeTask(): LiveData<Result<List<Task>>> {
         return tasksDao.observeAll().map {
             Result.Success(
                 it.map {
@@ -66,13 +66,7 @@ class LocalDataSource(
         }
     }
 
-    override fun observeTaskById(id: String): LiveData<Result<Task>> {
-        return tasksDao.observeById(id).map {
-            Result.Success(it.asDomainModel())
-        }
-    }
-
-    override fun observeTaskByDay(day: Date): LiveData<Result<List<Task>>> {
+    override fun observeTask(day: Date): LiveData<Result<List<Task>>> {
         return tasksDao.observeByDay(day.time).map {
             Result.Success(
                 it.map {
@@ -82,7 +76,13 @@ class LocalDataSource(
         }
     }
 
-    override fun observeTaskDetailsByTaskId(id: String): LiveData<Result<TaskDetail>> {
+    override fun observeTask(id: String): LiveData<Result<Task>> {
+        return tasksDao.observeById(id).map {
+            Result.Success(it.asDomainModel())
+        }
+    }
+
+    override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         return tasksDao.observeTaskDetailsByTaskId(id).map {
             Result.Success(
                 it.asDomainModel()
@@ -90,7 +90,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getAllCategories(): Result<List<Category>> = withContext(ioDispatcher) {
+    override suspend fun getCategories(): Result<List<Category>> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(
                 categoriesDao.getAll().map {
@@ -102,7 +102,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getCategoryById(id: Int): Result<Category?> = withContext(ioDispatcher) {
+    override suspend fun getCategory(id: Int): Result<Category?> = withContext(ioDispatcher) {
         return@withContext try {
             val dbCategory = categoriesDao.getById(id)
             if (dbCategory == null) Result.Error(Exception("category id not found"))
@@ -112,7 +112,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getAllTaskMethods(): Result<List<TaskMethod>> = withContext(ioDispatcher) {
+    override suspend fun getTaskMethods(): Result<List<TaskMethod>> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(taskMethodsDao.getAll().map {
                 it.asDomainModel()
@@ -122,7 +122,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskMethodById(id: Int): Result<TaskMethod?> =
+    override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> =
         withContext(ioDispatcher) {
             return@withContext try {
                 val dbTaskMethod = taskMethodsDao.getById(id)
@@ -133,7 +133,7 @@ class LocalDataSource(
             }
         }
 
-    override suspend fun getTaskById(id: String): Result<Task?> = withContext(ioDispatcher) {
+    override suspend fun getTask(id: String): Result<Task?> = withContext(ioDispatcher) {
         return@withContext try {
             val dbTask = tasksDao.getById(id)
             if (dbTask == null) Result.Error(Exception("task id not found"))
@@ -143,7 +143,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTasksByDay(day: Date): Result<List<Task>> = withContext(ioDispatcher) {
+    override suspend fun getTasks(day: Date): Result<List<Task>> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(tasksDao.getByDay(day.time).map {
                 it.asDomainModel()
@@ -153,7 +153,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getAllTasks(): Result<List<Task>> = withContext(ioDispatcher) {
+    override suspend fun getTasks(): Result<List<Task>> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(
                 tasksDao.getAll().map {
@@ -165,7 +165,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail> = withContext(ioDispatcher) {
+    override suspend fun getTaskDetail(id: String): Result<TaskDetail> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(
                 tasksDao.getTaskDetailsByTaskId(id).asDomainModel()

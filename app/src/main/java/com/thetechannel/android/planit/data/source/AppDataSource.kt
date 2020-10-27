@@ -9,37 +9,37 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import java.util.*
 
 interface AppDataSource {
-    fun observeAllCategories(): LiveData<Result<List<Category>>>
+    fun observeCategories(): LiveData<Result<List<Category>>>
 
-    fun observeCategoryById(id: Int): LiveData<Result<Category>>
+    fun observeCategory(id: Int): LiveData<Result<Category>>
 
-    fun observeAllTaskMethods(): LiveData<Result<List<TaskMethod>>>
+    fun observeTaskMethods(): LiveData<Result<List<TaskMethod>>>
 
-    fun observeTaskMethodById(id: Int): LiveData<Result<TaskMethod>>
+    fun observeTaskMethod(id: Int): LiveData<Result<TaskMethod>>
 
-    fun observeAllTasks(): LiveData<Result<List<Task>>>
+    fun observeTask(): LiveData<Result<List<Task>>>
 
-    fun observeTaskById(id: String): LiveData<Result<Task>>
+    fun observeTask(day: Date): LiveData<Result<List<Task>>>
 
-    fun observeTaskByDay(day: Date): LiveData<Result<List<Task>>>
+    fun observeTask(id: String): LiveData<Result<Task>>
 
-    fun observeTaskDetailsByTaskId(id: String): LiveData<Result<TaskDetail>>
+    fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>>
 
-    suspend fun getAllCategories(): Result<List<Category>>
+    suspend fun getCategories(): Result<List<Category>>
 
-    suspend fun getCategoryById(id: Int): Result<Category?>
+    suspend fun getCategory(id: Int): Result<Category?>
 
-    suspend fun getAllTaskMethods(): Result<List<TaskMethod>>
+    suspend fun getTaskMethods(): Result<List<TaskMethod>>
 
-    suspend fun getTaskMethodById(id: Int): Result<TaskMethod?>
+    suspend fun getTaskMethod(id: Int): Result<TaskMethod?>
 
-    suspend fun getTaskById(id: String): Result<Task?>
+    suspend fun getTasks(): Result<List<Task>>
 
-    suspend fun getTasksByDay(day: Date): Result<List<Task>>
+    suspend fun getTasks(day: Date): Result<List<Task>>
 
-    suspend fun getAllTasks(): Result<List<Task>>
+    suspend fun getTask(id: String): Result<Task?>
 
-    suspend fun getTaskDetailsByTaskId(id: String): Result<TaskDetail>
+    suspend fun getTaskDetail(id: String): Result<TaskDetail>
 
     suspend fun insertCategory(category: Category)
 
