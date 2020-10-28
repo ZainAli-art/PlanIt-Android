@@ -53,4 +53,11 @@ class HomeViewModelTest {
 
         assertThat(tasks, `is`(2))
     }
+
+    @Test
+    fun getTodayProgress_returnsFifty() {
+        val progress: Int = viewModel.todayProgress.getOrAwaitValue()
+
+        assertThat(progress, `is`(50))
+    }
 }
