@@ -1,4 +1,4 @@
-package com.thetechannel.android.planit
+package com.thetechannel.android.planit.home
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.thetechannel.android.planit.R
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
