@@ -1,10 +1,11 @@
-package com.thetechannel.android.planit.data.source
+package com.thetechannel.android.planit
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.thetechannel.android.planit.data.Result
+import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -213,6 +214,11 @@ class FakeAndroidTestRepository : AppRepository {
     override suspend fun deleteTask(task: Task) {
         tasksServiceData.remove(task.id)
         refreshTasks()
+    }
+
+    fun addTasks(vararg tasks: Task) {
+        for (t in tasks) tasksServiceData[t.id] = t
+        runBlocking { refreshTasks() }
     }
 
     private fun getTaskDetail(taskId: String): TaskDetail? {
