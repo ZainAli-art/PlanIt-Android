@@ -1,5 +1,6 @@
 package com.thetechannel.android.planit.util
 
+import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.source.database.*
 import com.thetechannel.android.planit.data.source.domain.*
 import java.net.URI
@@ -41,3 +42,5 @@ fun DbTaskDetail.asDomainModel() = TaskDetail(
     breakStart = Time(breakStart),
     breakEnd = Time(breakEnd)
 )
+
+fun TodayPieDataView.asPieEntry() = PieEntry(count.toFloat(), name)

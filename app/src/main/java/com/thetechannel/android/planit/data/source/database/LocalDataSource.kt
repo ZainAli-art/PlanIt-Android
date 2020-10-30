@@ -2,6 +2,7 @@ package com.thetechannel.android.planit.data.source.database
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppDataSource
 import com.thetechannel.android.planit.data.source.domain.Category
@@ -10,6 +11,7 @@ import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.util.asDatabaseEntity
 import com.thetechannel.android.planit.util.asDomainModel
+import com.thetechannel.android.planit.util.asPieEntry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -86,6 +88,16 @@ class LocalDataSource(
         return tasksDao.observeTaskDetailsByTaskId(id).map {
             Result.Success(
                 it.asDomainModel()
+            )
+        }
+    }
+
+    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
+        return tasksDao.observeTodayPieDataViews().map {
+            Result.Success(
+                it.map {
+                    it.asPieEntry()
+                }
             )
         }
     }
@@ -169,6 +181,18 @@ class LocalDataSource(
         return@withContext try {
             Result.Success(
                 tasksDao.getTaskDetailsByTaskId(id).asDomainModel()
+            )
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(
+                tasksDao.getTodayPieDataViews().map {
+                    it.asPieEntry()
+                }
             )
         } catch (e: Exception) {
             Result.Error(e)

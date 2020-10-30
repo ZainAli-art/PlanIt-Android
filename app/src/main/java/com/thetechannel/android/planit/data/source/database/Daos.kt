@@ -83,6 +83,12 @@ interface TasksDao {
     )
     fun observeTaskDetailsByTaskId(id: String): LiveData<DbTaskDetail>
 
+    @Query("SELECT * FROM TodayPieDataView")
+    fun observeTodayPieDataViews(): LiveData<List<TodayPieDataView>>
+
+    @Query("SELECT * FROM TasksOverView")
+    fun observeTasksOverView(): LiveData<TasksOverView>
+
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getById(id: String): DbTask?
 
@@ -113,8 +119,17 @@ interface TasksDao {
     )
     suspend fun getTaskDetailsByTaskId(id: String): DbTaskDetail
 
+    @Query("SELECT * FROM TodayPieDataView")
+    suspend fun getTodayPieDataViews(): List<TodayPieDataView>
+
+    @Query("SELECT * FROM TasksOverView")
+    suspend fun getTasksOverView(): TasksOverView
+
     @Insert
     suspend fun insert(task: DbTask)
+
+    @Insert
+    suspend fun insertAll(vararg tasks: DbTask)
 
     @Query("UPDATE tasks SET completed = :completed WHERE id = :id")
     suspend fun updateCompleted(id: String, completed: Boolean)
