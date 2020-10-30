@@ -25,8 +25,9 @@ data class TasksOverView(
     SELECT name, COUNT(*) AS 'count'
     FROM tasks
     JOIN categories ON categories.id = tasks.cat_id
-    WHERE tasks.day = CURRENT_DATE
+    WHERE DATE(tasks.day / 1000, 'unixepoch') = CURRENT_DATE
     GROUP BY cat_id
+    ORDER BY name
 """
 )
 data class TodayPieDataView(

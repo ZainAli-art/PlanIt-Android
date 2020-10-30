@@ -98,7 +98,7 @@ class TasksDaoTest {
     }
 
     @Test
-    fun insertTaskAndTaskType_returnTaskDetails() = runBlockingTest {
+    fun insertTaskAndTaskMethod_fetchTaskDetails_returnsTaskDetailsFromInsertedData() = runBlockingTest {
         val task =
             DbTask("TASK1", System.currentTimeMillis(), 0, 1, "Maths Assignment", 1, false)
         database.tasksDao.insert(task)
@@ -131,7 +131,7 @@ class TasksDaoTest {
     }
 
     @Test
-    fun insertedIncompleted_updateTaskCompletedAndFetchById_returnsCompletedTask() =
+    fun insertedIncompleteTask_updateTaskCompletedAndFetchById_returnsCompletedTask() =
         runBlockingTest {
             val task = DbTask(
                 "TASK1",
@@ -160,6 +160,21 @@ class TasksDaoTest {
         assertThat(views.completedTasks, `is`(2))
         assertThat(views.pendingTasks, `is`(4))
         assertThat(views.tasksCompletedToday, `is`(1))
+    }
+
+    @Test
+    fun getTodayPieDataViews_returnCategoriesAndNumberOfTodayTasksLyingThoseCategories() = runBlockingTest {
+        val tasks = getVersatileTasks()
+        database.tasksDao.insertAll(*tasks)
+
+        val views = database.tasksDao.getTodayPieDataViews()
+        val viewData = mutableMapOf<String, TodayPieDataView>()
+        for (v in views) viewData[v.name] = v
+
+        assertThat(views.size, `is`(3))
+        assertThat(viewData["Study"]?.count, `is`(2))
+        assertThat(viewData["Business"]?.count, `is`(2))
+        assertThat(viewData["Sport"]?.count, `is`(1))
     }
 
     private fun getVersatileTasks() = arrayOf(
