@@ -37,7 +37,7 @@ class FakeAndroidTestRepository : AppRepository {
                 is Result.Loading -> Result.Loading
                 is Result.Error -> Result.Error(categories.exception)
                 is Result.Success -> {
-                    val category = categories.data.firstOrNull() { it.id == id }
+                    val category = categories.data.firstOrNull { it.id == id }
                         ?: return@map Result.Error(Exception("Not found"))
                     Result.Success(category)
                 }
@@ -57,7 +57,7 @@ class FakeAndroidTestRepository : AppRepository {
                 is Result.Loading -> Result.Loading
                 is Result.Error -> Result.Error(methods.exception)
                 is Result.Success -> {
-                    val method = methods.data.firstOrNull() { it.id == id }
+                    val method = methods.data.firstOrNull { it.id == id }
                         ?: return@map Result.Error(Exception("Not found"))
                     Result.Success(method)
                 }
@@ -91,7 +91,7 @@ class FakeAndroidTestRepository : AppRepository {
                 is Result.Loading -> Result.Loading
                 is Result.Error -> Result.Error(tasks.exception)
                 is Result.Success -> {
-                    val task = tasks.data.firstOrNull() { it.id == id }
+                    val task = tasks.data.firstOrNull { it.id == id }
                         ?: return@map Result.Error(Exception("Not found"))
                     Result.Success(task)
                 }
@@ -227,7 +227,7 @@ class FakeAndroidTestRepository : AppRepository {
         val method = taskMethodsServiceData.get(task?.methodId)
 
         if (task == null || category == null || method == null) {
-            return null;
+            return null
         }
 
         return getTaskDetail(category, method, task)

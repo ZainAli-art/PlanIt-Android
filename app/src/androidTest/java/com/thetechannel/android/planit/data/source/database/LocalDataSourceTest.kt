@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
@@ -292,5 +293,55 @@ class LocalDataSourceTest {
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
         assertThat(result.exception.message, `is`("task id not found"))
+    }
+
+    @Test
+    fun insertTasks_getTasksOverview_returnsOverview() = runBlocking {
+        val tasks = arrayOf(
+            Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
+            Task("task_2", Date(10000L), Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
+            Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
+        )
+        dataSource.insertTasks(*tasks)
+
+        val result = dataSource.getTasksOverView()
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val overview = result.data
+        assertThat(overview.completedTasks, `is`(2))
+        assertThat(overview.pendingTasks, `is`(1))
+        assertThat(overview.tasksCompletedToday, `is`(1))
+    }
+
+    @Test
+    fun insertTasks_getTodayPieEntries_returnsTodayPieEntries() = runBlocking {
+        val categories = arrayOf(
+            Category(1, "Study"),
+            Category(2, "Sport"),
+            Category(3, "Business")
+        )
+        dataSource.insertCategories(*categories)
+        val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("http://localhost"))
+        dataSource.insertTaskMethod(method)
+        val tasks = arrayOf(
+            Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
+            Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
+            Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
+        )
+        dataSource.insertTasks(*tasks)
+
+        val result = dataSource.getTodayPieEntries()
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val entries = result.data
+        assertThat(entries.size, `is`(3))
+        val entryData = mutableMapOf<String, PieEntry>()
+        for (e in entries) entryData[e.label] = e
+
+        assertThat(entryData["Study"]?.value, `is`(1f))
+        assertThat(entryData["Business"]?.value, `is`(1f))
+        assertThat(entryData["Sport"]?.value, `is`(1f))
     }
 }

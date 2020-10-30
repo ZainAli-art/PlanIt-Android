@@ -20,7 +20,7 @@ class DatabaseUtilTest {
 
     @Test
     fun convertDbTaskMethodToDomain_convertBack_returnsTrueIfBothAreTransferable() {
-        val dbMethod = DbTaskMethod(1, "pomodoro", 2500L, 1230L, "https://www.google.com");
+        val dbMethod = DbTaskMethod(1, "pomodoro", 2500L, 1230L, "https://www.google.com")
 
         val domainMethod = dbMethod.asDomainModel()
 

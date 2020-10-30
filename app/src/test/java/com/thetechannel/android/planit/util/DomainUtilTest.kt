@@ -13,7 +13,7 @@ import java.util.*
 class DomainUtilTest {
     @Test
     fun convertDomainCategoryToNetwork_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainCat = Category(1, "Study");
+        val domainCat = Category(1, "Study")
 
         val networkCat = domainCat.asDataTransferObject()
 
@@ -23,7 +23,7 @@ class DomainUtilTest {
 
     @Test
     fun convertDomainCategoryToDb_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainCat = Category(1, "Study");
+        val domainCat = Category(1, "Study")
 
         val networkCat = domainCat.asDatabaseEntity()
 
