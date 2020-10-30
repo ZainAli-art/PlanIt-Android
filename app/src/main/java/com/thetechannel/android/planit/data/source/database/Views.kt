@@ -20,6 +20,18 @@ data class TasksOverView(
     val tasksCompletedToday: Int
 )
 
+@DatabaseView("""
+    SELECT 
+        (COUNT(*) * 100 / (
+            SELECT COUNT(*) 
+            FROM tasks 
+            WHERE DATE(tasks.day / 1000, 'unixepoch') = CURRENT_DATE
+        )) as 'percentage'
+    FROM tasks
+    WHERE DATE(tasks.day / 1000, 'unixepoch') = CURRENT_DATE AND completed = 1
+""")
+data class TodayProgress(val percentage: Int)
+
 @DatabaseView(
     """
     SELECT name, COUNT(*) AS 'count'

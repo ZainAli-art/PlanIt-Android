@@ -98,6 +98,12 @@ class LocalDataSource(
         }
     }
 
+    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
+        return tasksDao.observeTodayProgress().map {
+            Result.Success(it)
+        }
+    }
+
     override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
         return tasksDao.observeTodayPieDataViews().map {
             Result.Success(
@@ -196,6 +202,14 @@ class LocalDataSource(
     override suspend fun getTasksOverView(): Result<TasksOverView> = withContext(ioDispatcher) {
         return@withContext try {
             Result.Success(tasksDao.getTasksOverView())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getTodayProgress(): Result<TodayProgress> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(tasksDao.getTodayProgress())
         } catch (e: Exception) {
             Result.Error(e)
         }

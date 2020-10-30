@@ -6,6 +6,8 @@ import androidx.lifecycle.map
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
+import com.thetechannel.android.planit.data.source.database.TasksOverView
+import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.util.isSameDay
 import java.util.*
@@ -16,37 +18,17 @@ class HomeViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
-    private val _allTasks = repository.observeTasks()
-    val pendingTasks: LiveData<List<Task>> = _allTasks.map {
+    val tasksOverView: LiveData<TasksOverView> = repository.observeTasksOverView().map {
         when (it) {
-            is Result.Success -> it.data.filter { !it.completed }
-            else -> emptyList()
+            is Result.Success -> it.data
+            else -> TasksOverView(0, 0, 0)
         }
     }
 
-    val todayTasks: LiveData<List<Task>> = _allTasks.map {
+    val todayProgress: LiveData<TodayProgress> = repository.observeTodayProgress().map {
         when (it) {
-            is Result.Success -> {
-                it.data.filter {
-                    it.day.isSameDay(Calendar.getInstance().time)
-                }
-            }
-            else -> emptyList()
+            is Result.Success -> it.data
+            else -> TodayProgress(0)
         }
-    }
-
-    val tasksCompletedToday: LiveData<List<Task>> = todayTasks.map {
-        it.filter { it.completed }
-    }
-
-    val completedTasks: LiveData<List<Task>> = _allTasks.map {
-        when (it) {
-            is Result.Success -> it.data.filter { it.completed }
-            else -> emptyList()
-        }
-    }
-
-    val todayProgress: LiveData<Int> = todayTasks.map {
-        if (it.isEmpty()) 0 else it.filter { it.completed }.size * 100 / it.size
     }
 }

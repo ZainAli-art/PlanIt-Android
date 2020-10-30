@@ -4,16 +4,22 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
+import com.thetechannel.android.planit.data.source.database.TasksOverView
+import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.util.isSameDay
+import com.thetechannel.android.planit.util.isToday
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 import java.sql.Time
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class FakeAndroidTestRepository : AppRepository {
@@ -99,8 +105,38 @@ class FakeAndroidTestRepository : AppRepository {
         }
     }
 
-    override fun observeTaskDetails(id: String): LiveData<Result<TaskDetail>> {
+    override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         TODO("Not implemented yet")
+    }
+
+    override fun observeTasksOverView(): LiveData<Result<TasksOverView>> = observableTasks.map {
+        when (it) {
+            is Result.Loading -> Result.Loading
+            is Result.Error -> Result.Error(it.exception)
+            is Result.Success -> {
+                val tasks = it.data
+                val completed = tasks.filter { it.completed }.size
+                val pending = tasks.filter { !it.completed }.size
+                val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
+                Result.Success(TasksOverView(completed, pending, completedToday))
+            }
+        }
+    }
+
+    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> = observableTasks.map {
+        when (it) {
+            is Result.Loading -> Result.Loading
+            is Result.Error -> Result.Error(it.exception)
+            is Result.Success -> Result.Success(getTodayProgress(it.data))
+        }
+    }
+
+    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> = observableTasks.map {
+        when (it) {
+            is Result.Loading -> Result.Loading
+            is Result.Error -> Result.Error(it.exception)
+            is Result.Success -> Result.Success(getTodayPieEntries(it.data))
+        }
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
@@ -144,10 +180,71 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Error(Exception("Could not find task"))
     }
 
-    override suspend fun getTaskDetails(id: String): Result<TaskDetail> {
-        val detail = getTaskDetail(id)
-            ?: return Result.Error(Exception("Could not find task detail"))
+    override suspend fun getTaskDetail(id: String): Result<TaskDetail> {
+        val task = tasksServiceData[id]
+        val category = categoriesServiceData.get(task?.catId)
+        val method = taskMethodsServiceData.get(task?.methodId)
+
+        if (task == null || category == null || method == null) {
+            return return Result.Error(Exception("Could not find task detail"))
+        }
+
+        val detail = getTaskDetail(category, method, task)
         return Result.Success(detail)
+    }
+
+    private fun getTaskDetail(category: Category, method: TaskMethod, task: Task) = TaskDetail(
+        id = task.id,
+        categoryName = category.name,
+        methodName = method.name,
+        methodIconUrl = method.iconUrl,
+        timeLapse = Time(method.workLapse.time + method.breakLapse.time),
+        title = task.title,
+        workStart = task.startAt,
+        workEnd = Time(task.startAt.time + method.workLapse.time),
+        breakStart = Time(task.startAt.time + method.workLapse.time),
+        breakEnd = Time(task.startAt.time + method.workLapse.time + method.breakLapse.time)
+    )
+
+    override suspend fun getTasksOverView(): Result<TasksOverView> {
+        val tasks = (getTasks() as Result.Success).data
+
+        val completed = tasks.filter { it.completed }.size
+        val pending = tasks.filter { !it.completed }.size
+        val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
+
+        return Result.Success(TasksOverView(completed, pending, completedToday))
+    }
+
+    override suspend fun getTodayProgress(): Result<TodayProgress> {
+        return Result.Success(getTodayProgress(ArrayList(tasksServiceData.values)))
+    }
+
+    private fun getTodayProgress(tasks: List<Task>): TodayProgress {
+        val todayTasks = tasks.filter { it.day.isToday() }
+        val totalTasks = todayTasks.size
+        val completed = todayTasks.filter { it.completed }.size
+
+        return TodayProgress(completed * 100 / totalTasks)
+    }
+
+    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> {
+        return Result.Success(getTodayPieEntries(ArrayList(tasksServiceData.values)))
+    }
+
+    private fun getTodayPieEntries(tasks: List<Task>): List<PieEntry> {
+        val map = mutableMapOf<Int, Int>()
+
+        for (t in tasks.filter { it.day.isToday() }) {
+            map[t.catId] = map.getOrDefault(t.catId, 0) + 1
+        }
+
+        val entries = mutableListOf<PieEntry>()
+        for (node in map) {
+            entries.add(PieEntry(node.value.toFloat(), categoriesServiceData[node.key]?.name))
+        }
+
+        return entries
     }
 
     override suspend fun insertCategory(category: Category) {
@@ -220,30 +317,4 @@ class FakeAndroidTestRepository : AppRepository {
         for (t in tasks) tasksServiceData[t.id] = t
         runBlocking { refreshTasks() }
     }
-
-    private fun getTaskDetail(taskId: String): TaskDetail? {
-        val task = tasksServiceData[taskId]
-        val category = categoriesServiceData.get(task?.catId)
-        val method = taskMethodsServiceData.get(task?.methodId)
-
-        if (task == null || category == null || method == null) {
-            return null
-        }
-
-        return getTaskDetail(category, method, task)
-    }
 }
-
-@VisibleForTesting
-fun getTaskDetail(category: Category, method: TaskMethod, task: Task) = TaskDetail(
-    id = task.id,
-    categoryName = category.name,
-    methodName = method.name,
-    methodIconUrl = method.iconUrl,
-    timeLapse = Time(method.workLapse.time + method.breakLapse.time),
-    title = task.title,
-    workStart = task.startAt,
-    workEnd = Time(task.startAt.time + method.workLapse.time),
-    breakStart = Time(task.startAt.time + method.workLapse.time),
-    breakEnd = Time(task.startAt.time + method.workLapse.time + method.breakLapse.time)
-)

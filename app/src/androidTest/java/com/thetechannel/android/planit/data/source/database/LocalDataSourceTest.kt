@@ -315,6 +315,23 @@ class LocalDataSourceTest {
     }
 
     @Test
+    fun insertTasks_getTodayProgress_returnsTodayCompletedTasksPercentage() = runBlocking {
+        val tasks = arrayOf(
+            Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
+            Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
+            Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
+        )
+        dataSource.insertTasks(*tasks)
+
+        val result = dataSource.getTodayProgress()
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val progress = result.data
+        assertThat(progress.percentage, `is`(66))
+    }
+
+    @Test
     fun insertTasks_getTodayPieEntries_returnsTodayPieEntries() = runBlocking {
         val categories = arrayOf(
             Category(1, "Study"),

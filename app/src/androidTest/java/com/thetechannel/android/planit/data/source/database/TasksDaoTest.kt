@@ -163,6 +163,15 @@ class TasksDaoTest {
     }
 
     @Test
+    fun insertTasks_get_TodayProgress_returnsTodayCompletedTasksPercentage() = runBlockingTest {
+        val tasks = getVersatileTasks()
+        database.tasksDao.insertAll(*tasks)
+
+        val progress = database.tasksDao.getTodayProgress()
+        assertThat(progress.percentage, `is`(20))
+    }
+
+    @Test
     fun getTodayPieDataViews_returnCategoriesAndNumberOfTodayTasksLyingThoseCategories() = runBlockingTest {
         val tasks = getVersatileTasks()
         database.tasksDao.insertAll(*tasks)
@@ -177,6 +186,16 @@ class TasksDaoTest {
         assertThat(viewData["Sport"]?.count, `is`(1))
     }
 
+    /**
+     * Array of versatile tasks, provides a lot of dimensions for test cases
+     *
+     * - 6 tasks in total
+     * - 5 are inserted today
+     * - 2 are completed
+     * - 4 are incomplete
+     * - 1 is completed today
+     * - today progress is (1 / 5) -> 20%
+     */
     private fun getVersatileTasks() = arrayOf(
         DbTask(
             "task_1",

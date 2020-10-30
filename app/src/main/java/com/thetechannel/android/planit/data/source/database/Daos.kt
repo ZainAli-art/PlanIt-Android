@@ -86,6 +86,9 @@ interface TasksDao {
     @Query("SELECT * FROM TasksOverView")
     fun observeTasksOverView(): LiveData<TasksOverView>
 
+    @Query("SELECT * FROM TodayProgress")
+    fun observeTodayProgress(): LiveData<TodayProgress>
+
     @Query("SELECT * FROM TodayPieDataView")
     fun observeTodayPieDataViews(): LiveData<List<TodayPieDataView>>
 
@@ -121,6 +124,9 @@ interface TasksDao {
 
     @Query("SELECT * FROM TasksOverView")
     suspend fun getTasksOverView(): TasksOverView
+
+    @Query("SELECT * FROM TodayProgress")
+    suspend fun getTodayProgress(): TodayProgress
 
     @Query("SELECT * FROM TodayPieDataView")
     suspend fun getTodayPieDataViews(): List<TodayPieDataView>

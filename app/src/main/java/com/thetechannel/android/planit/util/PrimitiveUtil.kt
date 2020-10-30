@@ -2,6 +2,8 @@ package com.thetechannel.android.planit.util
 
 import java.util.*
 
+fun Date.isToday() = isSameDay(Calendar.getInstance().time)
+
 fun Date.isSameDay(that: Date): Boolean {
     val c1 = Calendar.getInstance()
     val c2 = Calendar.getInstance()

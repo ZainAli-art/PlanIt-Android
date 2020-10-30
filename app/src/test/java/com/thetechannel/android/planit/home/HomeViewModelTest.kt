@@ -2,6 +2,7 @@ package com.thetechannel.android.planit.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.thetechannel.android.planit.FakeAndroidTestRepository
+import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.getOrAwaitValue
 import org.hamcrest.CoreMatchers.`is`
@@ -34,30 +35,18 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun getPendingTasks_returnsOne() {
-        val tasks: Int = viewModel.pendingTasks.getOrAwaitValue().size
+    fun getTasksOverview_returnsOnePendingOneCompletedTodayAndTwoCompletedTasks() {
+        val overview: TasksOverView = viewModel.tasksOverView.getOrAwaitValue()
 
-        assertThat(tasks, `is`(1))
-    }
-
-    @Test
-    fun getTasksCompletedToday_returnsOne() {
-        val tasks: Int = viewModel.tasksCompletedToday.getOrAwaitValue().size
-
-        assertThat(tasks, `is`(1))
-    }
-
-    @Test
-    fun getCompletedTasks_returnsTwo() {
-        val tasks: Int = viewModel.completedTasks.getOrAwaitValue().size
-
-        assertThat(tasks, `is`(2))
+        assertThat(overview.pendingTasks, `is`(1))
+        assertThat(overview.completedTasks, `is`(2))
+        assertThat(overview.tasksCompletedToday, `is`(1))
     }
 
     @Test
     fun getTodayProgress_returnsFifty() {
-        val progress: Int = viewModel.todayProgress.getOrAwaitValue()
+        val progress = viewModel.todayProgress.getOrAwaitValue()
 
-        assertThat(progress, `is`(50))
+        assertThat(progress.percentage, `is`(50))
     }
 }
