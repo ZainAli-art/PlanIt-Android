@@ -162,7 +162,8 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) refreshTasks()
+        return Result.Success(ArrayList(tasksServiceData.values))
     }
 
     override suspend fun getTasks(day: Date): Result<List<Task>> {

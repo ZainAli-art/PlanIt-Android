@@ -149,7 +149,7 @@ class DefaultAppRepository(
         if (remoteCategories is Result.Success) {
             localDataSource.deleteAllCategories()
             for (c in remoteCategories.data) {
-                localDataSource.insertCategory(c)
+                localDataSource.saveCategory(c)
             }
         } else if (remoteCategories is Result.Error) {
             throw remoteCategories.exception

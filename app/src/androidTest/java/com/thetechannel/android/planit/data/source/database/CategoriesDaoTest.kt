@@ -64,7 +64,7 @@ class CategoriesDaoTest {
             DbCategory(3, "Sport"),
             DbCategory(4, "Hobby")
         )
-        categoriesDao.insertAll(*categories)
+        categories.forEach { categoriesDao.insert(it) }
 
         val loaded = categoriesDao.getAll()
         categories.sortBy { c -> c.name }
@@ -97,7 +97,7 @@ class CategoriesDaoTest {
             DbCategory(2, "Business"),
             DbCategory(3, "Sport")
         )
-        categoriesDao.insertAll(*categories)
+        categories.forEach { categoriesDao.insert(it) }
 
         categoriesDao.deleteAll()
 

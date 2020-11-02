@@ -105,27 +105,15 @@ class FakeDataSource(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCategory(category: Category) {
+    override suspend fun saveCategory(category: Category) {
         categories?.add(category)
     }
 
-    override suspend fun insertCategories(vararg categories: Category) {
+    override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun insertTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun insertTasks(vararg tasks: Task) {
+    override suspend fun saveTask(task: Task) {
         TODO("Not yet implemented")
     }
 

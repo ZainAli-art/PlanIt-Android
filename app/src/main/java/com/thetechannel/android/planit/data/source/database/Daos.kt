@@ -20,9 +20,6 @@ interface CategoriesDao {
     @Insert
     suspend fun insert(category: DbCategory)
 
-    @Insert
-    suspend fun insertAll(vararg categories: DbCategory)
-
     @Delete
     suspend fun delete(category: DbCategory)
 
@@ -46,9 +43,6 @@ interface TaskMethodsDao {
 
     @Insert
     suspend fun insert(taskMethod: DbTaskMethod)
-
-    @Insert
-    suspend fun insertAll(vararg taskMethod: DbTaskMethod)
 
     @Update
     suspend fun update(taskMethod: DbTaskMethod)
@@ -142,9 +136,6 @@ interface TasksDao {
 
     @Insert
     suspend fun insert(task: DbTask)
-
-    @Insert
-    suspend fun insertAll(vararg tasks: DbTask)
 
     @Query("UPDATE tasks SET completed = :completed WHERE id = :id")
     suspend fun updateCompleted(id: String, completed: Boolean)

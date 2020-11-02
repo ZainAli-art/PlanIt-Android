@@ -51,7 +51,9 @@ class TasksDaoTest {
         studyCategory = DbCategory(STUDY, "Study")
         businessCategory = DbCategory(BUSINESS, "Business")
         sportCategory = DbCategory(SPORT, "Sport")
-        database.categoriesDao.insertAll(studyCategory, businessCategory, sportCategory)
+        arrayOf(studyCategory, businessCategory, sportCategory).forEach {
+            database.categoriesDao.insert(it)
+        }
     }
 
     @After
@@ -157,7 +159,7 @@ class TasksDaoTest {
     @Test
     fun insertTasks_getTasksOverview_returnsOverviewOfInsertedTasks() = runBlockingTest {
         val tasks = getVersatileTasks()
-        tasksDao.insertAll(*tasks)
+        tasks.forEach { tasksDao.insert(it) }
 
         val views = tasksDao.getTasksOverView()
         assertThat(views.completedTasks, `is`(2))
@@ -168,7 +170,7 @@ class TasksDaoTest {
     @Test
     fun insertTasks_get_TodayProgress_returnsTodayCompletedTasksPercentage() = runBlockingTest {
         val tasks = getVersatileTasks()
-        tasksDao.insertAll(*tasks)
+        tasks.forEach { tasksDao.insert(it) }
 
         val progress = tasksDao.getTodayProgress()
         assertThat(progress.percentage, `is`(20))
@@ -177,7 +179,7 @@ class TasksDaoTest {
     @Test
     fun getTodayPieDataViews_returnCategoriesAndNumberOfTodayTasksLyingThoseCategories() = runBlockingTest {
         val tasks = getVersatileTasks()
-        tasksDao.insertAll(*tasks)
+        tasks.forEach { tasksDao.insert(it) }
 
         val views = tasksDao.getTodayPieDataViews()
         val viewData = mutableMapOf<String, TodayPieDataView>()
@@ -192,7 +194,7 @@ class TasksDaoTest {
     @Test
     fun insertTasks_deleteAll_deletedAllInsertedTasks() = runBlockingTest {
         val tasks = getVersatileTasks()
-        tasksDao.insertAll(*tasks)
+        tasks.forEach { tasksDao.insert(it) }
 
         tasksDao.deleteAll()
         

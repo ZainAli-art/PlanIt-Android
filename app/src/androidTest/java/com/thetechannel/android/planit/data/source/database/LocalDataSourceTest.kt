@@ -50,7 +50,7 @@ class LocalDataSourceTest {
             Category(2, "Sport"),
             Category(3, "Business")
         )
-        dataSource.insertCategories(*categories)
+        categories.forEach { dataSource.saveCategory(it) }
 
         val result = dataSource.getCategories()
         assertThat(result.succeeded, `is`(true))
@@ -72,7 +72,7 @@ class LocalDataSourceTest {
     @Test
     fun insertCategory_fetchById_returnsInsertedCategory() = runBlocking {
         val category = Category(1, "Business")
-        dataSource.insertCategory(category)
+        dataSource.saveCategory(category)
 
         val result = dataSource.getCategory(category.id)
         assertThat(result.succeeded, `is`(true))
@@ -88,7 +88,7 @@ class LocalDataSourceTest {
             TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost")),
             TaskMethod(2, "eat the devil", Time(60000L), Time(200L), URI("https://localhost"))
         )
-        dataSource.insertTaskMethods(*methods)
+        methods.forEach{ dataSource.saveTaskMethod(it) }
 
         val result = dataSource.getTaskMethods()
         assertThat(result.succeeded, `is`(true))
@@ -112,7 +112,7 @@ class LocalDataSourceTest {
     @Test
     fun insertTaskMethod_fetchById_returnsTheInsertedMethod() = runBlocking {
         val method = TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost"))
-        dataSource.insertTaskMethod(method)
+        dataSource.saveTaskMethod(method)
 
         val result = dataSource.getTaskMethod(method.id)
         assertThat(result.succeeded, `is`(true))
@@ -133,7 +133,7 @@ class LocalDataSourceTest {
             Task(UUID.randomUUID().toString(), Date(24L), Time(1540), 1, "Read Emails", 1, false),
             Task(UUID.randomUUID().toString(), Date(25L), Time(100), 1, "Clean my room", 1, false)
         )
-        dataSource.insertTasks(*tasks)
+        tasks.forEach { dataSource.saveTask(it) }
 
         val result = dataSource.getTasks()
         assertThat(result.succeeded, `is`(true))
@@ -158,7 +158,7 @@ class LocalDataSourceTest {
     @Test
     fun insertTask_fetchById_returnsInsertedTask() = runBlocking {
         val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false)
-        dataSource.insertTask(task)
+        dataSource.saveTask(task)
 
         val result = dataSource.getTask(task.id)
         assertThat(result.succeeded, `is`(true))
@@ -188,7 +188,7 @@ class LocalDataSourceTest {
             todayTask2,
             yesterdayTask1
         )
-        dataSource.insertTasks(*tasks)
+        tasks.forEach { dataSource.saveTask(it) }
 
         val result = dataSource.getTasks(today)
         assertThat(result.succeeded, `is`(true))
@@ -222,9 +222,9 @@ class LocalDataSourceTest {
         val category = Category(1, "Study")
         val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("https://localhost"))
         val task = Task("task_id", Calendar.getInstance().time, Time(150L), method.id, "Maths Assignment", category.id, false)
-        dataSource.insertCategory(category)
-        dataSource.insertTaskMethod(method)
-        dataSource.insertTask(task)
+        dataSource.saveCategory(category)
+        dataSource.saveTaskMethod(method)
+        dataSource.saveTask(task)
 
         val result = dataSource.getTaskDetail(task.id)
         assertThat(result.succeeded, `is`(true))
@@ -246,7 +246,7 @@ class LocalDataSourceTest {
     @Test
     fun insertTask_completeTheTaskAndFetchById_returnsCompletedTask() = runBlocking {
         val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500), 1, "Maths Assignment", 1, false)
-        dataSource.insertTask(task)
+        dataSource.saveTask(task)
 
         dataSource.completeTask(task)
         val result = dataSource.getTask(task.id)
@@ -261,7 +261,7 @@ class LocalDataSourceTest {
     @Test
     fun insertCategory_deleteItAndFetchById_returnsNull() = runBlocking {
         val category = Category(1, "Sport")
-        dataSource.insertCategory(category)
+        dataSource.saveCategory(category)
 
         dataSource.deleteCategory(category)
         val result = dataSource.getCategory(category.id)
@@ -273,7 +273,7 @@ class LocalDataSourceTest {
     @Test
     fun insertTaskMethod_deleteItAndFetchById_returnsNull() = runBlocking {
         val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("http://localhost"))
-        dataSource.insertTaskMethod(method)
+        dataSource.saveTaskMethod(method)
 
         dataSource.deleteTaskMethod(method)
 
@@ -286,7 +286,7 @@ class LocalDataSourceTest {
     @Test
     fun insertTask_deleteItAndFetchById_returnsNull() = runBlocking {
         val task = Task(UUID.randomUUID().toString(), Date(23L), Time(1500L), 1, "Maths Assignment", 1, false)
-        dataSource.insertTask(task)
+        dataSource.saveTask(task)
 
         dataSource.deleteTask(task)
         val result = dataSource.getTask(task.id)
@@ -302,7 +302,7 @@ class LocalDataSourceTest {
             Task("task_2", Date(10000L), Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
             Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
         )
-        dataSource.insertTasks(*tasks)
+        tasks.forEach { dataSource.saveTask(it) }
 
         val result = dataSource.getTasksOverView()
         assertThat(result.succeeded, `is`(true))
@@ -321,7 +321,7 @@ class LocalDataSourceTest {
             Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
             Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
         )
-        dataSource.insertTasks(*tasks)
+        tasks.forEach { dataSource.saveTask(it) }
 
         val result = dataSource.getTodayProgress()
         assertThat(result.succeeded, `is`(true))
@@ -338,15 +338,15 @@ class LocalDataSourceTest {
             Category(2, "Sport"),
             Category(3, "Business")
         )
-        dataSource.insertCategories(*categories)
+        categories.forEach { dataSource.saveCategory(it) }
         val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("http://localhost"))
-        dataSource.insertTaskMethod(method)
+        dataSource.saveTaskMethod(method)
         val tasks = arrayOf(
             Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
             Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
             Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
         )
-        dataSource.insertTasks(*tasks)
+        tasks.forEach { dataSource.saveTask(it) }
 
         val result = dataSource.getTodayPieEntries()
         assertThat(result.succeeded, `is`(true))
@@ -364,11 +364,11 @@ class LocalDataSourceTest {
 
     @Test
     fun insertCategories_deleteAllCategoriesAndGetAll_returnsEmptyList() = runBlocking {
-        dataSource.insertCategories(
+        arrayOf(
             Category(1, "Study"),
             Category(2, "Sport"),
             Category(3, "Business")
-        )
+        ).forEach { dataSource.saveCategory(it) }
 
         dataSource.deleteAllCategories()
 
@@ -380,10 +380,10 @@ class LocalDataSourceTest {
 
     @Test
     fun insertTaskMethods_deleteAllTaskMethodsAndGetAll_returnsEmptyList() = runBlocking {
-        dataSource.insertTaskMethods(
+        arrayOf(
             TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost")),
             TaskMethod(2, "eat the devil", Time(60000L), Time(200L), URI("https://localhost"))
-        )
+        ).forEach{ dataSource.saveTaskMethod(it) }
 
         dataSource.deleteAllTaskMethods()
 
@@ -395,11 +395,11 @@ class LocalDataSourceTest {
 
     @Test
     fun insertTasks_deleteAllTasksAndGetAll_returnsEmptyList() = runBlocking {
-        dataSource.insertTasks(
+        arrayOf(
             Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
             Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
             Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
-        )
+        ).forEach{ dataSource.saveTask(it) }
 
         dataSource.deleteAllTasks()
 

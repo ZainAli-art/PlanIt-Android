@@ -56,17 +56,11 @@ interface AppDataSource {
 
     suspend fun getTodayPieEntries(): Result<List<PieEntry>>
 
-    suspend fun insertCategory(category: Category)
+    suspend fun saveCategory(category: Category)
 
-    suspend fun insertCategories(vararg categories: Category)
+    suspend fun saveTaskMethod(taskMethod: TaskMethod)
 
-    suspend fun insertTaskMethod(taskMethod: TaskMethod)
-
-    suspend fun insertTaskMethods(vararg taskMethods: TaskMethod)
-
-    suspend fun insertTask(task: Task)
-
-    suspend fun insertTasks(vararg tasks: Task)
+    suspend fun saveTask(task: Task)
 
     suspend fun completeTask(task: Task)
 

@@ -226,34 +226,16 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun insertCategory(category: Category) = withContext(ioDispatcher) {
+    override suspend fun saveCategory(category: Category) = withContext(ioDispatcher) {
         categoriesDao.insert(category.asDatabaseEntity())
     }
 
-    override suspend fun insertCategories(vararg categories: Category) = withContext(ioDispatcher) {
-        for (category in categories) {
-            categoriesDao.insert(category.asDatabaseEntity())
-        }
-    }
-
-    override suspend fun insertTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
+    override suspend fun saveTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
         taskMethodsDao.insert(taskMethod.asDatabaseEntity())
     }
 
-    override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) = withContext(ioDispatcher) {
-        for (method in taskMethods) {
-            taskMethodsDao.insert(method.asDatabaseEntity())
-        }
-    }
-
-    override suspend fun insertTask(task: Task) = withContext(ioDispatcher) {
+    override suspend fun saveTask(task: Task) = withContext(ioDispatcher) {
         tasksDao.insert(task.asDatabaseEntity())
-    }
-
-    override suspend fun insertTasks(vararg tasks: Task) = withContext(ioDispatcher) {
-        for (task in tasks) {
-            tasksDao.insert(task.asDatabaseEntity())
-        }
     }
 
     override suspend fun completeTask(task: Task) = withContext(ioDispatcher) {

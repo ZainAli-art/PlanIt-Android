@@ -46,7 +46,7 @@ class TaskMethodsDaoTest {
             DbTaskMethod(1, "Pomodoro", 25000, 5000, "https://www.zaincheema.com"),
             DbTaskMethod(2, "Eat The Devil", 30000, 5000, "https://www.zaincheema.com")
         )
-        methodsDao.insertAll(*methods)
+        methods.forEach { methodsDao.insert(it) }
 
         val loaded = methodsDao.getAll()
 
@@ -91,10 +91,11 @@ class TaskMethodsDaoTest {
 
     @Test
     fun insertTaskMethods_deleteAll_AllInsertedMethodsAreDeleted() = runBlockingTest {
-        methodsDao.insertAll(
+        val methods = arrayOf(
             DbTaskMethod(1, "Pomodoro", 25000, 5000, "https://www.zaincheema.com"),
             DbTaskMethod(2, "Eat The Devil", 30000, 5000, "https://www.zaincheema.com")
         )
+        methods.forEach { methodsDao.insert(it) }
 
         methodsDao.deleteAll()
 
