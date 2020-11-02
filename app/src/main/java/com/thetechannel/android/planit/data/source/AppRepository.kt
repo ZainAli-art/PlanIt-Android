@@ -34,15 +34,15 @@ interface AppRepository {
 
     fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>>
 
-    suspend fun getCategories(): Result<List<Category>>
+    suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>>
 
     suspend fun getCategory(id: Int): Result<Category?>
 
-    suspend fun getTaskMethods(): Result<List<TaskMethod>>
+    suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>>
 
     suspend fun getTaskMethod(id: Int): Result<TaskMethod?>
 
-    suspend fun getTasks(): Result<List<Task>>
+    suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>>
 
     suspend fun getTasks(day: Date): Result<List<Task>>
 

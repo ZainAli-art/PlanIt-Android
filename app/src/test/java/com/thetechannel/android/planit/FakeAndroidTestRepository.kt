@@ -139,8 +139,8 @@ class FakeAndroidTestRepository : AppRepository {
         }
     }
 
-    override suspend fun getCategories(): Result<List<Category>> {
-        return Result.Success(categoriesServiceData.values.toList())
+    override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getCategory(id: Int): Result<Category?> {
@@ -150,8 +150,8 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Error(Exception("Could not find category"))
     }
 
-    override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
-        return Result.Success(taskMethodsServiceData.values.toList())
+    override suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> {
@@ -161,8 +161,8 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Error(Exception("Could not find task method"))
     }
 
-    override suspend fun getTasks(): Result<List<Task>> {
-        return Result.Success(tasksServiceData.values.toList())
+    override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getTasks(day: Date): Result<List<Task>> {
@@ -207,7 +207,7 @@ class FakeAndroidTestRepository : AppRepository {
     )
 
     override suspend fun getTasksOverView(): Result<TasksOverView> {
-        val tasks = (getTasks() as Result.Success).data
+        val tasks = (getTasks(false) as Result.Success).data
 
         val completed = tasks.filter { it.completed }.size
         val pending = tasks.filter { !it.completed }.size
@@ -277,15 +277,15 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun refreshCategories() {
-        observableCategories.value = getCategories()
+        observableCategories.value = getCategories(false)
     }
 
     override suspend fun refreshTaskMethods() {
-        observableTaskMethods.value = getTaskMethods()
+        observableTaskMethods.value = getTaskMethods(false)
     }
 
     override suspend fun refreshTasks() {
-        observableTasks.value = getTasks()
+        observableTasks.value = getTasks(false)
     }
 
     override suspend fun completeTask(task: Task) {

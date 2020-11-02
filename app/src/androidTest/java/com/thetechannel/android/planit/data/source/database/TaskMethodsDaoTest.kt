@@ -8,7 +8,8 @@ import androidx.test.filters.SmallTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -23,6 +24,7 @@ class TaskMethodsDaoTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: PlanItDatabase
+    private lateinit var methodsDao: TaskMethodsDao
 
     @Before
     fun initDb() {
@@ -31,29 +33,72 @@ class TaskMethodsDaoTest {
             PlanItDatabase::class.java
         )
             .build()
+        
+        methodsDao = database.taskMethodsDao
     }
 
     @After
     fun closeDb() = database.close()
 
     @Test
+    fun insertTaskMethods_getAll_returnsAllInsertedTaskMethods() = runBlockingTest {
+        val methods = arrayOf(
+            DbTaskMethod(1, "Pomodoro", 25000, 5000, "https://www.zaincheema.com"),
+            DbTaskMethod(2, "Eat The Devil", 30000, 5000, "https://www.zaincheema.com")
+        )
+        methodsDao.insertAll(*methods)
+
+        val loaded = methodsDao.getAll()
+
+        assertThat(loaded.size, `is`(methods.size))
+        /** Because the dao's getAll() method returns tasks in asc sorted order by name */
+        methods.apply { sortBy { it.name } }
+        for (i in methods.indices) {
+            val insertedMethod = methods[i]
+            val loadedMethod = loaded[i]
+
+            assertThat(loadedMethod.id, `is`(insertedMethod.id))
+            assertThat(loadedMethod.name, `is`(insertedMethod.name))
+            assertThat(loadedMethod.workLapse, `is`(insertedMethod.workLapse))
+            assertThat(
+                loadedMethod.breakLapse,
+                `is`(insertedMethod.breakLapse)
+            )
+            assertThat(loadedMethod.iconUrl, `is`(insertedMethod.iconUrl))
+        }
+    }
+
+    @Test
     fun insertTaskType_getById() = runBlockingTest {
         val taskMethod = DbTaskMethod(2, "test", 5000, 2000, "https://www.google.com")
-        database.taskMethodsDao.insert(taskMethod)
+        methodsDao.insert(taskMethod)
 
-        val loadedTaskType = database.taskMethodsDao.getById(taskMethod.id)
+        val loadedTaskMethod = methodsDao.getById(taskMethod.id)
 
-        MatcherAssert.assertThat<DbTaskMethod>(
-            loadedTaskType as DbTaskMethod,
+        assertThat<DbTaskMethod>(
+            loadedTaskMethod as DbTaskMethod,
             CoreMatchers.notNullValue()
         )
-        MatcherAssert.assertThat(loadedTaskType.id, CoreMatchers.`is`(taskMethod.id))
-        MatcherAssert.assertThat(loadedTaskType.name, CoreMatchers.`is`(taskMethod.name))
-        MatcherAssert.assertThat(loadedTaskType.workLapse, CoreMatchers.`is`(taskMethod.workLapse))
-        MatcherAssert.assertThat(
-            loadedTaskType.breakLapse,
-            CoreMatchers.`is`(taskMethod.breakLapse)
+        assertThat(loadedTaskMethod.id, `is`(taskMethod.id))
+        assertThat(loadedTaskMethod.name, `is`(taskMethod.name))
+        assertThat(loadedTaskMethod.workLapse, `is`(taskMethod.workLapse))
+        assertThat(
+            loadedTaskMethod.breakLapse,
+            `is`(taskMethod.breakLapse)
         )
-        MatcherAssert.assertThat(loadedTaskType.iconUrl, CoreMatchers.`is`(taskMethod.iconUrl))
+        assertThat(loadedTaskMethod.iconUrl, `is`(taskMethod.iconUrl))
+    }
+
+    @Test
+    fun insertTaskMethods_deleteAll_AllInsertedMethodsAreDeleted() = runBlockingTest {
+        methodsDao.insertAll(
+            DbTaskMethod(1, "Pomodoro", 25000, 5000, "https://www.zaincheema.com"),
+            DbTaskMethod(2, "Eat The Devil", 30000, 5000, "https://www.zaincheema.com")
+        )
+
+        methodsDao.deleteAll()
+
+        val loaded = methodsDao.getAll()
+        assertThat(loaded.size, `is`(0))
     }
 }

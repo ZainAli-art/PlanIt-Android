@@ -25,6 +25,9 @@ interface CategoriesDao {
 
     @Delete
     suspend fun delete(category: DbCategory)
+
+    @Query("DELETE FROM categories")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -44,11 +47,17 @@ interface TaskMethodsDao {
     @Insert
     suspend fun insert(taskMethod: DbTaskMethod)
 
+    @Insert
+    suspend fun insertAll(vararg taskMethod: DbTaskMethod)
+
     @Update
     suspend fun update(taskMethod: DbTaskMethod)
 
     @Delete
     suspend fun delete(taskMethod: DbTaskMethod)
+
+    @Query("DELETE FROM task_methods")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -142,4 +151,7 @@ interface TasksDao {
 
     @Delete
     suspend fun delete(task: DbTask)
+
+    @Query("DELETE FROM tasks")
+    suspend fun deleteAll()
 }

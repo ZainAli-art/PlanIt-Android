@@ -33,6 +33,7 @@ class TasksDaoTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: PlanItDatabase
+    private lateinit var tasksDao: TasksDao
 
     @Before
     fun initDb() = runBlockingTest {
@@ -41,6 +42,8 @@ class TasksDaoTest {
             PlanItDatabase::class.java
         )
             .build()
+        
+        tasksDao = database.tasksDao
 
         taskMethod = DbTaskMethod(1, "pomodoro", 0L, 0L, "https://www.google.com")
         database.taskMethodsDao.insert(taskMethod)
@@ -65,9 +68,9 @@ class TasksDaoTest {
             STUDY,
             false
         )
-        database.tasksDao.insert(task)
+        tasksDao.insert(task)
 
-        val loadedTask = database.tasksDao.getById(task.id)
+        val loadedTask = tasksDao.getById(task.id)
 
         assertThat<DbTask>(loadedTask as DbTask, CoreMatchers.notNullValue())
         assertThat(loadedTask.id, `is`(task.id))
@@ -90,10 +93,10 @@ class TasksDaoTest {
             STUDY,
             false
         )
-        database.tasksDao.insert(task)
-        database.tasksDao.delete(task)
+        tasksDao.insert(task)
+        tasksDao.delete(task)
 
-        val loadedTask = database.tasksDao.getById(task.id)
+        val loadedTask = tasksDao.getById(task.id)
         assertThat(loadedTask, CoreMatchers.nullValue())
     }
 
@@ -101,9 +104,9 @@ class TasksDaoTest {
     fun insertTaskAndTaskMethod_fetchTaskDetails_returnsTaskDetailsFromInsertedData() = runBlockingTest {
         val task =
             DbTask("TASK1", System.currentTimeMillis(), 0, 1, "Maths Assignment", 1, false)
-        database.tasksDao.insert(task)
+        tasksDao.insert(task)
 
-        val taskDetail = database.tasksDao.getTaskDetailsByTaskId(task.id)
+        val taskDetail = tasksDao.getTaskDetailsByTaskId(task.id)
 
         assertThat<DbTaskDetail>(taskDetail, CoreMatchers.notNullValue())
         assertThat(taskDetail.id, `is`(task.id))
@@ -142,10 +145,10 @@ class TasksDaoTest {
                 STUDY,
                 false
             )
-            database.tasksDao.insert(task)
+            tasksDao.insert(task)
 
-            database.tasksDao.updateCompleted(task.id, true)
-            val loaded = database.tasksDao.getById(task.id)
+            tasksDao.updateCompleted(task.id, true)
+            val loaded = tasksDao.getById(task.id)
             assertThat<DbTask>(loaded as DbTask, `is`(CoreMatchers.notNullValue()))
 
             assertThat(loaded.completed, `is`(true))
@@ -154,9 +157,9 @@ class TasksDaoTest {
     @Test
     fun insertTasks_getTasksOverview_returnsOverviewOfInsertedTasks() = runBlockingTest {
         val tasks = getVersatileTasks()
-        database.tasksDao.insertAll(*tasks)
+        tasksDao.insertAll(*tasks)
 
-        val views = database.tasksDao.getTasksOverView()
+        val views = tasksDao.getTasksOverView()
         assertThat(views.completedTasks, `is`(2))
         assertThat(views.pendingTasks, `is`(4))
         assertThat(views.tasksCompletedToday, `is`(1))
@@ -165,18 +168,18 @@ class TasksDaoTest {
     @Test
     fun insertTasks_get_TodayProgress_returnsTodayCompletedTasksPercentage() = runBlockingTest {
         val tasks = getVersatileTasks()
-        database.tasksDao.insertAll(*tasks)
+        tasksDao.insertAll(*tasks)
 
-        val progress = database.tasksDao.getTodayProgress()
+        val progress = tasksDao.getTodayProgress()
         assertThat(progress.percentage, `is`(20))
     }
 
     @Test
     fun getTodayPieDataViews_returnCategoriesAndNumberOfTodayTasksLyingThoseCategories() = runBlockingTest {
         val tasks = getVersatileTasks()
-        database.tasksDao.insertAll(*tasks)
+        tasksDao.insertAll(*tasks)
 
-        val views = database.tasksDao.getTodayPieDataViews()
+        val views = tasksDao.getTodayPieDataViews()
         val viewData = mutableMapOf<String, TodayPieDataView>()
         for (v in views) viewData[v.name] = v
 
@@ -184,6 +187,17 @@ class TasksDaoTest {
         assertThat(viewData["Study"]?.count, `is`(2))
         assertThat(viewData["Business"]?.count, `is`(2))
         assertThat(viewData["Sport"]?.count, `is`(1))
+    }
+
+    @Test
+    fun insertTasks_deleteAll_deletedAllInsertedTasks() = runBlockingTest {
+        val tasks = getVersatileTasks()
+        tasksDao.insertAll(*tasks)
+
+        tasksDao.deleteAll()
+        
+        val loaded = tasksDao.getAll()
+        assertThat(loaded.size, `is`(0))
     }
 
     /**
