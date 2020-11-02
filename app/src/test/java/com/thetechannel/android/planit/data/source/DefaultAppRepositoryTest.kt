@@ -54,4 +54,18 @@ class DefaultAppRepositoryTest {
 
         assertThat(categories.data, IsEqual(remoteCategories))
     }
+
+    @Test
+    fun getTaskMethods_requestAllMethodsFromRemoteDataSource() = runBlockingTest {
+        val methods = repository.getTaskMethods(true) as Result.Success
+
+        assertThat(methods.data, IsEqual(remoteMethods))
+    }
+
+    @Test
+    fun getTasks_requestAllTasksFromRemoteDataSource() = runBlockingTest {
+        val tasks = repository.getTasks(true) as Result.Success
+
+        assertThat(tasks.data, IsEqual(remoteTasks))
+    }
 }

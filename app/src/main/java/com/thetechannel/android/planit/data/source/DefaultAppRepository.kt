@@ -80,7 +80,27 @@ class DefaultAppRepository(
     }
 
     override suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            try {
+                updateTaskMethodsFromRemoteDataSource()
+            } catch (ex: Exception) {
+                return Result.Error(ex)
+            }
+        }
+        return localDataSource.getTaskMethods()
+    }
+
+    private suspend fun updateTaskMethodsFromRemoteDataSource() {
+        val remoteMethods = remoteDataSource.getTaskMethods()
+
+        if (remoteMethods is Result.Success) {
+            localDataSource.deleteAllTaskMethods()
+            remoteMethods.data.forEach {
+                localDataSource.saveTaskMethod(it)
+            }
+        } else if (remoteMethods is Result.Error) {
+            throw remoteMethods.exception
+        }
     }
 
     override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> {
@@ -88,7 +108,21 @@ class DefaultAppRepository(
     }
 
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTasksFromRemoteDataSource()
+        }
+        return remoteDataSource.getTasks()
+    }
+
+    private suspend fun updateTasksFromRemoteDataSource() {
+        val tasks = remoteDataSource.getTasks()
+
+        if (tasks is Result.Success) {
+            localDataSource.deleteAllTasks()
+            tasks.data.forEach { localDataSource.saveTask(it) }
+        } else if (tasks is Result.Error) {
+            throw tasks.exception
+        }
     }
 
     override suspend fun getTasks(day: Date): Result<List<Task>> {
@@ -148,8 +182,8 @@ class DefaultAppRepository(
 
         if (remoteCategories is Result.Success) {
             localDataSource.deleteAllCategories()
-            for (c in remoteCategories.data) {
-                localDataSource.saveCategory(c)
+            remoteCategories.data.forEach {
+                localDataSource.saveCategory(it)
             }
         } else if (remoteCategories is Result.Error) {
             throw remoteCategories.exception
