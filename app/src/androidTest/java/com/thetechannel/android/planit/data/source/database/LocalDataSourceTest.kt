@@ -361,4 +361,51 @@ class LocalDataSourceTest {
         assertThat(entryData["Business"]?.value, `is`(1f))
         assertThat(entryData["Sport"]?.value, `is`(1f))
     }
+
+    @Test
+    fun insertCategories_deleteAllCategoriesAndGetAll_returnsEmptyList() = runBlocking {
+        dataSource.insertCategories(
+            Category(1, "Study"),
+            Category(2, "Sport"),
+            Category(3, "Business")
+        )
+
+        dataSource.deleteAllCategories()
+
+        val result = dataSource.getCategories()
+        assertThat(result.succeeded, `is`(true))
+        val loaded = (result as Result.Success).data
+        assertThat(loaded.isEmpty(), `is`(true))
+    }
+
+    @Test
+    fun insertTaskMethods_deleteAllTaskMethodsAndGetAll_returnsEmptyList() = runBlocking {
+        dataSource.insertTaskMethods(
+            TaskMethod(1, "pomodoro", Time(1500L), Time(500L), URI("https://localhost")),
+            TaskMethod(2, "eat the devil", Time(60000L), Time(200L), URI("https://localhost"))
+        )
+
+        dataSource.deleteAllTaskMethods()
+
+        val result = dataSource.getTaskMethods()
+        assertThat(result.succeeded, `is`(true))
+        val loaded = (result as Result.Success).data
+        assertThat(loaded.isEmpty(), `is`(true))
+    }
+
+    @Test
+    fun insertTasks_deleteAllTasksAndGetAll_returnsEmptyList() = runBlocking {
+        dataSource.insertTasks(
+            Task("task_1", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Maths Assignment", 1, true),
+            Task("task_2", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Read Emails", 2, true),
+            Task("task_3", Calendar.getInstance().time, Time(System.currentTimeMillis()), 1, "Do a sprint", 3, false)
+        )
+
+        dataSource.deleteAllTasks()
+
+        val result = dataSource.getTasks()
+        assertThat(result.succeeded, `is`(true))
+        val loaded = (result as Result.Success).data
+        assertThat(loaded.isEmpty(), `is`(true))
+    }
 }

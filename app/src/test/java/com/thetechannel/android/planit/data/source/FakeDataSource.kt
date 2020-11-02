@@ -10,6 +10,7 @@ import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FakeDataSource(
     var categories: MutableList<Category>?,
@@ -61,7 +62,7 @@ class FakeDataSource(
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
-        TODO("Not yet implemented")
+        return Result.Success(ArrayList(categories))
     }
 
     override suspend fun getCategory(id: Int): Result<Category?> {
@@ -105,7 +106,7 @@ class FakeDataSource(
     }
 
     override suspend fun insertCategory(category: Category) {
-        TODO("Not yet implemented")
+        categories?.add(category)
     }
 
     override suspend fun insertCategories(vararg categories: Category) {
@@ -140,11 +141,23 @@ class FakeDataSource(
         TODO("Not yet implemented")
     }
 
+    override suspend fun deleteAllCategories() {
+        categories?.clear()
+    }
+
     override suspend fun deleteTaskMethod(taskMethod: TaskMethod) {
         TODO("Not yet implemented")
     }
 
+    override suspend fun deleteAllTaskMethods() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteTask(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteAllTasks() {
         TODO("Not yet implemented")
     }
 

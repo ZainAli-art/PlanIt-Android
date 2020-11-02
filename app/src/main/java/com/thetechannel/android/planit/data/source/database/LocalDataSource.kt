@@ -14,7 +14,6 @@ import com.thetechannel.android.planit.util.asDomainModel
 import com.thetechannel.android.planit.util.asPieEntry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
@@ -269,11 +268,23 @@ class LocalDataSource(
         categoriesDao.delete(category.asDatabaseEntity())
     }
 
+    override suspend fun deleteAllCategories() = withContext(ioDispatcher) {
+        categoriesDao.deleteAll()
+    }
+
     override suspend fun deleteTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
         taskMethodsDao.delete(taskMethod.asDatabaseEntity())
     }
 
+    override suspend fun deleteAllTaskMethods() = withContext(ioDispatcher) {
+        taskMethodsDao.deleteAll()
+    }
+
     override suspend fun deleteTask(task: Task) = withContext(ioDispatcher) {
         tasksDao.delete(task.asDatabaseEntity())
+    }
+
+    override suspend fun deleteAllTasks() = withContext(ioDispatcher) {
+        tasksDao.deleteAll()
     }
 }

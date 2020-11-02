@@ -11,6 +11,7 @@ import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 import java.util.*
 
 class DefaultAppRepository(
@@ -64,7 +65,14 @@ class DefaultAppRepository(
     }
 
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            try {
+                updateCategoriesFromRemoteDataSouce()
+            } catch (ex: Exception) {
+                return Result.Error(ex)
+            }
+        }
+        return localDataSource.getCategories()
     }
 
     override suspend fun getCategory(id: Int): Result<Category?> {
@@ -132,14 +140,19 @@ class DefaultAppRepository(
     }
 
     override suspend fun refreshCategories() {
-        TODO("Not yet implemented")
+        updateCategoriesFromRemoteDataSouce()
     }
 
     private suspend fun updateCategoriesFromRemoteDataSouce() {
         val remoteCategories = remoteDataSource.getCategories()
 
         if (remoteCategories is Result.Success) {
-//            localDataSource.deleteCategory()
+            localDataSource.deleteAllCategories()
+            for (c in remoteCategories.data) {
+                localDataSource.insertCategory(c)
+            }
+        } else if (remoteCategories is Result.Error) {
+            throw remoteCategories.exception
         }
     }
 

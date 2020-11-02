@@ -74,7 +74,13 @@ interface AppDataSource {
 
     suspend fun deleteCategory(category: Category)
 
+    suspend fun deleteAllCategories()
+
     suspend fun deleteTaskMethod(taskMethod: TaskMethod)
 
+    suspend fun deleteAllTaskMethods()
+
     suspend fun deleteTask(task: Task)
+
+    suspend fun deleteAllTasks()
 }
