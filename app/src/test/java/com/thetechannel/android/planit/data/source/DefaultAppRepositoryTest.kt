@@ -4,9 +4,12 @@ import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.contains
 import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Test
@@ -67,5 +70,19 @@ class DefaultAppRepositoryTest {
         val tasks = repository.getTasks(true) as Result.Success
 
         assertThat(tasks.data, IsEqual(remoteTasks))
+    }
+
+    @Test
+    fun saveCategory_savesCategoryInRemoteDataSourceAndSyncsWithLocalDataSource() = runBlockingTest {
+        val category = Category(4, "Other")
+        repository.saveCategory(category)
+
+        val result = repository.getCategory(category.id, true)
+        assertThat(result.succeeded, `is`(true))
+        val loaded = (result as Result.Success).data
+        
+        assertThat(loaded, `is`(category))
+        assertThat(remoteDataSource.categories?.toList()?.contains(loaded), `is`(true))
+        assertThat(localDataSource.categories?.toList()?.contains(loaded), `is`(true))
     }
 }

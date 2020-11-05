@@ -143,7 +143,7 @@ class FakeAndroidTestRepository : AppRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategory(id: Int): Result<Category?> {
+    override suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category?> {
         categoriesServiceData[id]?.let {
             return Result.Success(it)
         }
@@ -154,7 +154,7 @@ class FakeAndroidTestRepository : AppRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> {
+    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?> {
         taskMethodsServiceData[id]?.let {
             return Result.Success(it)
         }
@@ -166,7 +166,7 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Success(ArrayList(tasksServiceData.values))
     }
 
-    override suspend fun getTasks(day: Date): Result<List<Task>> {
+    override suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>> {
         val tasks = tasksServiceData.values.filter {
             it.day == day
         }
@@ -174,14 +174,14 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Success(tasks)
     }
 
-    override suspend fun getTask(id: String): Result<Task?> {
+    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?> {
         tasksServiceData[id]?.let {
             return Result.Success(it)
         }
         return Result.Error(Exception("Could not find task"))
     }
 
-    override suspend fun getTaskDetail(id: String): Result<TaskDetail> {
+    override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {
         val task = tasksServiceData[id]
         val category = categoriesServiceData.get(task?.catId)
         val method = taskMethodsServiceData.get(task?.methodId)
@@ -207,7 +207,7 @@ class FakeAndroidTestRepository : AppRepository {
         breakEnd = Time(task.startAt.time + method.workLapse.time + method.breakLapse.time)
     )
 
-    override suspend fun getTasksOverView(): Result<TasksOverView> {
+    override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
         val tasks = (getTasks(false) as Result.Success).data
 
         val completed = tasks.filter { it.completed }.size
@@ -217,7 +217,7 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Success(TasksOverView(completed, pending, completedToday))
     }
 
-    override suspend fun getTodayProgress(): Result<TodayProgress> {
+    override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
         return Result.Success(getTodayProgress(ArrayList(tasksServiceData.values)))
     }
 
@@ -229,7 +229,7 @@ class FakeAndroidTestRepository : AppRepository {
         return TodayProgress(completed * 100 / totalTasks)
     }
 
-    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> {
+    override suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>> {
         return Result.Success(getTodayPieEntries(ArrayList(tasksServiceData.values)))
     }
 
@@ -248,32 +248,32 @@ class FakeAndroidTestRepository : AppRepository {
         return entries
     }
 
-    override suspend fun insertCategory(category: Category) {
+    override suspend fun saveCategory(category: Category) {
         categoriesServiceData[category.id] = category
         refreshCategories()
     }
 
-    override suspend fun insertCategories(vararg categories: Category) {
+    override suspend fun saveCategories(vararg categories: Category) {
         for (c in categories) categoriesServiceData[c.id] = c
         refreshCategories()
     }
 
-    override suspend fun insertTaskMethod(taskMethod: TaskMethod) {
+    override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
         taskMethodsServiceData[taskMethod.id] = taskMethod
         refreshTaskMethods()
     }
 
-    override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) {
+    override suspend fun saveTaskMethods(vararg taskMethods: TaskMethod) {
         for (m in taskMethods) taskMethodsServiceData[m.id] = m
         refreshTaskMethods()
     }
 
-    override suspend fun insertTask(task: Task) {
+    override suspend fun saveTask(task: Task) {
         tasksServiceData[task.id] = task
         refreshTasks()
     }
 
-    override suspend fun insertTasks(vararg tasks: Task) {
+    override suspend fun saveTasks(vararg tasks: Task) {
         for (t in tasks) tasksServiceData[t.id] = t
     }
 

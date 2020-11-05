@@ -36,37 +36,37 @@ interface AppRepository {
 
     suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>>
 
-    suspend fun getCategory(id: Int): Result<Category?>
+    suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category?>
 
     suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>>
 
-    suspend fun getTaskMethod(id: Int): Result<TaskMethod?>
+    suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?>
 
     suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>>
 
-    suspend fun getTasks(day: Date): Result<List<Task>>
+    suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>>
 
-    suspend fun getTask(id: String): Result<Task?>
+    suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?>
 
-    suspend fun getTaskDetail(id: String): Result<TaskDetail>
+    suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail>
 
-    suspend fun getTasksOverView(): Result<TasksOverView>
+    suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView>
 
-    suspend fun getTodayProgress(): Result<TodayProgress>
+    suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress>
 
-    suspend fun getTodayPieEntries(): Result<List<PieEntry>>
+    suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>>
 
-    suspend fun insertCategory(category: Category)
+    suspend fun saveCategory(category: Category)
 
-    suspend fun insertCategories(vararg categories: Category)
+    suspend fun saveCategories(vararg categories: Category)
 
-    suspend fun insertTaskMethod(taskMethod: TaskMethod)
+    suspend fun saveTaskMethod(taskMethod: TaskMethod)
 
-    suspend fun insertTaskMethods(vararg taskMethods: TaskMethod)
+    suspend fun saveTaskMethods(vararg taskMethods: TaskMethod)
 
-    suspend fun insertTask(task: Task)
+    suspend fun saveTask(task: Task)
 
-    suspend fun insertTasks(vararg tasks: Task)
+    suspend fun saveTasks(vararg tasks: Task)
 
     suspend fun refreshCategories()
 

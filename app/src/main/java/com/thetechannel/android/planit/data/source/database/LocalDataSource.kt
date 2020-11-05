@@ -125,7 +125,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getCategory(id: Int): Result<Category?> = withContext(ioDispatcher) {
+    override suspend fun getCategory(id: Int): Result<Category> = withContext(ioDispatcher) {
         return@withContext try {
             val dbCategory = categoriesDao.getById(id)
             if (dbCategory == null) Result.Error(Exception("category id not found"))
@@ -145,7 +145,7 @@ class LocalDataSource(
         }
     }
 
-    override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> =
+    override suspend fun getTaskMethod(id: Int): Result<TaskMethod> =
         withContext(ioDispatcher) {
             return@withContext try {
                 val dbTaskMethod = taskMethodsDao.getById(id)
@@ -156,7 +156,7 @@ class LocalDataSource(
             }
         }
 
-    override suspend fun getTask(id: String): Result<Task?> = withContext(ioDispatcher) {
+    override suspend fun getTask(id: String): Result<Task> = withContext(ioDispatcher) {
         return@withContext try {
             val dbTask = tasksDao.getById(id)
             if (dbTask == null) Result.Error(Exception("task id not found"))

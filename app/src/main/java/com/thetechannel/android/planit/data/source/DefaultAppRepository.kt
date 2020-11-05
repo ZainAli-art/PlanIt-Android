@@ -75,8 +75,19 @@ class DefaultAppRepository(
         return localDataSource.getCategories()
     }
 
-    override suspend fun getCategory(id: Int): Result<Category?> {
-        TODO("Not yet implemented")
+    override suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category> {
+        if (forceUpdate) {
+            updateCategoryFromRemoteDataSource(id)
+        }
+        return localDataSource.getCategory(id)
+    }
+
+    private suspend fun updateCategoryFromRemoteDataSource(id: Int) {
+        val remoteCategory = remoteDataSource.getCategory(id)
+
+        if (remoteCategory is Result.Success) {
+            localDataSource.saveCategory(remoteCategory.data)
+        }
     }
 
     override suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>> {
@@ -103,7 +114,7 @@ class DefaultAppRepository(
         }
     }
 
-    override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> {
+    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?> {
         TODO("Not yet implemented")
     }
 
@@ -125,51 +136,52 @@ class DefaultAppRepository(
         }
     }
 
-    override suspend fun getTasks(day: Date): Result<List<Task>> {
+    override suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTask(id: String): Result<Task?> {
+    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTaskDetail(id: String): Result<TaskDetail> {
+    override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasksOverView(): Result<TasksOverView> {
+    override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTodayProgress(): Result<TodayProgress> {
+    override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> {
+    override suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCategory(category: Category) {
+    override suspend fun saveCategory(category: Category) {
+        remoteDataSource.saveCategory(category)
+        updateCategoriesFromRemoteDataSouce()
+    }
+
+    override suspend fun saveCategories(vararg categories: Category) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCategories(vararg categories: Category) {
+    override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTaskMethod(taskMethod: TaskMethod) {
+    override suspend fun saveTaskMethods(vararg taskMethods: TaskMethod) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTaskMethods(vararg taskMethods: TaskMethod) {
+    override suspend fun saveTask(task: Task) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun insertTasks(vararg tasks: Task) {
+    override suspend fun saveTasks(vararg tasks: Task) {
         TODO("Not yet implemented")
     }
 

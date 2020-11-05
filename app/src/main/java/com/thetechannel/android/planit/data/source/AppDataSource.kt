@@ -36,17 +36,17 @@ interface AppDataSource {
 
     suspend fun getCategories(): Result<List<Category>>
 
-    suspend fun getCategory(id: Int): Result<Category?>
+    suspend fun getCategory(id: Int): Result<Category>
 
     suspend fun getTaskMethods(): Result<List<TaskMethod>>
 
-    suspend fun getTaskMethod(id: Int): Result<TaskMethod?>
+    suspend fun getTaskMethod(id: Int): Result<TaskMethod>
 
     suspend fun getTasks(): Result<List<Task>>
 
     suspend fun getTasks(day: Date): Result<List<Task>>
 
-    suspend fun getTask(id: String): Result<Task?>
+    suspend fun getTask(id: String): Result<Task>
 
     suspend fun getTaskDetail(id: String): Result<TaskDetail>
 

@@ -17,7 +17,7 @@ interface CategoriesDao {
     @Query("SELECT * FROM categories WHERE id = :id")
     suspend fun getById(id: Int): DbCategory?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(category: DbCategory)
 
     @Delete
@@ -41,7 +41,7 @@ interface TaskMethodsDao {
     @Query("SELECT * FROM task_methods WHERE id = :id")
     suspend fun getById(id: Int): DbTaskMethod?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(taskMethod: DbTaskMethod)
 
     @Update
@@ -134,7 +134,7 @@ interface TasksDao {
     @Query("SELECT * FROM TodayPieDataView")
     suspend fun getTodayPieDataViews(): List<TodayPieDataView>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: DbTask)
 
     @Query("UPDATE tasks SET completed = :completed WHERE id = :id")

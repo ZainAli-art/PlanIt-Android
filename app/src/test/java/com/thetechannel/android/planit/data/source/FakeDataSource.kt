@@ -69,8 +69,11 @@ class FakeDataSource(
         )
     }
 
-    override suspend fun getCategory(id: Int): Result<Category?> {
-        TODO("Not yet implemented")
+    override suspend fun getCategory(id: Int): Result<Category> {
+        categories?.forEach {
+            if (it.id == id) return Result.Success(it)
+        }
+        return Result.Error(Exception("category id not found"))
     }
 
     override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
@@ -80,7 +83,7 @@ class FakeDataSource(
         )
     }
 
-    override suspend fun getTaskMethod(id: Int): Result<TaskMethod?> {
+    override suspend fun getTaskMethod(id: Int): Result<TaskMethod> {
         TODO("Not yet implemented")
     }
 
@@ -95,7 +98,7 @@ class FakeDataSource(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTask(id: String): Result<Task?> {
+    override suspend fun getTask(id: String): Result<Task> {
         TODO("Not yet implemented")
     }
 
