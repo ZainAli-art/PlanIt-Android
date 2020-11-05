@@ -114,8 +114,11 @@ class DefaultAppRepository(
         }
     }
 
-    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?> {
-        TODO("Not yet implemented")
+    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod> {
+        if (forceUpdate) {
+            updateTaskMethodFromRemoteDataSource(id)
+        }
+        return localDataSource.getTaskMethod(id)
     }
 
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
@@ -140,7 +143,7 @@ class DefaultAppRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?> {
+    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task> {
         TODO("Not yet implemented")
     }
 
@@ -162,7 +165,7 @@ class DefaultAppRepository(
 
     override suspend fun saveCategory(category: Category) {
         remoteDataSource.saveCategory(category)
-        updateCategoriesFromRemoteDataSouce()
+        updateCategoryFromRemoteDataSource(category.id)
     }
 
     override suspend fun saveCategories(vararg categories: Category) {
@@ -170,7 +173,15 @@ class DefaultAppRepository(
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+        remoteDataSource.saveTaskMethod(taskMethod)
+        updateTaskMethodFromRemoteDataSource(taskMethod.id)
+    }
+
+    private suspend fun updateTaskMethodFromRemoteDataSource(id: Int) {
+        val method = remoteDataSource.getTaskMethod(id)
+        if (method is Result.Success) {
+            localDataSource.saveTaskMethod(method.data)
+        }
     }
 
     override suspend fun saveTaskMethods(vararg taskMethods: TaskMethod) {

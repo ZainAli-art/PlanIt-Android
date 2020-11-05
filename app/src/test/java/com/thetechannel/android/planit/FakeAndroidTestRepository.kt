@@ -143,7 +143,7 @@ class FakeAndroidTestRepository : AppRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category?> {
+    override suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category> {
         categoriesServiceData[id]?.let {
             return Result.Success(it)
         }
@@ -154,7 +154,7 @@ class FakeAndroidTestRepository : AppRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?> {
+    override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod> {
         taskMethodsServiceData[id]?.let {
             return Result.Success(it)
         }
@@ -174,7 +174,7 @@ class FakeAndroidTestRepository : AppRepository {
         return Result.Success(tasks)
     }
 
-    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?> {
+    override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task> {
         tasksServiceData[id]?.let {
             return Result.Success(it)
         }

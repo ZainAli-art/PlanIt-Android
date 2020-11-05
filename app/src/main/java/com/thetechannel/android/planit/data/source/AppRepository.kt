@@ -36,17 +36,17 @@ interface AppRepository {
 
     suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>>
 
-    suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category?>
+    suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category>
 
     suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>>
 
-    suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod?>
+    suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod>
 
     suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>>
 
     suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>>
 
-    suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task?>
+    suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task>
 
     suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail>
 

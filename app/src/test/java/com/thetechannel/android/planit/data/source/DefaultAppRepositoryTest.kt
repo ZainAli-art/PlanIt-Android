@@ -45,14 +45,16 @@ class DefaultAppRepositoryTest {
 
     @Before
     fun createRepository() {
-        localDataSource = FakeDataSource(localCategories.toMutableList(), localMethods.toMutableList(), localTasks.toMutableList())
-        remoteDataSource = FakeDataSource(remoteCategories.toMutableList(), remoteMethods.toMutableList(), remoteTasks.toMutableList())
+        localDataSource = FakeDataSource(mutableListOf(), mutableListOf(), mutableListOf())
+        remoteDataSource = FakeDataSource(mutableListOf(), mutableListOf(), mutableListOf())
 
         repository = DefaultAppRepository(localDataSource, remoteDataSource)
     }
 
     @Test
     fun getCategories_requestAllCategoriesFromRemoteDataSource() = runBlockingTest {
+        remoteDataSource.categories = remoteCategories.toMutableList()
+        localDataSource.categories = localCategories.toMutableList()
         val categories = repository.getCategories(true) as Result.Success
 
         assertThat(categories.data, IsEqual(remoteCategories))
@@ -60,6 +62,8 @@ class DefaultAppRepositoryTest {
 
     @Test
     fun getTaskMethods_requestAllMethodsFromRemoteDataSource() = runBlockingTest {
+        remoteDataSource.taskMethods = remoteMethods.toMutableList()
+        localDataSource.taskMethods = localMethods.toMutableList()
         val methods = repository.getTaskMethods(true) as Result.Success
 
         assertThat(methods.data, IsEqual(remoteMethods))
@@ -67,6 +71,8 @@ class DefaultAppRepositoryTest {
 
     @Test
     fun getTasks_requestAllTasksFromRemoteDataSource() = runBlockingTest {
+        remoteDataSource.tasks = remoteTasks.toMutableList()
+        localDataSource.tasks = remoteTasks.toMutableList()
         val tasks = repository.getTasks(true) as Result.Success
 
         assertThat(tasks.data, IsEqual(remoteTasks))
@@ -77,12 +83,27 @@ class DefaultAppRepositoryTest {
         val category = Category(4, "Other")
         repository.saveCategory(category)
 
-        val result = repository.getCategory(category.id, true)
+        /** using true here inserts identical category in local mutable list (mock) */
+        val result = repository.getCategory(category.id, false)
         assertThat(result.succeeded, `is`(true))
         val loaded = (result as Result.Success).data
-        
+
         assertThat(loaded, `is`(category))
-        assertThat(remoteDataSource.categories?.toList()?.contains(loaded), `is`(true))
-        assertThat(localDataSource.categories?.toList()?.contains(loaded), `is`(true))
+        assertThat(remoteDataSource.categories, contains(loaded))
+        assertThat(localDataSource.categories, contains(loaded))
+    }
+
+    @Test
+    fun saveTaskMethod_savesTaskMethodInRemoteDataSourceAndSyncsWithLocalDataSource() = runBlockingTest {
+        val method = TaskMethod(3, "Some Name", Time(500L), Time(300L), URI("http://picture"))
+        repository.saveTaskMethod(method)
+
+        /** using true here inserts identical task method in local mutable list (mock) */
+        val result = repository.getTaskMethod(method.id, false)
+        assertThat(result.succeeded, `is`(true))
+        val loaded = (result as Result.Success).data
+
+        assertThat(remoteDataSource.taskMethods?.toList(), contains(loaded))
+        assertThat(localDataSource.taskMethods?.toList(), contains(loaded))
     }
 }

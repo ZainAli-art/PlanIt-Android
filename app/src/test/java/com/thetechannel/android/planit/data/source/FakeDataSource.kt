@@ -84,7 +84,10 @@ class FakeDataSource(
     }
 
     override suspend fun getTaskMethod(id: Int): Result<TaskMethod> {
-        TODO("Not yet implemented")
+        taskMethods?.forEach {
+            if (it.id == id) return Result.Success(it)
+        }
+        return Result.Error(Exception("task method id not found"))
     }
 
     override suspend fun getTasks(): Result<List<Task>> {
