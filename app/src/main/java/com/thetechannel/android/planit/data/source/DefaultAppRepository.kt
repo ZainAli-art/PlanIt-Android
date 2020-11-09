@@ -189,7 +189,15 @@ class DefaultAppRepository(
     }
 
     override suspend fun saveTask(task: Task) {
-        TODO("Not yet implemented")
+        remoteDataSource.saveTask(task)
+        updateTaskFromRemoteDataSource(task.id)
+    }
+
+    private suspend fun updateTaskFromRemoteDataSource(id: String) {
+        val result = remoteDataSource.getTask(id)
+        if (result is Result.Success) {
+            localDataSource.saveTask(result.data)
+        }
     }
 
     override suspend fun saveTasks(vararg tasks: Task) {
@@ -214,11 +222,11 @@ class DefaultAppRepository(
     }
 
     override suspend fun refreshTaskMethods() {
-        TODO("Not yet implemented")
+        updateTaskMethodsFromRemoteDataSource()
     }
 
     override suspend fun refreshTasks() {
-        TODO("Not yet implemented")
+        updateTasksFromRemoteDataSource()
     }
 
     override suspend fun completeTask(task: Task) {

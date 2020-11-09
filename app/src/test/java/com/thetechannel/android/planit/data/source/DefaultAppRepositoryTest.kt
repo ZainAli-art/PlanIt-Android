@@ -103,7 +103,16 @@ class DefaultAppRepositoryTest {
         assertThat(result.succeeded, `is`(true))
         val loaded = (result as Result.Success).data
 
-        assertThat(remoteDataSource.taskMethods?.toList(), contains(loaded))
-        assertThat(localDataSource.taskMethods?.toList(), contains(loaded))
+        assertThat(remoteDataSource.taskMethods, contains(loaded))
+        assertThat(localDataSource.taskMethods, contains(loaded))
+    }
+
+    @Test
+    fun saveTask_savesTaskInRemoteDataSourceAndSyncsWithLocalDataSource() = runBlockingTest {
+        val task = Task("task_1", Calendar.getInstance().time, Time(500L), 1, "some task", 1, false);
+        repository.saveTask(task)
+
+        assertThat(remoteDataSource.tasks, contains(task))
+        assertThat(localDataSource.tasks, contains(task))
     }
 }
