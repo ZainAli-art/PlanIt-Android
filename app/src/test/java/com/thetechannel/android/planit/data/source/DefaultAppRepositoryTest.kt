@@ -8,8 +8,7 @@ import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Test
@@ -45,16 +44,16 @@ class DefaultAppRepositoryTest {
 
     @Before
     fun createRepository() {
-        localDataSource = FakeDataSource(mutableListOf(), mutableListOf(), mutableListOf())
-        remoteDataSource = FakeDataSource(mutableListOf(), mutableListOf(), mutableListOf())
+        localDataSource = FakeDataSource(localCategories.toMutableSet(), localMethods.toMutableSet(), localTasks.toMutableSet())
+        remoteDataSource = FakeDataSource(remoteCategories.toMutableSet(), remoteMethods.toMutableSet(), remoteTasks.toMutableSet())
 
         repository = DefaultAppRepository(localDataSource, remoteDataSource)
     }
 
     @Test
     fun getCategories_requestAllCategoriesFromRemoteDataSource() = runBlockingTest {
-        remoteDataSource.categories = remoteCategories.toMutableList()
-        localDataSource.categories = localCategories.toMutableList()
+        remoteDataSource.categories = remoteCategories.toMutableSet()
+        localDataSource.categories = localCategories.toMutableSet()
         val categories = repository.getCategories(true) as Result.Success
 
         assertThat(categories.data, IsEqual(remoteCategories))
@@ -62,8 +61,8 @@ class DefaultAppRepositoryTest {
 
     @Test
     fun getTaskMethods_requestAllMethodsFromRemoteDataSource() = runBlockingTest {
-        remoteDataSource.taskMethods = remoteMethods.toMutableList()
-        localDataSource.taskMethods = localMethods.toMutableList()
+        remoteDataSource.taskMethods = remoteMethods.toMutableSet()
+        localDataSource.taskMethods = localMethods.toMutableSet()
         val methods = repository.getTaskMethods(true) as Result.Success
 
         assertThat(methods.data, IsEqual(remoteMethods))
@@ -71,8 +70,8 @@ class DefaultAppRepositoryTest {
 
     @Test
     fun getTasks_requestAllTasksFromRemoteDataSource() = runBlockingTest {
-        remoteDataSource.tasks = remoteTasks.toMutableList()
-        localDataSource.tasks = remoteTasks.toMutableList()
+        remoteDataSource.tasks = remoteTasks.toMutableSet()
+        localDataSource.tasks = remoteTasks.toMutableSet()
         val tasks = repository.getTasks(true) as Result.Success
 
         assertThat(tasks.data, IsEqual(remoteTasks))
@@ -89,8 +88,8 @@ class DefaultAppRepositoryTest {
         val loaded = (result as Result.Success).data
 
         assertThat(loaded, `is`(category))
-        assertThat(remoteDataSource.categories, contains(loaded))
-        assertThat(localDataSource.categories, contains(loaded))
+        assertThat(remoteDataSource.categories?.contains(category), `is`(true))
+        assertThat(localDataSource.categories?.contains(category), `is`(true))
     }
 
     @Test
@@ -103,8 +102,8 @@ class DefaultAppRepositoryTest {
         assertThat(result.succeeded, `is`(true))
         val loaded = (result as Result.Success).data
 
-        assertThat(remoteDataSource.taskMethods, contains(loaded))
-        assertThat(localDataSource.taskMethods, contains(loaded))
+        assertThat(remoteDataSource.taskMethods?.contains(method), `is`(true))
+        assertThat(localDataSource.taskMethods?.contains(method), `is`(true))
     }
 
     @Test
@@ -112,7 +111,56 @@ class DefaultAppRepositoryTest {
         val task = Task("task_1", Calendar.getInstance().time, Time(500L), 1, "some task", 1, false);
         repository.saveTask(task)
 
-        assertThat(remoteDataSource.tasks, contains(task))
-        assertThat(localDataSource.tasks, contains(task))
+        assertThat(remoteDataSource.tasks?.contains(task), `is`(true))
+        assertThat(localDataSource.tasks?.contains(task), `is`(true))
+    }
+
+    @Test
+    fun completeTasks_completesTaskInBothRemoteAndLocalDataSource() = runBlockingTest {
+        val task = Task("task_4", Calendar.getInstance().time, Time(500L), 1, "some task", 1, false);
+        repository.saveTask(task)
+
+        repository.completeTask(task)
+
+        remoteDataSource.tasks?.forEach {
+            if (it.id == task.id) {
+                assertThat(it.completed, `is`(true))
+            }
+        }
+        localDataSource.tasks?.forEach {
+            if (it.id == task.id) {
+                assertThat(it.completed, `is`(true))
+            }
+        }
+    }
+
+    @Test
+    fun deleteCategory_deletesCategoryFromRemoteAndLocalDataSource() = runBlockingTest {
+        repository.refreshCategories()
+        val category = remoteCategories[0]
+        repository.deleteCategory(category)
+
+        assertThat(remoteDataSource.categories, not(contains(category)))
+        assertThat(localDataSource.categories, not(contains(category)))
+    }
+
+    @Test
+    fun deleteTaskMethod_deletesTaskMethodFromRemoteAndLocalDataSource() = runBlockingTest {
+        repository.refreshTaskMethods()
+        val method = remoteMethods[0]
+        repository.deleteTaskMethod(method)
+
+        assertThat(remoteDataSource.taskMethods, not(contains(method)))
+        assertThat(localDataSource.taskMethods, not(contains(method)))
+    }
+
+    @Test
+    fun deleteTask_deletesTaskFromRemoteAndLocalDataSource() = runBlockingTest {
+        repository.refreshTasks()
+        val task = remoteTasks[0]
+        repository.deleteTask(task)
+
+        assertThat(remoteDataSource.tasks, not(contains(task)))
+        assertThat(localDataSource.tasks, not(contains(task)))
     }
 }

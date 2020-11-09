@@ -11,12 +11,11 @@ import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import java.lang.Exception
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FakeDataSource(
-    var categories: MutableList<Category>?,
-    var taskMethods: MutableList<TaskMethod>?,
-    var tasks: MutableList<Task>?
+    var categories: MutableSet<Category>?,
+    var taskMethods: MutableSet<TaskMethod>?,
+    var tasks: MutableSet<Task>?
 ) : AppDataSource {
     override fun observeCategories(): LiveData<Result<List<Category>>> {
         TODO("Not yet implemented")
@@ -63,7 +62,7 @@ class FakeDataSource(
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
-        categories?.let { return Result.Success(it) }
+        categories?.let { return Result.Success(it.toList()) }
         return Result.Error(
             Exception("Categories not found")
         )
@@ -77,7 +76,7 @@ class FakeDataSource(
     }
 
     override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
-        taskMethods?.let { return Result.Success(it) }
+        taskMethods?.let { return Result.Success(it.toList()) }
         return Result.Error(
             Exception("Task Methods not found")
         )
@@ -91,7 +90,7 @@ class FakeDataSource(
     }
 
     override suspend fun getTasks(): Result<List<Task>> {
-        tasks?.let { return Result.Success(it) }
+        tasks?.let { return Result.Success(it.toList()) }
         return Result.Error(
             Exception("Tasks not found")
         )
@@ -137,15 +136,19 @@ class FakeDataSource(
     }
 
     override suspend fun completeTask(task: Task) {
-        TODO("Not yet implemented")
+        completeTask(task.id)
     }
 
     override suspend fun completeTask(id: String) {
-        TODO("Not yet implemented")
+        tasks?.forEach {
+            if (it.id == id) {
+                it.completed = true
+            }
+        }
     }
 
     override suspend fun deleteCategory(category: Category) {
-        TODO("Not yet implemented")
+        categories?.remove(category)
     }
 
     override suspend fun deleteAllCategories() {
@@ -153,7 +156,7 @@ class FakeDataSource(
     }
 
     override suspend fun deleteTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+        taskMethods?.remove(taskMethod)
     }
 
     override suspend fun deleteAllTaskMethods() {
@@ -161,7 +164,7 @@ class FakeDataSource(
     }
 
     override suspend fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
+        tasks?.remove(task)
     }
 
     override suspend fun deleteAllTasks() {

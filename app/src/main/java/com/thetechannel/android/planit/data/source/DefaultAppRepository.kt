@@ -230,23 +230,27 @@ class DefaultAppRepository(
     }
 
     override suspend fun completeTask(task: Task) {
-        TODO("Not yet implemented")
+        completeTask(task.id)
     }
 
     override suspend fun completeTask(id: String) {
-        TODO("Not yet implemented")
+        remoteDataSource.completeTask(id)
+        updateTaskFromRemoteDataSource(id)
     }
 
     override suspend fun deleteCategory(category: Category) {
-        TODO("Not yet implemented")
+        remoteDataSource.deleteCategory(category)
+        localDataSource.deleteCategory(category)
     }
 
     override suspend fun deleteTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+        remoteDataSource.deleteTaskMethod(taskMethod)
+        localDataSource.deleteTaskMethod(taskMethod)
     }
 
     override suspend fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
+        remoteDataSource.deleteTask(task)
+        localDataSource.deleteTask(task)
     }
 
 }
