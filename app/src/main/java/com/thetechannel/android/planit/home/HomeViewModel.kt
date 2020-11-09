@@ -31,4 +31,11 @@ class HomeViewModel(
             else -> TodayProgress(0)
         }
     }
+
+    val todayPieEntries: LiveData<List<PieEntry>> = repository.observeTodayPieEntries().map {
+        when (it) {
+            is Result.Success -> it.data
+            else -> emptyList()
+        }
+    }
 }

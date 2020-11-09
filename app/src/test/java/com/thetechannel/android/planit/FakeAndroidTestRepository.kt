@@ -140,7 +140,7 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
-        TODO("Not yet implemented")
+        return Result.Success(categoriesServiceData.values.toList())
     }
 
     override suspend fun getCategory(id: Int, forceUpdate: Boolean): Result<Category> {
@@ -312,10 +312,5 @@ class FakeAndroidTestRepository : AppRepository {
     override suspend fun deleteTask(task: Task) {
         tasksServiceData.remove(task.id)
         refreshTasks()
-    }
-
-    fun addTasks(vararg tasks: Task) {
-        for (t in tasks) tasksServiceData[t.id] = t
-        runBlocking { refreshTasks() }
     }
 }

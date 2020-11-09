@@ -199,7 +199,7 @@ class DefaultAppRepository(
     }
 
     override suspend fun saveCategories(vararg categories: Category) {
-        TODO("Not yet implemented")
+        categories.forEach { saveCategory(it) }
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
@@ -215,7 +215,7 @@ class DefaultAppRepository(
     }
 
     override suspend fun saveTaskMethods(vararg taskMethods: TaskMethod) {
-        TODO("Not yet implemented")
+        taskMethods.forEach { saveTaskMethod(it) }
     }
 
     override suspend fun saveTask(task: Task) {
@@ -231,7 +231,7 @@ class DefaultAppRepository(
     }
 
     override suspend fun saveTasks(vararg tasks: Task) {
-        TODO("Not yet implemented")
+        tasks.forEach { saveTask(it) }
     }
 
     override suspend fun refreshCategories() {
