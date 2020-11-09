@@ -140,7 +140,17 @@ class DefaultAppRepository(
     }
 
     override suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTasksFromRemoteDataSource(day)
+        }
+        return localDataSource.getTasks(day)
+    }
+
+    private suspend fun updateTasksFromRemoteDataSource(day: Date) {
+        val tasks =  remoteDataSource.getTasks(day)
+        if (tasks is Result.Success) {
+            tasks.data.forEach { localDataSource.saveTask(it) }
+        }
     }
 
     override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task> {
@@ -169,11 +179,18 @@ class DefaultAppRepository(
     }
 
     override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTasksFromRemoteDataSource()
+        }
+        return localDataSource.getTodayProgress()
     }
 
     override suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTasksFromRemoteDataSource()
+            updateCategoriesFromRemoteDataSouce()
+        }
+        return localDataSource.getTodayPieEntries()
     }
 
     override suspend fun saveCategory(category: Category) {

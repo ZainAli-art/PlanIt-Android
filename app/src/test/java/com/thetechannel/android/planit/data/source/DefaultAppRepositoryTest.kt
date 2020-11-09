@@ -162,6 +162,28 @@ class DefaultAppRepositoryTest {
     }
 
     @Test
+    fun getTodayProgress_requestsTodayProgressFromRemoteDataSource() = runBlockingTest {
+        val result = repository.getTodayProgress(true)
+
+        assertThat(result.succeeded, `is`(true))
+        val progress = (result as Result.Success).data
+
+        assertThat(progress.percentage, `is`(50))
+    }
+
+    @Test
+    fun getTodayPieEntries_requestsTodayPieEntriesFromRemoteDataSource() = runBlockingTest {
+        val result = repository.getTodayPieEntries(true)
+
+        assertThat(result.succeeded, `is`(true))
+        val entries = (result as Result.Success).data
+
+        assertThat(entries.size, `is`(1))
+        assertThat(entries[0].value, `is`(2f))
+        assertThat(entries[0].label, `is`(cat3.name))
+    }
+
+    @Test
     fun completeTasks_completesTaskInBothRemoteAndLocalDataSource() = runBlockingTest {
         val task = Task("task_4", Calendar.getInstance().time, Time(500L), 1, "some task", 1, false);
         repository.saveTask(task)
