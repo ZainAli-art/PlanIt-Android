@@ -9,6 +9,7 @@ import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.util.isToday
 import java.lang.Exception
 import java.util.*
 
@@ -108,11 +109,36 @@ class FakeDataSource(
     }
 
     override suspend fun getTaskDetail(id: String): Result<TaskDetail> {
-        TODO("Not yet implemented")
+        val task = getTask(id)
+        if (task is Result.Success) {
+            val category = getCategory(task.data.catId) as Result.Success
+            val method = getTaskMethod(task.data.methodId) as Result.Success
+
+            return Result.Success(
+                com.thetechannel.android.planit.getTaskDetail(
+                    category.data,
+                    method.data,
+                    task.data
+                )
+            )
+        } else {
+            return Result.Error(Exception("detail id not found"))
+        }
     }
 
     override suspend fun getTasksOverView(): Result<TasksOverView> {
-        TODO("Not yet implemented")
+        val result = getTasks()
+        when (result) {
+            is Result.Success -> {
+                val tasks = result.data
+                val completed = tasks.filter { it.completed }.size
+                val pending = tasks.filter { !it.completed }.size
+                val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
+
+                return Result.Success(TasksOverView(completed, pending, completedToday))
+            }
+            else -> return Result.Error(Exception("error fetching tasks"))
+        }
     }
 
     override suspend fun getTodayProgress(): Result<TodayProgress> {

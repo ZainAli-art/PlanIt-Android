@@ -7,6 +7,7 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual
@@ -32,8 +33,8 @@ class DefaultAppRepositoryTest {
 
 
     private val task1 = Task("task_1", Calendar.getInstance().time, Time(0L), method1.id, "Maths Assignment", cat1.id, false)
-    private val task2 = Task("task_2", Calendar.getInstance().time, Time(0L), method1.id, "Email", cat2.id, false)
-    private val task3 = Task("task_3", Calendar.getInstance().time, Time(0L), method1.id, "Sprint", cat3.id, false)
+    private val task2 = Task("task_2", Calendar.getInstance().time, Time(0L), method1.id, "Email", cat3.id, false)
+    private val task3 = Task("task_3", Calendar.getInstance().time, Time(0L), method1.id, "Sprint", cat3.id, true)
     val localTasks = listOf(task1)
     val remoteTasks = listOf(task2, task3)
 
@@ -113,6 +114,51 @@ class DefaultAppRepositoryTest {
 
         assertThat(remoteDataSource.tasks?.contains(task), `is`(true))
         assertThat(localDataSource.tasks?.contains(task), `is`(true))
+    }
+
+    @Test
+    fun getTaskDetails_returnsTaskDetailsFromRemoteDataSource() = runBlockingTest {
+        val category = remoteCategories[0]
+        val method = remoteMethods[0]
+        val task = remoteTasks[0]
+        val result = repository.getTaskDetail(task.id, true)
+
+        assertThat(result.succeeded, `is`(true))
+        val detail = (result as Result.Success).data
+
+        assertThat(detail.id, CoreMatchers.`is`(task.id))
+        assertThat(detail.categoryName, CoreMatchers.`is`(category.name))
+        assertThat(detail.methodName, CoreMatchers.`is`(method.name))
+        assertThat(detail.methodIconUrl, CoreMatchers.`is`(method.iconUrl))
+        assertThat(
+            detail.timeLapse.time,
+            CoreMatchers.`is`(method.workLapse.time + method.breakLapse.time)
+        )
+        assertThat(detail.title, CoreMatchers.`is`(task.title))
+        assertThat(detail.workStart, CoreMatchers.`is`(task.startAt))
+        assertThat(
+            detail.workEnd.time,
+            CoreMatchers.`is`(task.startAt.time + method.workLapse.time)
+        )
+        assertThat(
+            detail.breakStart.time,
+            CoreMatchers.`is`(task.startAt.time + method.workLapse.time)
+        )
+        assertThat(
+            detail.breakEnd.time,
+            CoreMatchers.`is`(task.startAt.time + method.workLapse.time + method.breakLapse.time)
+        )
+    }
+
+    @Test
+    fun getTasksOverview_returnsTasksOverviewFromRemoteDataSource() = runBlockingTest {
+        val result = repository.getTasksOverView(true)
+
+        assertThat(result.succeeded, `is`(true))
+        val overview = (result as Result.Success).data
+        assertThat(overview.completedTasks, `is`(1))
+        assertThat(overview.pendingTasks, `is`(1))
+        assertThat(overview.tasksCompletedToday, `is`(1))
     }
 
     @Test

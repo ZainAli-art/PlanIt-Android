@@ -144,15 +144,28 @@ class DefaultAppRepository(
     }
 
     override suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTaskFromRemoteDataSource(id)
+        }
+        return localDataSource.getTask(id)
     }
 
     override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            val task = getTask(id, true)
+            if (task is Result.Success) {
+                updateCategoryFromRemoteDataSource(task.data.catId)
+                updateTaskMethodFromRemoteDataSource(task.data.methodId)
+            }
+        }
+        return localDataSource.getTaskDetail(id)
     }
 
     override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
-        TODO("Not yet implemented")
+        if (forceUpdate) {
+            updateTasksFromRemoteDataSource()
+        }
+        return localDataSource.getTasksOverView()
     }
 
     override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
