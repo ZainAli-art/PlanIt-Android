@@ -2,7 +2,7 @@ package com.thetechannel.android.planit.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.thetechannel.android.planit.FakeAndroidTestRepository
-import com.thetechannel.android.planit.OpenTasksEvent
+import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
@@ -77,7 +77,7 @@ class HomeViewModelTest {
         val event = viewModel.eventOpenTasks.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
-        assertThat(event.peekContent(), `is`(OpenTasksEvent.PENDING))
+        assertThat(event.peekContent(), `is`(TaskFilterType.PENDING))
     }
 
     @Test
@@ -87,7 +87,7 @@ class HomeViewModelTest {
         val event = viewModel.eventOpenTasks.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
-        assertThat(event.peekContent(), `is`(OpenTasksEvent.COMPLETED))
+        assertThat(event.peekContent(), `is`(TaskFilterType.COMPLETED))
 
 
     }
@@ -99,6 +99,6 @@ class HomeViewModelTest {
         val event = viewModel.eventOpenTasks.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
-        assertThat(event.peekContent(), `is`(OpenTasksEvent.COMPLETED_TODAY))
+        assertThat(event.peekContent(), `is`(TaskFilterType.COMPLETED_TODAY))
     }
 }

@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit
 
-enum class OpenTasksEvent {
+enum class TaskFilterType {
+    ALL,
     PENDING,
     COMPLETED,
     COMPLETED_TODAY
