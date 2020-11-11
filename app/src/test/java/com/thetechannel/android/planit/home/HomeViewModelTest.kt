@@ -2,12 +2,14 @@ package com.thetechannel.android.planit.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.thetechannel.android.planit.FakeAndroidTestRepository
+import com.thetechannel.android.planit.OpenTasksEvent
 import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -66,5 +68,37 @@ class HomeViewModelTest {
         assertThat(entries.size, `is`(1))
         assertThat(entries[0].value, `is`(2f))
         assertThat(entries[0].label, `is`(category.name))
+    }
+
+    @Test
+    fun openPendingTasks_setsUpLoadTasksEventToLoadPendingTasks() {
+        viewModel.openPendingTasks()
+
+        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+
+        assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
+        assertThat(event.peekContent(), `is`(OpenTasksEvent.PENDING))
+    }
+
+    @Test
+    fun openCompletedTasks_setsUpLoadTasksEventToLoadCompletedTasks() {
+        viewModel.openCompletedTasks()
+
+        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+
+        assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
+        assertThat(event.peekContent(), `is`(OpenTasksEvent.COMPLETED))
+
+
+    }
+
+    @Test
+    fun openCompletedTodayTasks_setsUpLoadTaskEventToCompletedTodayTasks() {
+        viewModel.openTasksCompletedToday()
+
+        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+
+        assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
+        assertThat(event.peekContent(), `is`(OpenTasksEvent.COMPLETED_TODAY))
     }
 }
