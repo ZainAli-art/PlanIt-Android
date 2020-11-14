@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewmodel"
             type="com.thetechannel.android.planit.home.HomeViewModel" />
@@ -54,9 +53,10 @@
 
                         <TextView
                             android:id="@+id/pendingTasks"
+                            android:text="@{String.valueOf(viewmodel.tasksOverView.pendingTasks)}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="7"
+                            tools:text="7"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
                             android:textColor="@color/theme_orange" />
 
@@ -81,10 +81,11 @@
                         app:layout_constraintTop_toTopOf="@+id/pendingTasksContainer">
 
                         <TextView
-                            android:id="@+id/tasksDoneToday"
+                            android:id="@+id/completedTodayTasks"
+                            android:text="@{String.valueOf(viewmodel.tasksOverView.tasksCompletedToday)}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3"
+                            tools:text="3"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
                             android:textColor="@color/theme_green" />
 
@@ -110,9 +111,10 @@
 
                         <TextView
                             android:id="@+id/completedTasks"
+                            android:text="@{String.valueOf(viewmodel.tasksOverView.completedTasks)}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="23"
+                            tools:text="23"
                             android:textAlignment="center"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
                             android:textColor="@color/secondaryColor" />

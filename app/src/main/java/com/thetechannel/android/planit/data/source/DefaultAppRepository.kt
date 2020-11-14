@@ -54,22 +54,15 @@ class DefaultAppRepository(
     }
 
     override fun observeTasksOverView(): LiveData<Result<TasksOverView>> {
-        // Stub
-        return MutableLiveData<Result<TasksOverView>>(Result.Success(TasksOverView(3, 2, 1)))
+        return localDataSource.observeTasksOverView()
     }
 
     override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
-        // Stub
-        return MutableLiveData<Result<TodayProgress>>(Result.Success(TodayProgress(50)))
+        return localDataSource.observeTodayProgress()
     }
 
     override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
-        // Stub
-        return MutableLiveData<Result<List<PieEntry>>>(Result.Success(listOf(
-            PieEntry(3f, "Business"),
-            PieEntry(2f, "Study"),
-            PieEntry(1f, "Sport")
-        )))
+        return localDataSource.observeTodayPieEntries()
     }
 
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -36,6 +37,11 @@ class HomeFragment : Fragment() {
         }
 
         return viewDataBinding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

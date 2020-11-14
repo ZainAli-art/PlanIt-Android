@@ -74,6 +74,7 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override fun observeTasks(day: Date): LiveData<Result<List<Task>>> {
+        runBlocking { refreshTasks() }
         return observableTasks.map { tasks ->
             when (tasks) {
                 is Result.Loading -> Result.Loading
@@ -283,7 +284,7 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun refreshTasks() {
-        observableTasks.value = getTasks(false)
+        observableTasks.postValue(getTasks(false))
     }
 
     override suspend fun completeTask(task: Task) {
