@@ -6,19 +6,36 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.thetechannel.android.planit.EventObserver
+import com.thetechannel.android.planit.MyApplication
 import com.thetechannel.android.planit.R
+import com.thetechannel.android.planit.TaskFilterType
+import com.thetechannel.android.planit.databinding.FragmentHomeBinding
+import com.thetechannel.android.planit.tasks.TasksFragmentArgs
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
+
+    private val viewModel by viewModels<HomeViewModel> {
+        HomeViewModelFactory((requireActivity().applicationContext as MyApplication).repository)
+    }
+
+    private lateinit var viewDataBinding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        viewDataBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
+            viewmodel = viewModel
+        }
+
+        return viewDataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,6 +43,18 @@ class HomeFragment : Fragment() {
 
         setUpDayPieChart()
         setUpPerformanceLineChart()
+        setUpNavigation()
+    }
+
+    private fun setUpNavigation() {
+        viewModel.eventOpenTasks.observe(viewLifecycleOwner, EventObserver {
+            openTasks(it)
+        })
+    }
+
+    private fun openTasks(filterType: TaskFilterType) {
+        val action = HomeFragmentDirections.actionHomeFragmentToTasksFragment(filterType)
+        findNavController().navigate(action)
     }
 
     private fun setUpDayPieChart() {

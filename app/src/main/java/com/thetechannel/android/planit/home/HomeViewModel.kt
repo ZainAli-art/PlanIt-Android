@@ -1,9 +1,6 @@
 package com.thetechannel.android.planit.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.Event
 import com.thetechannel.android.planit.TaskFilterType
@@ -52,4 +49,12 @@ class HomeViewModel(
     fun openTasksCompletedToday() {
         _eventOpenTasks.value = Event(TaskFilterType.COMPLETED_TODAY)
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class HomeViewModelFactory(
+    private val repository: AppRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>) =
+        HomeViewModel(repository) as T
 }

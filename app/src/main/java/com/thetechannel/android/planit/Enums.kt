@@ -1,6 +1,10 @@
 package com.thetechannel.android.planit
 
-enum class TaskFilterType {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+enum class TaskFilterType : Parcelable {
     ALL,
     PENDING,
     COMPLETED,

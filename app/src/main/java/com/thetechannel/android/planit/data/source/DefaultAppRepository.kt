@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.database.TasksOverView
@@ -53,15 +54,22 @@ class DefaultAppRepository(
     }
 
     override fun observeTasksOverView(): LiveData<Result<TasksOverView>> {
-        TODO("Not yet implemented")
+        // Stub
+        return MutableLiveData<Result<TasksOverView>>(Result.Success(TasksOverView(3, 2, 1)))
     }
 
     override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
-        TODO("Not yet implemented")
+        // Stub
+        return MutableLiveData<Result<TodayProgress>>(Result.Success(TodayProgress(50)))
     }
 
     override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
-        TODO("Not yet implemented")
+        // Stub
+        return MutableLiveData<Result<List<PieEntry>>>(Result.Success(listOf(
+            PieEntry(3f, "Business"),
+            PieEntry(2f, "Study"),
+            PieEntry(1f, "Sport")
+        )))
     }
 
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
