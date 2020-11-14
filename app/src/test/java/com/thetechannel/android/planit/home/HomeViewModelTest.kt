@@ -1,8 +1,8 @@
 package com.thetechannel.android.planit.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.thetechannel.android.planit.FakeAndroidTestRepository
 import com.thetechannel.android.planit.TaskFilterType
+import com.thetechannel.android.planit.data.source.FakeTestRepository
 import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
@@ -25,7 +25,7 @@ class HomeViewModelTest {
     private lateinit var task3: Task
     private lateinit var category: Category
 
-    private lateinit var repository: FakeAndroidTestRepository
+    private lateinit var repository: FakeTestRepository
     private lateinit var viewModel: HomeViewModel
 
     @get:Rule
@@ -33,7 +33,7 @@ class HomeViewModelTest {
 
     @Before
     fun setUp() = runBlocking {
-        repository = FakeAndroidTestRepository()
+        repository = FakeTestRepository()
         task1 = Task(UUID.randomUUID().toString(), Calendar.getInstance().time, Time(1500), 1, "Maths Assignment", 1, true)
         task2 = Task(UUID.randomUUID().toString(), Calendar.getInstance().time, Time(1540), 1, "Read Emails", 1, false)
         task3 = Task(UUID.randomUUID().toString(), Date(25L), Time(100), 1, "Clean my room", 1, true)

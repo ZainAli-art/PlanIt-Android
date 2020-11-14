@@ -1,19 +1,16 @@
-package com.thetechannel.android.planit
+package com.thetechannel.android.planit.data.source
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
-import com.thetechannel.android.planit.util.isSameDay
 import com.thetechannel.android.planit.util.isToday
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
@@ -22,7 +19,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FakeAndroidTestRepository : AppRepository {
+class FakeTestRepository : AppRepository {
     private val observableCategories: MutableLiveData<Result<List<Category>>> = MutableLiveData()
     private val observableTaskMethods: MutableLiveData<Result<List<TaskMethod>>> = MutableLiveData()
     private val observableTasks: MutableLiveData<Result<List<Task>>> = MutableLiveData()

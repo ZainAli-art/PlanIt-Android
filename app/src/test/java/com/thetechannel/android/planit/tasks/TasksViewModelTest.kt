@@ -1,8 +1,8 @@
 package com.thetechannel.android.planit.tasks
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.thetechannel.android.planit.FakeAndroidTestRepository
 import com.thetechannel.android.planit.TaskFilterType
+import com.thetechannel.android.planit.data.source.FakeTestRepository
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.getOrAwaitValue
@@ -23,14 +23,14 @@ class TasksViewModelTest {
     private lateinit var task2: Task
     private lateinit var task1: Task
     private lateinit var tasks: List<Task>
-    private lateinit var repository: FakeAndroidTestRepository
+    private lateinit var repository: FakeTestRepository
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() = runBlocking {
-        repository = FakeAndroidTestRepository()
+        repository = FakeTestRepository()
         task1 =
             Task("task_1", Date(25L), Time(100), 1, "Clean my room", 1, true)
         task2 = Task(
