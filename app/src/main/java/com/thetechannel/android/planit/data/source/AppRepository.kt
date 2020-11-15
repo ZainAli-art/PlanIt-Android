@@ -26,6 +26,8 @@ interface AppRepository {
 
     fun observeTask(id: String): LiveData<Result<Task>>
 
+    fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>>
+
     fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>>
 
     fun observeTasksOverView(): LiveData<Result<TasksOverView>>
@@ -47,6 +49,8 @@ interface AppRepository {
     suspend fun getTasks(day: Date, forceUpdate: Boolean): Result<List<Task>>
 
     suspend fun getTask(id: String, forceUpdate: Boolean): Result<Task>
+
+    suspend fun getTaskDetails(forceUpdate: Boolean): Result<List<TaskDetail>>
 
     suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail>
 

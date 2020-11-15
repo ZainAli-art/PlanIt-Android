@@ -49,6 +49,10 @@ class DefaultAppRepository(
         TODO("Not yet implemented")
     }
 
+    override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
+        TODO("Not yet implemented")
+    }
+
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         TODO("Not yet implemented")
     }
@@ -159,6 +163,15 @@ class DefaultAppRepository(
             updateTaskFromRemoteDataSource(id)
         }
         return localDataSource.getTask(id)
+    }
+
+    override suspend fun getTaskDetails(forceUpdate: Boolean): Result<List<TaskDetail>> {
+        if (forceUpdate) {
+            updateCategoriesFromRemoteDataSouce()
+            updateTaskMethodsFromRemoteDataSource()
+            updateTasksFromRemoteDataSource()
+        }
+        return localDataSource.getTaskDetails()
     }
 
     override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {

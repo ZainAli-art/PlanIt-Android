@@ -7,7 +7,6 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual
@@ -117,7 +116,7 @@ class DefaultAppRepositoryTest {
     }
 
     @Test
-    fun getTaskDetails_returnsTaskDetailsFromRemoteDataSource() = runBlockingTest {
+    fun getTaskDetailById_returnsTaskDetailFromRemoteDataSource() = runBlockingTest {
         val category = remoteCategories[0]
         val method = remoteMethods[0]
         val task = remoteTasks[0]
@@ -126,27 +125,83 @@ class DefaultAppRepositoryTest {
         assertThat(result.succeeded, `is`(true))
         val detail = (result as Result.Success).data
 
-        assertThat(detail.id, CoreMatchers.`is`(task.id))
-        assertThat(detail.categoryName, CoreMatchers.`is`(category.name))
-        assertThat(detail.methodName, CoreMatchers.`is`(method.name))
-        assertThat(detail.methodIconUrl, CoreMatchers.`is`(method.iconUrl))
+        assertThat(detail.id, `is`(task.id))
+        assertThat(detail.categoryName, `is`(category.name))
+        assertThat(detail.methodName, `is`(method.name))
+        assertThat(detail.methodIconUrl, `is`(method.iconUrl))
         assertThat(
             detail.timeLapse.time,
-            CoreMatchers.`is`(method.workLapse.time + method.breakLapse.time)
+            `is`(method.workLapse.time + method.breakLapse.time)
         )
-        assertThat(detail.title, CoreMatchers.`is`(task.title))
-        assertThat(detail.workStart, CoreMatchers.`is`(task.startAt))
+        assertThat(detail.title, `is`(task.title))
+        assertThat(detail.workStart, `is`(task.startAt))
         assertThat(
             detail.workEnd.time,
-            CoreMatchers.`is`(task.startAt.time + method.workLapse.time)
+            `is`(task.startAt.time + method.workLapse.time)
         )
         assertThat(
             detail.breakStart.time,
-            CoreMatchers.`is`(task.startAt.time + method.workLapse.time)
+            `is`(task.startAt.time + method.workLapse.time)
         )
         assertThat(
             detail.breakEnd.time,
-            CoreMatchers.`is`(task.startAt.time + method.workLapse.time + method.breakLapse.time)
+            `is`(task.startAt.time + method.workLapse.time + method.breakLapse.time)
+        )
+    }
+
+    @Test
+    fun getTaskDetails_requestsAllTaskDetailsFromRemoteDataSource() = runBlockingTest {
+        val result = repository.getTaskDetails(true)
+
+        assertThat(result.succeeded, `is`(true))
+        val details = (result as Result.Success).data
+        assertThat(details.size, `is`(2))
+
+        val detail1 = details[0]
+        assertThat(detail1.id, `is`(task2.id))
+        assertThat(detail1.categoryName, `is`(cat3.name))
+        assertThat(detail1.methodName, `is`(method1.name))
+        assertThat(detail1.methodIconUrl, `is`(method1.iconUrl))
+        assertThat(
+            detail1.timeLapse.time,
+            `is`(method1.workLapse.time + method1.breakLapse.time)
+        )
+        assertThat(detail1.title, `is`(task2.title))
+        assertThat(detail1.workStart, `is`(task2.startAt))
+        assertThat(
+            detail1.workEnd.time,
+            `is`(task2.startAt.time + method1.workLapse.time)
+        )
+        assertThat(
+            detail1.breakStart.time,
+            `is`(task2.startAt.time + method1.workLapse.time)
+        )
+        assertThat(
+            detail1.breakEnd.time,
+            `is`(task2.startAt.time + method1.workLapse.time + method1.breakLapse.time)
+        )
+        val detail2 = details[1]
+        assertThat(detail2.id, `is`(task3.id))
+        assertThat(detail2.categoryName, `is`(cat3.name))
+        assertThat(detail2.methodName, `is`(method1.name))
+        assertThat(detail2.methodIconUrl, `is`(method1.iconUrl))
+        assertThat(
+            detail2.timeLapse.time,
+            `is`(method1.workLapse.time + method1.breakLapse.time)
+        )
+        assertThat(detail2.title, `is`(task3.title))
+        assertThat(detail2.workStart, `is`(task3.startAt))
+        assertThat(
+            detail2.workEnd.time,
+            `is`(task3.startAt.time + method1.workLapse.time)
+        )
+        assertThat(
+            detail2.breakStart.time,
+            `is`(task3.startAt.time + method1.workLapse.time)
+        )
+        assertThat(
+            detail2.breakEnd.time,
+            `is`(task3.startAt.time + method1.workLapse.time + method1.breakLapse.time)
         )
     }
 

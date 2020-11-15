@@ -113,7 +113,23 @@ class FakeDataSource(
     }
 
     override suspend fun getTaskDetails(): Result<List<TaskDetail>> {
-        TODO("Not yet implemented")
+        val tasks = getTasks()
+        if (tasks is Result.Success) {
+            val details = mutableListOf<TaskDetail>()
+            tasks.data.forEach { task ->
+                val category = getCategory(task.catId)
+                val method = getTaskMethod(task.methodId)
+
+                if (category is Result.Success && method is Result.Success) {
+                    details.add(com.thetechannel.android.planit.getTaskDetail(category.data, method.data, task))
+                } else {
+                    return Result.Error(Exception("invalid details"))
+                }
+            }
+            return Result.Success(details)
+        } else {
+            return Result.Error(Exception("details not found"))
+        }
     }
 
     override suspend fun getTaskDetail(id: String): Result<TaskDetail> {

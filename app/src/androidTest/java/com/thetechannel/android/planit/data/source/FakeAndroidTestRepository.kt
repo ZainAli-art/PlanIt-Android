@@ -103,6 +103,10 @@ class FakeAndroidTestRepository : AppRepository {
         }
     }
 
+    override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
+        TODO("Not yet implemented")
+    }
+
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         TODO("Not implemented yet")
     }
@@ -177,6 +181,10 @@ class FakeAndroidTestRepository : AppRepository {
             return Result.Success(it)
         }
         return Result.Error(Exception("Could not find task"))
+    }
+
+    override suspend fun getTaskDetails(forceUpdate: Boolean): Result<List<TaskDetail>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {
