@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="task"
-            type="com.thetechannel.android.planit.data.source.domain.Task" />
+            name="taskDetail"
+            type="com.thetechannel.android.planit.data.source.domain.TaskDetail" />
         <variable
             name="viewmodel"
             type="com.thetechannel.android.planit.tasks.TasksViewModel" />
@@ -81,7 +81,7 @@
 
             <TextView
                 android:id="@+id/taskTitle"
-                android:text="@{task.title}"
+                android:text="@{taskDetail.title}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_padding"

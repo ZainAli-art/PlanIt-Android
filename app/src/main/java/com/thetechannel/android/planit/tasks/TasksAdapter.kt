@@ -5,18 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.databinding.TaskItemBinding
 
 class TasksAdapter(private val viewModel: TasksViewModel) :
-    ListAdapter<Task, TasksAdapter.ViewHolder>(TaskDiffCallback()) {
+    ListAdapter<TaskDetail, TasksAdapter.ViewHolder>(TaskDiffCallback()) {
 
     class ViewHolder private constructor(val binding: TaskItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(viewModel: TasksViewModel, item: Task) {
+        fun bind(viewModel: TasksViewModel, item: TaskDetail) {
             binding.viewmodel = viewModel
-            binding.task = item
+            binding.taskDetail = item
             binding.executePendingBindings()
         }
 
@@ -39,12 +39,12 @@ class TasksAdapter(private val viewModel: TasksViewModel) :
     }
 }
 
-class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
-    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+class TaskDiffCallback : DiffUtil.ItemCallback<TaskDetail>() {
+    override fun areItemsTheSame(oldItem: TaskDetail, newItem: TaskDetail): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+    override fun areContentsTheSame(oldItem: TaskDetail, newItem: TaskDetail): Boolean {
         return oldItem == newItem
     }
 }

@@ -104,7 +104,33 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
-        TODO("Not yet implemented")
+        runBlocking {
+            refreshCategories()
+            refreshTaskMethods()
+            refreshTasks()
+        }
+        return observableTasks.map { tasks ->
+            when (tasks) {
+                is Result.Success -> {
+                    val details = mutableListOf<TaskDetail>()
+                    tasks.data.forEach { task ->
+                        runBlocking {
+                            val category = getCategory(task.catId, false)
+                            val method = getTaskMethod(task.methodId, false)
+
+                            if (category is Result.Success && method is Result.Success) {
+                                details.add(getTaskDetail(category.data, method.data, task))
+                            } else {
+                                return@runBlocking Result.Error(Exception("invalid details"))
+                            }
+                        }
+                    }
+                    Result.Success(details)
+                }
+                is Result.Loading -> Result.Loading
+                is Result.Error -> Result.Error(tasks.exception)
+            }
+        }
     }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
@@ -153,7 +179,7 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>> {
-        TODO("Not yet implemented")
+        return Result.Success(taskMethodsServiceData.values.toList())
     }
 
     override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod> {
@@ -286,11 +312,11 @@ class FakeAndroidTestRepository : AppRepository {
     }
 
     override suspend fun refreshCategories() {
-        observableCategories.value = getCategories(false)
+        observableCategories.postValue(getCategories(false))
     }
 
     override suspend fun refreshTaskMethods() {
-        observableTaskMethods.value = getTaskMethods(false)
+        observableTaskMethods.postValue(getTaskMethods(false))
     }
 
     override suspend fun refreshTasks() {

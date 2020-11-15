@@ -46,7 +46,7 @@ class TasksFragment : Fragment() {
         viewDataBinding.tasksList.adapter
         listAdapter = TasksAdapter(viewModel)
         viewDataBinding.tasksList.adapter = this.listAdapter
-        viewModel.tasks.observe(viewLifecycleOwner, Observer {
+        viewModel.taskDetails.observe(viewLifecycleOwner, Observer {
             listAdapter.submitList(it)
         })
     }
