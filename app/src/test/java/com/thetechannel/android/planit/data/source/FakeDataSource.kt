@@ -34,15 +34,19 @@ class FakeDataSource(
         TODO("Not yet implemented")
     }
 
-    override fun observeTask(): LiveData<Result<List<Task>>> {
+    override fun observeTasks(): LiveData<Result<List<Task>>> {
         TODO("Not yet implemented")
     }
 
-    override fun observeTask(day: Date): LiveData<Result<List<Task>>> {
+    override fun observeTasks(day: Date): LiveData<Result<List<Task>>> {
         TODO("Not yet implemented")
     }
 
     override fun observeTask(id: String): LiveData<Result<Task>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
         TODO("Not yet implemented")
     }
 
@@ -106,6 +110,10 @@ class FakeDataSource(
             if (it.id == id) return Result.Success(it)
         }
         return Result.Error(Exception("task id not found"))
+    }
+
+    override suspend fun getTaskDetails(): Result<List<TaskDetail>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getTaskDetail(id: String): Result<TaskDetail> {

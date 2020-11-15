@@ -13,6 +13,7 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.data.succeeded
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Test
 
@@ -215,6 +216,57 @@ class LocalDataSourceTest {
         assertThat(todayTask2.title, `is`(loadedTask2.title))
         assertThat(todayTask2.catId, `is`(loadedTask2.catId))
         assertThat(todayTask2.completed, `is`(loadedTask2.completed))
+    }
+
+    @Test
+    fun insertTasks_fetchTaskDetails_returnsTaskDetailsOfInsertedTasks() = runBlocking {
+        val category = Category(1, "Study")
+        val method = TaskMethod(1, "pomodoro", Time(25000L), Time(5000L), URI("https://localhost"))
+        val task1 = Task("task_1", Date(23000L), Time(2000L), method.id, "Maths Assignment", category.id, false)
+        val task2 = Task("task_2", Date(24000L), Time(2000L), method.id, "Half an hour jog", category.id, true)
+        dataSource.saveCategory(category)
+        dataSource.saveTaskMethod(method)
+        arrayOf(task1, task2).forEach { dataSource.saveTask(it) }
+
+        val result = dataSource.getTaskDetails()
+
+        assertThat(result.succeeded, `is`(true))
+        val details = (result as Result.Success).data
+        assertThat(details.size, `is`(2))
+        val detail1 = details[0]
+        MatcherAssert.assertThat(detail1.id, `is`(task1.id))
+        MatcherAssert.assertThat(detail1.categoryName, `is`(category.name))
+        MatcherAssert.assertThat(detail1.methodName, `is`(method.name))
+        MatcherAssert.assertThat(detail1.methodIconUrl, `is`(method.iconUrl))
+        MatcherAssert.assertThat(
+            detail1.timeLapse,
+            `is`(Time(method.workLapse.time + method.breakLapse.time))
+        )
+        MatcherAssert.assertThat(detail1.title, `is`(task1.title))
+        MatcherAssert.assertThat(detail1.workStart, `is`(task1.startAt))
+        MatcherAssert.assertThat(detail1.workEnd, `is`(Time(task1.startAt.time + method.workLapse.time)))
+        MatcherAssert.assertThat(detail1.breakStart, `is`(Time(task1.startAt.time + method.workLapse.time)))
+        MatcherAssert.assertThat(
+            detail1.breakEnd,
+            `is`(Time(task1.startAt.time + method.workLapse.time + method.breakLapse.time))
+        )
+        val detail2 = details[1]
+        MatcherAssert.assertThat(detail2.id, `is`(task2.id))
+        MatcherAssert.assertThat(detail2.categoryName, `is`(category.name))
+        MatcherAssert.assertThat(detail2.methodName, `is`(method.name))
+        MatcherAssert.assertThat(detail2.methodIconUrl, `is`(method.iconUrl))
+        MatcherAssert.assertThat(
+            detail2.timeLapse,
+            `is`(Time(method.workLapse.time + method.breakLapse.time))
+        )
+        MatcherAssert.assertThat(detail2.title, `is`(task2.title))
+        MatcherAssert.assertThat(detail2.workStart, `is`(task2.startAt))
+        MatcherAssert.assertThat(detail2.workEnd, `is`(Time(task2.startAt.time + method.workLapse.time)))
+        MatcherAssert.assertThat(detail2.breakStart, `is`(Time(task2.startAt.time + method.workLapse.time)))
+        MatcherAssert.assertThat(
+            detail2.breakEnd,
+            `is`(Time(task2.startAt.time + method.workLapse.time + method.breakLapse.time))
+        )
     }
 
     @Test

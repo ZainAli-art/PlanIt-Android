@@ -20,11 +20,13 @@ interface AppDataSource {
 
     fun observeTaskMethod(id: Int): LiveData<Result<TaskMethod>>
 
-    fun observeTask(): LiveData<Result<List<Task>>>
+    fun observeTasks(): LiveData<Result<List<Task>>>
 
-    fun observeTask(day: Date): LiveData<Result<List<Task>>>
+    fun observeTasks(day: Date): LiveData<Result<List<Task>>>
 
     fun observeTask(id: String): LiveData<Result<Task>>
+
+    fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>>
 
     fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>>
 
@@ -47,6 +49,8 @@ interface AppDataSource {
     suspend fun getTasks(day: Date): Result<List<Task>>
 
     suspend fun getTask(id: String): Result<Task>
+
+    suspend fun getTaskDetails(): Result<List<TaskDetail>>
 
     suspend fun getTaskDetail(id: String): Result<TaskDetail>
 

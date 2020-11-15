@@ -57,7 +57,7 @@ class LocalDataSource(
         }
     }
 
-    override fun observeTask(): LiveData<Result<List<Task>>> {
+    override fun observeTasks(): LiveData<Result<List<Task>>> {
         return tasksDao.observeAll().map {
             Result.Success(
                 it.map {
@@ -67,7 +67,7 @@ class LocalDataSource(
         }
     }
 
-    override fun observeTask(day: Date): LiveData<Result<List<Task>>> {
+    override fun observeTasks(day: Date): LiveData<Result<List<Task>>> {
         return tasksDao.observeByDay(day.time).map {
             Result.Success(
                 it.map {
@@ -80,6 +80,16 @@ class LocalDataSource(
     override fun observeTask(id: String): LiveData<Result<Task>> {
         return tasksDao.observeById(id).map {
             Result.Success(it.asDomainModel())
+        }
+    }
+
+    override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
+        return tasksDao.observeAllTaskDetails().map {
+            Result.Success(
+                it.map {
+                    it.asDomainModel()
+                }
+            )
         }
     }
 
@@ -183,6 +193,16 @@ class LocalDataSource(
                     it.asDomainModel()
                 }
             )
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getTaskDetails(): Result<List<TaskDetail>> = withContext(ioDispatcher) {
+        return@withContext try {
+            Result.Success(tasksDao.getAllTaskDetails().map {
+                it.asDomainModel()
+            })
         } catch (e: Exception) {
             Result.Error(e)
         }

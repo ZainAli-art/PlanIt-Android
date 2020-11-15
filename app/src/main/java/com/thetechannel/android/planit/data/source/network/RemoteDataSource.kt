@@ -29,15 +29,19 @@ object RemoteDataSource : AppDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun observeTask(): LiveData<Result<List<Task>>> {
+    override fun observeTasks(): LiveData<Result<List<Task>>> {
         TODO("Not yet implemented")
     }
 
-    override fun observeTask(day: Date): LiveData<Result<List<Task>>> {
+    override fun observeTasks(day: Date): LiveData<Result<List<Task>>> {
         TODO("Not yet implemented")
     }
 
     override fun observeTask(id: String): LiveData<Result<Task>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
         TODO("Not yet implemented")
     }
 
@@ -82,6 +86,10 @@ object RemoteDataSource : AppDataSource {
     }
 
     override suspend fun getTask(id: String): Result<Task> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTaskDetails(): Result<List<TaskDetail>> {
         TODO("Not yet implemented")
     }
 
