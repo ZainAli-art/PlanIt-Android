@@ -202,6 +202,39 @@ class TasksDaoTest {
         assertThat(loaded.size, `is`(0))
     }
 
+    @Test
+    fun insertTasks_getAllTaskDetails_returnsDetailOfAllInsertedTasks() = runBlockingTest {
+        val task1 = DbTask("task_1", 23000L, 2000L, taskMethod.id, "Maths Assignment", studyCategory.id, false)
+        val task2 = DbTask("task_2", 23000L, 2000L, taskMethod.id, "Half an hour jog", sportCategory.id, true)
+        arrayOf(task1, task2).forEach { tasksDao.insert(it) }
+
+        val details = tasksDao.getAllTaskDetails()
+
+        assertThat(details.size, `is`(2))
+        val detail1 = details[0]
+        assertThat(detail1.id, `is`(task1.id))
+        assertThat(detail1.category, `is`(studyCategory.name))
+        assertThat(detail1.method, `is`(taskMethod.name))
+        assertThat(detail1.methodIconUrl, `is`(taskMethod.iconUrl))
+        assertThat(detail1.timeLapse, `is`(taskMethod.workLapse + taskMethod.breakLapse))
+        assertThat(detail1.title, `is`(task1.title))
+        assertThat(detail1.workStart, `is`(task1.startAt))
+        assertThat(detail1.workEnd, `is`(task1.startAt + taskMethod.workLapse))
+        assertThat(detail1.breakStart, `is`(task1.startAt + taskMethod.workLapse))
+        assertThat(detail1.breakEnd, `is`(task1.startAt + taskMethod.workLapse + taskMethod.breakLapse))
+        val detail2 = details[1]
+        assertThat(detail2.id, `is`(task2.id))
+        assertThat(detail2.category, `is`(sportCategory.name))
+        assertThat(detail2.method, `is`(taskMethod.name))
+        assertThat(detail2.methodIconUrl, `is`(taskMethod.iconUrl))
+        assertThat(detail2.timeLapse, `is`(taskMethod.workLapse + taskMethod.breakLapse))
+        assertThat(detail2.title, `is`(task2.title))
+        assertThat(detail2.workStart, `is`(task2.startAt))
+        assertThat(detail2.workEnd, `is`(task2.startAt + taskMethod.workLapse))
+        assertThat(detail2.breakStart, `is`(task2.startAt + taskMethod.workLapse))
+        assertThat(detail2.breakEnd, `is`(task2.startAt + taskMethod.workLapse + taskMethod.breakLapse))
+    }
+
     /**
      * Array of versatile tasks, provides a lot of dimensions for test cases
      *

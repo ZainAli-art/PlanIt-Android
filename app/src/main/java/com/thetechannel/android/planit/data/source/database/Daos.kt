@@ -81,7 +81,28 @@ interface TasksDao {
         FROM tasks t 
         JOIN categories c ON t.cat_id = c.id 
         JOIN task_methods m ON t.method_id = m.id
+    """
+    )
+    fun observeAllTaskDetails(): LiveData<List<DbTaskDetail>>
+
+    @Query(
+        """
+        SELECT 
+            t.id AS id, 
+            c.name AS category, 
+            m.name AS method, 
+            m.icon_url AS method_icon_url, 
+            (m.work_lapse + m.break_lapse) AS time_lapse, 
+            t.title AS title, 
+            t.start_at AS work_start, 
+            (t.start_at + m.work_lapse) AS work_end, 
+            (t.start_at + m.work_lapse) AS break_start, 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+        FROM tasks t 
+        JOIN categories c ON t.cat_id = c.id 
+        JOIN task_methods m ON t.method_id = m.id
         WHERE t.id = :id
+        ORDER BY t.day, t.start_at
     """
     )
     fun observeTaskDetailsByTaskId(id: String): LiveData<DbTaskDetail>
@@ -103,6 +124,27 @@ interface TasksDao {
 
     @Query("SELECT * FROM tasks ORDER BY day, start_at")
     suspend fun getAll(): List<DbTask>
+
+    @Query(
+        """
+        SELECT 
+            t.id AS id, 
+            c.name AS category, 
+            m.name AS method, 
+            m.icon_url AS method_icon_url, 
+            (m.work_lapse + m.break_lapse) AS time_lapse, 
+            t.title AS title, 
+            t.start_at AS work_start, 
+            (t.start_at + m.work_lapse) AS work_end, 
+            (t.start_at + m.work_lapse) AS break_start, 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+        FROM tasks t 
+        JOIN categories c ON t.cat_id = c.id 
+        JOIN task_methods m ON t.method_id = m.id
+        ORDER BY t.day, t.start_at
+    """
+    )
+    suspend fun getAllTaskDetails(): List<DbTaskDetail>
 
     @Query(
         """
