@@ -11,7 +11,6 @@ import com.thetechannel.android.planit.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -116,50 +115,6 @@ class TasksViewModelTest {
 
         assertThat(loaded.size, `is`(1))
         loaded[0].assertBelongsTo(category, method, task2)
-    }
-
-    @Test
-    fun setFilteringAsAll_setsUpTasksAsAllInsertedTasks() {
-        val viewModel = TasksViewModel(repository)
-        viewModel.setFiltering(TaskFilterType.ALL)
-
-        val loaded = viewModel.tasks.getOrAwaitValue().sortedBy { it.id }
-
-        assertThat(loaded.size, `is`(3))
-        assertThat(loaded, IsEqual(tasks))
-    }
-
-    @Test
-    fun setFilteringAsPending_setsUpTasksAsPendingTasks() {
-        val viewModel = TasksViewModel(repository)
-        viewModel.setFiltering(TaskFilterType.PENDING)
-
-        val loaded = viewModel.tasks.getOrAwaitValue().sortedBy { it.id }
-
-        assertThat(loaded.size, `is`(1))
-        assertThat(loaded[0], `is`(task3))
-    }
-
-    @Test
-    fun setFilteringAsCompleted_setsUpTasksAsCompletedTasks() {
-        val viewModel = TasksViewModel(repository)
-        viewModel.setFiltering(TaskFilterType.COMPLETED)
-
-        val loaded = viewModel.tasks.getOrAwaitValue().sortedBy { it.id }
-
-        assertThat(loaded.size, `is`(2))
-        assertThat(loaded, IsEqual(listOf(task1, task2)))
-    }
-
-    @Test
-    fun setFilteringAsCompletedToday_setsUpTasksAsThoseCompletedToday() {
-        val viewModel = TasksViewModel(repository)
-        viewModel.setFiltering(TaskFilterType.COMPLETED_TODAY)
-
-        val loaded = viewModel.tasks.getOrAwaitValue().sortedBy { it.id }
-
-        assertThat(loaded.size, `is`(1))
-        assertThat(loaded[0], IsEqual(task2))
     }
 
     private fun TaskDetail.assertBelongsTo(category: Category, method: TaskMethod, task: Task) {
