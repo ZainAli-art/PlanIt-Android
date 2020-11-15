@@ -3,6 +3,7 @@ package com.thetechannel.android.planit.data.source
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.database.TasksOverView
@@ -13,6 +14,7 @@ import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.util.isToday
 import kotlinx.coroutines.runBlocking
+import java.lang.Error
 import java.lang.Exception
 import java.sql.Time
 import java.util.*
@@ -103,7 +105,36 @@ class FakeTestRepository : AppRepository {
     }
 
     override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
-        TODO("Not yet implemented")
+        runBlocking {
+            refreshCategories()
+            refreshTaskMethods()
+            refreshTasks()
+        }
+        return observableTasks.map { tasks ->
+            when (tasks) {
+                is Result.Loading -> Result.Loading
+                is Result.Error -> Result.Error(tasks.exception)
+                is Result.Success -> {
+                    val details = mutableListOf<TaskDetail>()
+                    tasks.data.sortedWith(Comparator { o1, o2 ->
+                        if (o1.day.equals(o2.day)) o1.startAt.compareTo(o2.startAt)
+                        else o1.day.compareTo(o2.day)
+                    }).forEach { task ->
+                        runBlocking {
+                            val category = getCategory(task.catId, true)
+                            val method = getTaskMethod(task.methodId, true)
+
+                            if (category is Result.Success && method is Result.Success) {
+                                details.add(com.thetechannel.android.planit.getTaskDetail(category.data, method.data, task))
+                            } else {
+                                return@runBlocking Result.Error(Exception("invalid details"))
+                            }
+                        }
+                    }
+                    Result.Success(details)
+                }
+            }
+        }
     }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
@@ -152,7 +183,7 @@ class FakeTestRepository : AppRepository {
     }
 
     override suspend fun getTaskMethods(forceUpdate: Boolean): Result<List<TaskMethod>> {
-        TODO("Not yet implemented")
+        return Result.Success(taskMethodsServiceData.values.toList())
     }
 
     override suspend fun getTaskMethod(id: Int, forceUpdate: Boolean): Result<TaskMethod> {
@@ -195,22 +226,9 @@ class FakeTestRepository : AppRepository {
             return return Result.Error(Exception("Could not find task detail"))
         }
 
-        val detail = getTaskDetail(category, method, task)
+        val detail = com.thetechannel.android.planit.getTaskDetail(category, method, task)
         return Result.Success(detail)
     }
-
-    private fun getTaskDetail(category: Category, method: TaskMethod, task: Task) = TaskDetail(
-        id = task.id,
-        categoryName = category.name,
-        methodName = method.name,
-        methodIconUrl = method.iconUrl,
-        timeLapse = Time(method.workLapse.time + method.breakLapse.time),
-        title = task.title,
-        workStart = task.startAt,
-        workEnd = Time(task.startAt.time + method.workLapse.time),
-        breakStart = Time(task.startAt.time + method.workLapse.time),
-        breakEnd = Time(task.startAt.time + method.workLapse.time + method.breakLapse.time)
-    )
 
     override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
         val tasks = (getTasks(false) as Result.Success).data

@@ -34,11 +34,13 @@ data class DbTaskDetail(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "category") val category: String,
     @ColumnInfo(name = "method") val method: String,
+    @ColumnInfo(name = "day") val day: Long,
     @ColumnInfo(name = "method_icon_url") val methodIconUrl: String,
     @ColumnInfo(name = "time_lapse") val timeLapse: Long,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "work_start") val workStart: Long,
     @ColumnInfo(name = "work_end") val workEnd: Long,
     @ColumnInfo(name = "break_start") val breakStart: Long,
-    @ColumnInfo(name = "break_end") val breakEnd: Long
+    @ColumnInfo(name = "break_end") val breakEnd: Long,
+    @ColumnInfo(name = "completed") val completed: Boolean
 )

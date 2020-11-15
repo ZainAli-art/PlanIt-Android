@@ -31,11 +31,13 @@ data class TaskDetail(
     val id: String,
     val categoryName: String,
     val methodName: String,
+    val day: Date,
     val methodIconUrl: URI,
     val timeLapse: Time,
     val title: String,
     val workStart: Time,
     val workEnd: Time,
     val breakStart: Time,
-    val breakEnd: Time
+    val breakEnd: Time,
+    val completed: Boolean
 )

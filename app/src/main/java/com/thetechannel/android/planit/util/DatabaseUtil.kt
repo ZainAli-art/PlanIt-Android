@@ -34,13 +34,15 @@ fun DbTaskDetail.asDomainModel() = TaskDetail(
     id,
     category,
     method,
+    day = Date(day),
     methodIconUrl = URI(methodIconUrl),
     timeLapse =  Time(timeLapse),
     title = title,
     workStart = Time(workStart),
     workEnd = Time(workEnd),
     breakStart = Time(breakStart),
-    breakEnd = Time(breakEnd)
+    breakEnd = Time(breakEnd),
+    completed = completed
 )
 
 fun TodayPieDataView.asPieEntry() = PieEntry(count.toFloat(), name)

@@ -113,13 +113,15 @@ class DomainUtilTest {
             "detail_1",
             "Study",
             "Pomodoro",
+            Calendar.getInstance().time,
             URI("https://localhost"),
             timeLapse,
             "Maths Assignment",
             workStart,
             workEnd,
             breakStart,
-            breakEnd
+            breakEnd,
+            false
         )
 
         assertThat(detail.interval(),  `is`("02:12 PM - 02:42 PM"))
@@ -136,13 +138,15 @@ class DomainUtilTest {
             "detail_1",
             "Study",
             "Pomodoro",
+            Calendar.getInstance().time,
             URI("https://localhost"),
             timeLapse,
             "Maths Assignment",
             workStart,
             workEnd,
             breakStart,
-            breakEnd
+            breakEnd,
+            false
         )
 
         val interval: String = detail.timeRequired()

@@ -71,13 +71,15 @@ interface TasksDao {
             t.id AS id, 
             c.name AS category, 
             m.name AS method, 
+            t.day AS day,
             m.icon_url AS method_icon_url, 
             (m.work_lapse + m.break_lapse) AS time_lapse, 
             t.title AS title, 
             t.start_at AS work_start, 
             (t.start_at + m.work_lapse) AS work_end, 
             (t.start_at + m.work_lapse) AS break_start, 
-            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end,
+            t.completed AS completed
         FROM tasks t 
         JOIN categories c ON t.cat_id = c.id 
         JOIN task_methods m ON t.method_id = m.id
@@ -91,13 +93,15 @@ interface TasksDao {
             t.id AS id, 
             c.name AS category, 
             m.name AS method, 
+            t.day AS day,
             m.icon_url AS method_icon_url, 
             (m.work_lapse + m.break_lapse) AS time_lapse, 
             t.title AS title, 
             t.start_at AS work_start, 
             (t.start_at + m.work_lapse) AS work_end, 
             (t.start_at + m.work_lapse) AS break_start, 
-            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end,
+            t.completed AS completed
         FROM tasks t 
         JOIN categories c ON t.cat_id = c.id 
         JOIN task_methods m ON t.method_id = m.id
@@ -131,13 +135,15 @@ interface TasksDao {
             t.id AS id, 
             c.name AS category, 
             m.name AS method, 
+            t.day AS day,
             m.icon_url AS method_icon_url, 
             (m.work_lapse + m.break_lapse) AS time_lapse, 
             t.title AS title, 
             t.start_at AS work_start, 
             (t.start_at + m.work_lapse) AS work_end, 
             (t.start_at + m.work_lapse) AS break_start, 
-            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end,
+            t.completed AS completed
         FROM tasks t 
         JOIN categories c ON t.cat_id = c.id 
         JOIN task_methods m ON t.method_id = m.id
@@ -152,13 +158,15 @@ interface TasksDao {
             t.id AS id, 
             c.name AS category, 
             m.name AS method, 
+            t.day AS day,
             m.icon_url AS method_icon_url, 
             (m.work_lapse + m.break_lapse) AS time_lapse, 
             t.title AS title, 
             t.start_at AS work_start, 
             (t.start_at + m.work_lapse) AS work_end, 
             (t.start_at + m.work_lapse) AS break_start, 
-            (t.start_at + m.work_lapse + m.break_lapse) AS break_end 
+            (t.start_at + m.work_lapse + m.break_lapse) AS break_end,
+            t.completed AS completed
         FROM tasks t 
         JOIN categories c ON t.cat_id = c.id 
         JOIN task_methods m ON t.method_id = m.id
