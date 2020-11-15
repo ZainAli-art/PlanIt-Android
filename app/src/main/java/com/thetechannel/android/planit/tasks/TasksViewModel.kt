@@ -1,15 +1,15 @@
 package com.thetechannel.android.planit.tasks
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.util.isToday
 
-class TasksViewModel(private val repository: AppRepository) {
+class TasksViewModel(
+    private val repository: AppRepository
+) : ViewModel() {
 
     private val _tasksFilterType = MutableLiveData<TaskFilterType>(TaskFilterType.ALL)
     val tasksFilterType: LiveData<TaskFilterType>
@@ -19,7 +19,10 @@ class TasksViewModel(private val repository: AppRepository) {
         repository.observeTasks().switchMap { tasks -> filterTasks(tasks, type) }
     }
 
-    private fun filterTasks(tasks: Result<List<Task>>, filter: TaskFilterType?): LiveData<List<Task>> {
+    private fun filterTasks(
+        tasks: Result<List<Task>>,
+        filter: TaskFilterType?
+    ): LiveData<List<Task>> {
 
         val result = MutableLiveData<List<Task>>()
 
@@ -53,11 +56,20 @@ class TasksViewModel(private val repository: AppRepository) {
     val dataLoading: LiveData<Boolean>
         get() = _dataLoading
 
-     private val _errorLoading: MutableLiveData<Boolean> = MutableLiveData()
+    private val _errorLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorLoading: LiveData<Boolean>
         get() = _errorLoading
 
     fun setFiltering(filter: TaskFilterType) {
         _tasksFilterType.value = filter
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class TasksViewModelFactory(
+    private val repository: AppRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return TasksViewModel(repository) as T
     }
 }
