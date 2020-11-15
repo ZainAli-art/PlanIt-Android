@@ -2,6 +2,7 @@ package com.thetechannel.android.planit.util
 
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -33,7 +34,13 @@ class DomainUtilTest {
 
     @Test
     fun convertDomainTaskMethodToNetwork_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainMethod = TaskMethod(1, "Pomodoro", Time(25 * 60000), Time(5 * 60000), URI("https://www.google.com"))
+        val domainMethod = TaskMethod(
+            1,
+            "Pomodoro",
+            Time(25 * 60000),
+            Time(5 * 60000),
+            URI("https://www.google.com")
+        )
 
         val networkMethod = domainMethod.asDataTransferObject()
 
@@ -46,7 +53,13 @@ class DomainUtilTest {
 
     @Test
     fun convertDomainTaskMethodToDb_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainMethod = TaskMethod(1, "Pomodoro", Time(25 * 60000), Time(5 * 60000), URI("https://www.google.com"))
+        val domainMethod = TaskMethod(
+            1,
+            "Pomodoro",
+            Time(25 * 60000),
+            Time(5 * 60000),
+            URI("https://www.google.com")
+        )
 
         val networkMethod = domainMethod.asDatabaseEntity()
 
@@ -59,7 +72,8 @@ class DomainUtilTest {
 
     @Test
     fun convertDomainTaskToNetwork_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainTask = Task("task_1", Calendar.getInstance().time, Time(0), 1, "Maths Assignment", 1, true)
+        val domainTask =
+            Task("task_1", Calendar.getInstance().time, Time(0), 1, "Maths Assignment", 1, true)
 
         val networkTask = domainTask.asDataTransferObject()
 
@@ -74,7 +88,8 @@ class DomainUtilTest {
 
     @Test
     fun convertDomainTaskToDb_convertBack_returnsTrueIfBothAreTransferable() {
-        val domainTask = Task("task_1", Calendar.getInstance().time, Time(0), 1, "Maths Assignment", 1, true)
+        val domainTask =
+            Task("task_1", Calendar.getInstance().time, Time(0), 1, "Maths Assignment", 1, true)
 
         val networkTask = domainTask.asDatabaseEntity()
 
@@ -87,4 +102,51 @@ class DomainUtilTest {
         assertThat(domainTask.completed, `is`(networkTask.completed))
     }
 
+    @Test
+    fun givenTaskDetail_getInterval_returnsIntervalString() {
+        val workStart = Time(1605431549682L)
+        val workEnd = Time(workStart.time + 25 * 60000)
+        val breakStart = workEnd
+        val breakEnd = Time(workEnd.time + 5 * 60000)
+        val timeLapse = Time(breakEnd.time - workStart.time)
+        val detail = TaskDetail(
+            "detail_1",
+            "Study",
+            "Pomodoro",
+            URI("https://localhost"),
+            timeLapse,
+            "Maths Assignment",
+            workStart,
+            workEnd,
+            breakStart,
+            breakEnd
+        )
+
+        assertThat(detail.interval(),  `is`("02:12 PM - 02:42 PM"))
+    }
+
+    @Test
+    fun givenTaskDetail_getTimeRequiredForTask_returnsRequiredTimeString() {
+        val workStart = Time(System.currentTimeMillis())
+        val workEnd = Time(workStart.time + 25 * 60000)
+        val breakStart = workEnd
+        val breakEnd = Time(workEnd.time + 5 * 60000)
+        val timeLapse = Time(breakEnd.time - workStart.time)
+        val detail = TaskDetail(
+            "detail_1",
+            "Study",
+            "Pomodoro",
+            URI("https://localhost"),
+            timeLapse,
+            "Maths Assignment",
+            workStart,
+            workEnd,
+            breakStart,
+            breakEnd
+        )
+
+        val interval: String = detail.timeRequired()
+
+        assertThat(interval, `is`("30 min"))
+    }
 }
