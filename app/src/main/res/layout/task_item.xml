@@ -30,13 +30,14 @@
                 android:background="@drawable/background_round_rect"
                 android:paddingStart="@dimen/category_tag_padding"
                 android:paddingEnd="@dimen/category_tag_padding"
-                android:text="@string/study"
+                android:text="@{taskDetail.categoryName}"
+                tools:text="@string/study"
                 android:textColor="@color/secondaryTextColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/methodImg"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="@dimen/small_padding"
@@ -48,22 +49,24 @@
                 android:id="@+id/methodName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/pomodoro"
+                android:text="@{taskDetail.methodName}"
+                tools:text="@string/pomodoro"
                 app:layout_constraintBottom_toTopOf="@+id/methodDuration"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+                app:layout_constraintTop_toTopOf="@+id/methodImg" />
 
             <TextView
                 android:id="@+id/methodDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/pomodoro_duration"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                android:text="@{taskDetail.timeRequired()}"
+                tools:text="@string/pomodoro_duration"
+                app:layout_constraintBottom_toBottomOf="@+id/methodImg"
                 app:layout_constraintStart_toStartOf="@+id/methodName"
                 app:layout_constraintTop_toBottomOf="@+id/methodName" />
 
             <TextView
-                android:id="@+id/digital_time"
+                android:id="@+id/interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_padding"
@@ -72,7 +75,8 @@
                 android:paddingTop="@dimen/padding_digital_time_vertical"
                 android:paddingEnd="@dimen/medium_padding"
                 android:paddingBottom="@dimen/padding_digital_time_vertical"
-                android:text="@string/digital_time"
+                android:text="@{taskDetail.interval()}"
+                tools:text="@string/digital_time"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

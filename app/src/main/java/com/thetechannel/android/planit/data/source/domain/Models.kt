@@ -1,8 +1,11 @@
 package com.thetechannel.android.planit.data.source.domain
 
+import java.lang.StringBuilder
 import java.net.URI
 import java.sql.Time
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 data class Category(
     var id: Int,
@@ -40,4 +43,19 @@ data class TaskDetail(
     val breakStart: Time,
     val breakEnd: Time,
     val completed: Boolean
-)
+) {
+    fun interval(): String {
+        val formatter = SimpleDateFormat("hh:mm a")
+        return "${formatter.format(workStart)} - ${formatter.format(breakEnd)}"
+    }
+
+    fun timeRequired(): String {
+        val sb = StringBuilder()
+        val hours: Long = TimeUnit.MILLISECONDS.toHours(timeLapse.time)
+        if (hours > 0L) sb.append("$hours hrs")
+        val mins: Long = TimeUnit.MILLISECONDS.toMinutes(timeLapse.time)
+        if (mins > 0L) sb.append("$mins min")
+
+        return sb.toString()
+    }
+}

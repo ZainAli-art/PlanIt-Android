@@ -61,18 +61,3 @@ fun Task.asDatabaseEntity() = DbTask(
     catId = catId,
     completed = completed
 )
-
-fun TaskDetail.interval(): String {
-    val formatter = SimpleDateFormat("hh:mm a")
-    return "${formatter.format(workStart)} - ${formatter.format(breakEnd)}"
-}
-
-fun TaskDetail.timeRequired(): String {
-    val sb = StringBuilder()
-    val hours: Long = TimeUnit.MILLISECONDS.toHours(timeLapse.time)
-    if (hours > 0L) sb.append("$hours hrs")
-    val mins: Long = TimeUnit.MILLISECONDS.toMinutes(timeLapse.time)
-    if (mins > 0L) sb.append("$mins min")
-
-    return sb.toString()
-}

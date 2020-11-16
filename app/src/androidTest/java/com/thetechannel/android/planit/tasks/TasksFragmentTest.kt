@@ -1,9 +1,11 @@
 package com.thetechannel.android.planit.tasks
 
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,7 +21,6 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,14 +47,16 @@ class TasksFragmentTest {
         repository = FakeAndroidTestRepository()
         ServiceLocator.repository = repository
 
+        val startTime = Time(1605431549682L)
+
         studyCategory = Category(1, "Study")
         businessCategory = Category(2, "Business")
         sportCategory = Category(3, "Business")
         method = TaskMethod(1, "Pomodoro", Time(25 * 60000), Time(5 * 60000), URI("http://null"))
-        task1 = Task("task_1", Calendar.getInstance().time, Time(1000L), 1, "Maths Assignment", 1, false)
-        task2 = Task("task_2", Calendar.getInstance().time, Time(2030L), 1, "Read Emails", 2, true)
-        task3 = Task("task_3", Date(23L), Time(4300L), 1, "Half an hour jog", 3, true)
-        task4 = Task("task_4", Calendar.getInstance().time, Time(1000L), 1, "Prepare Slides", 1, false)
+        task1 = Task("task_1", Calendar.getInstance().time, startTime, 1, "Maths Assignment", studyCategory.id, false)
+        task2 = Task("task_2", Calendar.getInstance().time, startTime, 1, "Read Emails", businessCategory.id, true)
+        task3 = Task("task_3", Date(23L), Time(4300L), 1, "Half an hour jog", sportCategory.id, true)
+        task4 = Task("task_4", Calendar.getInstance().time, Time(1000L), 1, "Prepare Slides", studyCategory.id, false)
 
         repository.saveCategories(studyCategory, businessCategory, sportCategory)
         repository.saveTaskMethod(method)
@@ -70,10 +73,23 @@ class TasksFragmentTest {
 
         launchFragmentInContainer<TasksFragment>(TasksFragmentArgs(TaskFilterType.ALL).toBundle(), R.style.AppTheme)
 
-        onView(withId(R.id.tasks_list)).check(matches(isDisplayed()))
-        onView(withId(R.id.tasks_list)).check(matches(hasDescendant(withText(task1.title))))
-        onView(withId(R.id.tasks_list)).check(matches(hasDescendant(withText(task2.title))))
-        onView(withId(R.id.tasks_list)).check(matches(hasDescendant(withText(task3.title))))
-        onView(withId(R.id.tasks_list)).check(matches(hasDescendant(withText(task4.title))))
+        onView(withId(R.id.tasksList)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.taskTitle))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(task1.title))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(task2.title))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(task3.title))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(task4.title))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.methodName))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(method.name))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.methodDuration))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText("30 min"))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.categoryName))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(studyCategory.name))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(businessCategory.name))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText(sportCategory.name))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.interval))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText("02:12 PM - 02:42 PM"))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.methodImg))))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.delIcon))))
     }
 }
