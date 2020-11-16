@@ -12,7 +12,7 @@ class TasksViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
-    private val _tasksFilterType = MutableLiveData<TaskFilterType>(TaskFilterType.ALL)
+    private val _tasksFilterType = MutableLiveData<TaskFilterType>()
     val tasksFilterType: LiveData<TaskFilterType>
         get() = _tasksFilterType
 

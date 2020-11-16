@@ -1,12 +1,8 @@
 package com.thetechannel.android.planit.tasks
 
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -69,7 +65,7 @@ class TasksFragmentTest {
     }
 
     @Test
-    fun passAllTasksFilter_loadsAllTasksInRecyclerView() {
+    fun passAllTasksFilter_recyclerViewDisplaysAllTaskDetailsInListItems() {
 
         launchFragmentInContainer<TasksFragment>(TasksFragmentArgs(TaskFilterType.ALL).toBundle(), R.style.AppTheme)
 
@@ -91,5 +87,42 @@ class TasksFragmentTest {
         onView(withId(R.id.tasksList)).check(matches(hasDescendant(withText("02:12 PM - 02:42 PM"))))
         onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.methodImg))))
         onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.delIcon))))
+    }
+
+    @Test
+    fun passPendingTasksFilter_recyclerViewDisplaysPendingTasks() {
+
+        launchFragmentInContainer<TasksFragment>(TasksFragmentArgs(TaskFilterType.PENDING).toBundle(), R.style.AppTheme)
+
+        onView(withId(R.id.tasksList)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.taskTitle))))
+        onView(withText(task1.title)).check(matches(isDisplayed()))
+        onView(withText(task2.title)).check(doesNotExist())
+        onView(withText(task3.title)).check(doesNotExist())
+        onView(withText(task4.title)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun passCompletedTasksFilter_recyclerViewDisplaysCompletedTasks() {
+        launchFragmentInContainer<TasksFragment>(TasksFragmentArgs(TaskFilterType.COMPLETED).toBundle(), R.style.AppTheme)
+
+        onView(withId(R.id.tasksList)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.taskTitle))))
+        onView(withText(task1.title)).check(doesNotExist())
+        onView(withText(task2.title)).check(matches(isDisplayed()))
+        onView(withText(task3.title)).check(matches(isDisplayed()))
+        onView(withText(task4.title)).check(doesNotExist())
+    }
+
+    @Test
+    fun passCompletedTodayTasksFilter_reyclerViewDisplaysTasksCompletedToday() {
+        launchFragmentInContainer<TasksFragment>(TasksFragmentArgs(TaskFilterType.COMPLETED_TODAY).toBundle(), R.style.AppTheme)
+
+        onView(withId(R.id.tasksList)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksList)).check(matches(hasDescendant(withId(R.id.taskTitle))))
+        onView(withText(task1.title)).check(doesNotExist())
+        onView(withText(task2.title)).check(matches(isDisplayed()))
+        onView(withText(task3.title)).check(doesNotExist())
+        onView(withText(task4.title)).check(doesNotExist())
     }
 }

@@ -39,7 +39,12 @@ class TasksFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewDataBinding.lifecycleOwner = viewLifecycleOwner
+        setUpFiltering()
         setUpListAdapter()
+    }
+
+    private fun setUpFiltering() {
+        viewModel.setFiltering(args.filterType)
     }
 
     private fun setUpListAdapter() {
