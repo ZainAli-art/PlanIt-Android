@@ -7,6 +7,7 @@ import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.getOrAwaitValue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -18,6 +19,7 @@ import org.junit.Rule
 import java.sql.Time
 import java.util.*
 
+@ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
     private lateinit var task1: Task

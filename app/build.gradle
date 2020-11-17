@@ -38,6 +38,10 @@ android {
         enabled = true
         enabledForTests = true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

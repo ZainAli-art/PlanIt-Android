@@ -8,6 +8,7 @@ import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.getOrAwaitValue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -18,6 +19,7 @@ import java.net.URI
 import java.sql.Time
 import java.util.*
 
+@ExperimentalCoroutinesApi
 class TasksViewModelTest {
 
     private lateinit var category: Category

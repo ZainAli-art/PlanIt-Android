@@ -18,4 +18,5 @@
     <string name="performance">Performance</string>
     <string name="week_button_text">Weekly</string>
     <string name="month_button_text">Monthly</string>
+    <string name="schedule_task_snackbar_text">Your task is scheduled!</string>
 </resources>

@@ -4,43 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/small_padding"
     tools:context=".newtask.NewTaskFragment">
 
-    <EditText
-        android:id="@+id/editTextTextPersonName"
+    <Spinner
+        android:id="@+id/categorySpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_padding"
-        android:layout_marginTop="@dimen/medium_padding"
-        android:layout_marginEnd="@dimen/small_padding"
-        android:ems="10"
-        android:hint="@string/category"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@android:layout/simple_spinner_item"
+        style="@style/AppSpinnerStyle" />
 
-    <EditText
-        android:id="@+id/editTextTextPersonName2"
+    <Spinner
+        android:id="@+id/methodSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_padding"
         android:layout_marginTop="@dimen/small_padding"
-        android:layout_marginEnd="@dimen/small_padding"
-        android:ems="10"
-        android:hint="@string/method"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/categorySpinner"
+        tools:listitem="@android:layout/simple_spinner_item" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine2"
+        android:id="@+id/editTitle"
         android:layout_width="0dp"
         android:layout_height="@dimen/edit_task_title_height"
-        android:layout_marginStart="@dimen/small_padding"
         android:layout_marginTop="@dimen/small_padding"
-        android:layout_marginEnd="@dimen/small_padding"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/title_hint"
@@ -48,13 +39,12 @@
         android:maxLength="@integer/task_title_max_length"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/methodSpinner" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/scheduleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
         android:background="@drawable/background_semi_round_rect"
         android:drawableLeft="@drawable/ic_baseline_access_time_24"
         android:text="@string/schedule"

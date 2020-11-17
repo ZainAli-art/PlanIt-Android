@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="editTextStyle">@style/AppTheme.EditText</item>
+        <item name="android:spinnerStyle">@style/AppSpinnerStyle</item>
     </style>
 
     <style name="AppTheme.EditText" parent="Widget.AppCompat.EditText">
@@ -20,6 +21,10 @@
     <style name="TabButtonStyle">
         <item name="android:background">@drawable/background_tab_button</item>
         <item name="android:textColor">@drawable/tab_button_text_color</item>
+    </style>
+
+    <style name="AppSpinnerStyle">
+        <item name="android:background">@drawable/background_edit_text</item>
     </style>
 
 </resources>
