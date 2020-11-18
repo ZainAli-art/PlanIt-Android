@@ -23,7 +23,7 @@
         <item name="android:textColor">@drawable/tab_button_text_color</item>
     </style>
 
-    <style name="AppSpinnerStyle">
+    <style name="AppSpinnerStyle" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/background_edit_text</item>
     </style>
 

@@ -1,56 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/small_padding"
-    tools:context=".newtask.NewTaskFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Spinner
-        android:id="@+id/categorySpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@android:layout/simple_spinner_item"
-        style="@style/AppSpinnerStyle" />
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.thetechannel.android.planit.newtask.NewTaskViewModel" />
+    </data>
 
-    <Spinner
-        android:id="@+id/methodSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categorySpinner"
-        tools:listitem="@android:layout/simple_spinner_item" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/small_padding"
+        tools:context=".newtask.NewTaskFragment">
 
-    <EditText
-        android:id="@+id/editTitle"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/edit_task_title_height"
-        android:layout_marginTop="@dimen/small_padding"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="@string/title_hint"
-        android:inputType="textMultiLine"
-        android:maxLength="@integer/task_title_max_length"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/methodSpinner" />
 
-    <Button
-        android:id="@+id/scheduleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_semi_round_rect"
-        android:drawableLeft="@drawable/ic_baseline_access_time_24"
-        android:text="@string/schedule"
-        android:textColor="@color/secondaryTextColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Spinner
+            android:id="@+id/categorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@android:layout/simple_spinner_item" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Spinner
+            android:id="@+id/methodSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_padding"
+            android:spinnerMode="dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categorySpinner"
+            tools:listitem="@android:layout/simple_spinner_item" />
+
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/edit_task_title_height"
+            android:layout_marginTop="@dimen/small_padding"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="@string/title_hint"
+            android:inputType="textMultiLine"
+            android:maxLength="@integer/task_title_max_length"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/methodSpinner" />
+
+        <Button
+            android:id="@+id/scheduleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_semi_round_rect"
+            android:drawableLeft="@drawable/ic_baseline_access_time_24"
+            android:text="@string/schedule"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

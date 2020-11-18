@@ -16,7 +16,6 @@ import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.FakeAndroidTestRepository
 import com.thetechannel.android.planit.data.source.domain.Task
-import com.thetechannel.android.planit.util.DataBindingIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -35,7 +34,6 @@ import java.util.*
 class HomeFragmentTest {
 
     private lateinit var repository: AppRepository
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun initRepository() {
