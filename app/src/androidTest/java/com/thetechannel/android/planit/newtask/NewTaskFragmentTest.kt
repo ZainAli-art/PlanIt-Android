@@ -91,4 +91,27 @@ class NewTaskFragmentTest {
 
         onView(withText(sportsCategory.name)).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun clickMethodSpinner_displaysNamesOfInsertedTaskMethods() {
+        launchFragmentInContainer<NewTaskFragment>(Bundle(), R.style.AppTheme)
+
+        onView(withId(R.id.methodSpinner)).perform(click())
+
+        onData(allOf(`is`(instanceOf(String::class.java)),
+            `is`(pomodoroMethod.name))).check(matches(isDisplayed()))
+        onData(allOf(`is`(instanceOf(String::class.java)),
+            `is`(eatTheDevilMethod.name))).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun clickMethodSpinnerAndSelectEatTheDevilMethod_selectedMethodsNameIsShownInMethodSpinner() {
+        launchFragmentInContainer<NewTaskFragment>(Bundle(), R.style.AppTheme)
+
+        onView(withId(R.id.methodSpinner)).perform(click())
+        onData(allOf(`is`(instanceOf(String::class.java)),
+            `is`(eatTheDevilMethod.name))).perform(click())
+
+        onView(withText(eatTheDevilMethod.name)).check(matches(isDisplayed()))
+    }
 }
