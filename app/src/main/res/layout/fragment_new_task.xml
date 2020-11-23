@@ -18,6 +18,8 @@
 
         <Spinner
             android:id="@+id/categorySpinner"
+            app:spinner_items="@{viewmodel.categoryNames}"
+            android:selection="@={viewmodel.selectedCategoryIndex}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dialog"
@@ -28,6 +30,8 @@
 
         <Spinner
             android:id="@+id/methodSpinner"
+            app:spinner_items="@{viewmodel.methodNames}"
+            android:selection="@={viewmodel.selectedTaskMethodIndex}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small_padding"
@@ -39,6 +43,7 @@
 
         <EditText
             android:id="@+id/editTitle"
+            android:text="@={viewmodel.taskTitle}"
             android:layout_width="0dp"
             android:layout_height="@dimen/edit_task_title_height"
             android:layout_marginTop="@dimen/small_padding"
@@ -53,6 +58,7 @@
 
         <Button
             android:id="@+id/scheduleButton"
+            android:onClick="@{view -> viewmodel.scheduleTask()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/background_semi_round_rect"
@@ -62,8 +68,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

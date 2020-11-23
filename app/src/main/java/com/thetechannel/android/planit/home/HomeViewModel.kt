@@ -8,14 +8,19 @@ import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.database.TodayProgress
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
-    private val _eventOpenTasks: MutableLiveData<Event<TaskFilterType>> = MutableLiveData()
-    val eventOpenTasks: LiveData<Event<TaskFilterType>>
-        get() = _eventOpenTasks
+    private val _openTasksEvent: MutableLiveData<Event<TaskFilterType>> = MutableLiveData()
+    val openTasksEvent: LiveData<Event<TaskFilterType>>
+        get() = _openTasksEvent
+
+    private val _addNewTaskEvent = MutableLiveData<Event<Boolean>>()
+    val addNewTaskEvent: LiveData<Event<Boolean>>
+        get() = _addNewTaskEvent
 
     val tasksOverView: LiveData<TasksOverView> = repository.observeTasksOverView().map {
         when (it) {
@@ -39,15 +44,25 @@ class HomeViewModel(
     }
 
     fun openPendingTasks() {
-        _eventOpenTasks.value = Event(TaskFilterType.PENDING)
+        _openTasksEvent.value = Event(TaskFilterType.PENDING)
     }
 
     fun openCompletedTasks() {
-        _eventOpenTasks.value = Event(TaskFilterType.COMPLETED)
+        _openTasksEvent.value = Event(TaskFilterType.COMPLETED)
     }
 
     fun openTasksCompletedToday() {
-        _eventOpenTasks.value = Event(TaskFilterType.COMPLETED_TODAY)
+        _openTasksEvent.value = Event(TaskFilterType.COMPLETED_TODAY)
+    }
+
+    fun addNewTask() {
+        _addNewTaskEvent.value = Event(true)
+    }
+
+    fun refresh() = viewModelScope.launch {
+        repository.refreshCategories()
+        repository.refreshTaskMethods()
+        repository.refreshTasks()
     }
 }
 

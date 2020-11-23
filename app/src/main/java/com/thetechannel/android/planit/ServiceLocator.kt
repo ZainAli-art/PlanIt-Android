@@ -8,12 +8,16 @@ import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.DefaultAppRepository
 import com.thetechannel.android.planit.data.source.database.LocalDataSource
 import com.thetechannel.android.planit.data.source.database.PlanItDatabase
+import com.thetechannel.android.planit.data.source.network.Network
+import com.thetechannel.android.planit.data.source.network.Network.remoteService
 import com.thetechannel.android.planit.data.source.network.RemoteDataSource
 import kotlinx.coroutines.runBlocking
 
 object ServiceLocator {
     private val lock = Any()
     private var database: PlanItDatabase? = null
+    private var remoteDataSource: AppDataSource = RemoteDataSource(remoteService)
+
     @Volatile
     var repository: AppRepository? = null
 
@@ -22,7 +26,10 @@ object ServiceLocator {
     }
 
     private fun createAppRepository(context: Context): AppRepository {
-        val newRepo = DefaultAppRepository(createLocalDataSource(context), RemoteDataSource)
+        val newRepo = DefaultAppRepository(
+            createLocalDataSource(context),
+            remoteDataSource
+        )
         repository = newRepo
         return newRepo
     }
@@ -45,9 +52,9 @@ object ServiceLocator {
     fun resetRepository() {
         synchronized(lock) {
 //            runBlocking {
-//                RemoteDataSource.deleteAllCategories()
-//                RemoteDataSource.deleteAllTaskMethods()
-//                RemoteDataSource.deleteAllTasks()
+//                remoteDataSource.deleteAllCategories()
+//                remoteDataSource.deleteAllTaskMethods()
+//                remoteDataSource.deleteAllTasks()
 //            }
             database?.apply {
                 clearAllTables()
@@ -56,5 +63,10 @@ object ServiceLocator {
             database = null
             repository = null
         }
+    }
+
+    @VisibleForTesting
+    fun setRemoteDataSource(source: AppDataSource) {
+        remoteDataSource = source
     }
 }

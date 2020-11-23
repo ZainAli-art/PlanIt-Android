@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit.data.source.network
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppDataSource
@@ -11,8 +12,12 @@ import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import java.util.*
+import kotlin.collections.HashMap
 
-class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource {
+object FakeRemoteDataSource : AppDataSource {
+    private val categoryServiceData = HashMap<Int, Category>()
+    private val methodServiceData = HashMap<Int, TaskMethod>()
+    private val taskServiceData = HashMap<String, Task>()
 
     override fun observeCategories(): LiveData<Result<List<Category>>> {
         TODO("Not yet implemented")
@@ -63,33 +68,26 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
-        return try {
-            val categories = remoteService.getCategories().await()
-            Result.Success(categories)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        return Result.Success(categoryServiceData.values.toList())
     }
 
     override suspend fun getCategory(id: Int): Result<Category> {
-        TODO("Not yet implemented")
+        val category =
+            categoryServiceData[id] ?: return Result.Error(Exception("id does not exist"))
+        return Result.Success(category)
     }
 
     override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
-        return try {
-            val methods = remoteService.getTaskMethods().await()
-            Result.Success(methods)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        return Result.Success(methodServiceData.values.toList())
     }
 
     override suspend fun getTaskMethod(id: Int): Result<TaskMethod> {
-        TODO("Not yet implemented")
+        val method = methodServiceData[id] ?: return Result.Error(Exception("id does not exist"))
+        return Result.Success(method)
     }
 
     override suspend fun getTasks(): Result<List<Task>> {
-        TODO("Not yet implemented")
+        return Result.Success(taskServiceData.values.toList())
     }
 
     override suspend fun getTasks(day: Date): Result<List<Task>> {
@@ -97,7 +95,8 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getTask(id: String): Result<Task> {
-        TODO("Not yet implemented")
+        val task = taskServiceData[id] ?: return Result.Error(Exception("task id not found"))
+        return Result.Success(task)
     }
 
     override suspend fun getTaskDetails(): Result<List<TaskDetail>> {
@@ -121,15 +120,15 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun saveCategory(category: Category) {
-        remoteService.insertCategory(category).await()
+        categoryServiceData[category.id] = category
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
-        TODO("Not yet implemented")
+        methodServiceData[taskMethod.id] = taskMethod
     }
 
     override suspend fun saveTask(task: Task) {
-        TODO("Not yet implemented")
+        taskServiceData[task.id] = task
     }
 
     override suspend fun completeTask(task: Task) {

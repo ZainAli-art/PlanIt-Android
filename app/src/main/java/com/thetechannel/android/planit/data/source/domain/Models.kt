@@ -13,7 +13,7 @@ data class Category(
 )
 
 data class Task(
-    var id: String,
+    var id: String = UUID.randomUUID().toString(),
     var day: Date,
     var startAt: Time,
     var methodId: Int,

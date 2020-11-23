@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_tasksFragment"
             app:destination="@id/tasksFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_newTaskFragment"
+            app:destination="@id/newTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/tasksFragment"
@@ -23,4 +26,8 @@
             android:name="filterType"
             app:argType="com.thetechannel.android.planit.TaskFilterType" />
     </fragment>
+    <fragment
+        android:id="@+id/newTaskFragment"
+        android:name="com.thetechannel.android.planit.newtask.NewTaskFragment"
+        android:label="NewTaskFragment" />
 </navigation>

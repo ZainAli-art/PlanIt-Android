@@ -1,11 +1,16 @@
 package com.thetechannel.android.planit.newtask
 
 import android.os.Bundle
+import android.widget.DatePicker
+import android.widget.TimePicker
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.PickerActions.setDate
+import androidx.test.espresso.contrib.PickerActions.setTime
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -14,6 +19,7 @@ import com.thetechannel.android.planit.ServiceLocator
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.FakeAndroidTestRepository
 import com.thetechannel.android.planit.data.source.domain.Category
+import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -24,6 +30,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import java.net.URI
 import java.sql.Time
 
@@ -113,5 +121,22 @@ class NewTaskFragmentTest {
             `is`(eatTheDevilMethod.name))).perform(click())
 
         onView(withText(eatTheDevilMethod.name)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun enterTitleAndClickScheduleButton_displaysDatePickerDialogue() {
+        launchFragmentInContainer<NewTaskFragment>(Bundle(), R.style.AppTheme)
+
+        val title = "Do Maths Assignment"
+        onView(withId(R.id.editTitle)).perform(typeText(title), closeSoftKeyboard())
+        onView(withId(R.id.scheduleButton)).perform(click())
+        onView(withClassName(`is`(DatePicker::class.java.name)))
+            .perform(setDate(2000, 5, 26))
+        onView(withText("OK")).perform(click())
+        onView(withClassName(`is`(TimePicker::class.java.name)))
+            .perform(setTime(11, 56))
+        onView(withText("OK")).perform(click())
+
+        Thread.sleep(5000)
     }
 }

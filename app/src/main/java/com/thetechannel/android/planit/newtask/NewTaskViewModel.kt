@@ -1,5 +1,7 @@
 package com.thetechannel.android.planit.newtask
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.thetechannel.android.planit.Event
 import com.thetechannel.android.planit.R
@@ -9,12 +11,23 @@ import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import kotlinx.coroutines.launch
+import java.sql.Time
+import java.util.*
+
+private const val TAG = "NewTaskViewModel"
 
 class NewTaskViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
+    val selectedCategoryIndex = MutableLiveData<Int>()
+    val selectedTaskMethodIndex = MutableLiveData<Int>()
+    val taskTitle = MutableLiveData<String>()
+    private val _selectedDay = MutableLiveData<Date>()
+    private val _selectedTime = MutableLiveData<Time>()
+
     private val _taskAddedEvent = MutableLiveData<Event<Boolean>>()
+
     val taskAddedEvent: MutableLiveData<Event<Boolean>>
         get() = _taskAddedEvent
 
@@ -25,7 +38,12 @@ class NewTaskViewModel(
     private val _errorLoadingCategories = MutableLiveData<Boolean>()
 
     private val _loadingCategories = MutableLiveData<Boolean>()
+
     private val _loadingTaskMethods = MutableLiveData<Boolean>()
+
+    private val _scheduleTaskEvent = MutableLiveData<Event<Boolean>>()
+    val scheduleTaskEvent: LiveData<Event<Boolean>>
+        get() = _scheduleTaskEvent
 
     private val _errorLoadingTaskMethods = MutableLiveData<Boolean>()
     val categories: LiveData<List<Category>> = repository.observeCategories().switchMap {
@@ -54,7 +72,10 @@ class NewTaskViewModel(
 
     val categoryNames: LiveData<List<String>> = categories.switchMap {
         val names = mutableListOf<String>()
-        it.forEach { category -> names.add(category.name) }
+
+        it.forEach { category ->
+            names.add(category.name)
+        }
 
         MutableLiveData(names.toList())
     }
@@ -85,23 +106,60 @@ class NewTaskViewModel(
 
     val methodNames: LiveData<List<String>> = taskMethods.switchMap {
         val names = mutableListOf<String>()
-        it.forEach { method -> names.add(method.name) }
+
+        it.forEach { method ->
+            names.add(method.name)
+        }
 
         MutableLiveData(names.toList())
     }
 
-    fun saveNewTask(task: Task) = viewModelScope.launch {
+    fun scheduleTask() {
+        _scheduleTaskEvent.value = Event(true)
+    }
+
+    fun selectDay(day: Date) {
+        _selectedDay.value = day
+    }
+
+    fun saveNewTask() {
+        val day = _selectedDay.value
+        val startAt = _selectedTime.value
+        val methodId = taskMethods.value?.get(selectedTaskMethodIndex.value!!)?.id
+        val catId = categories.value?.get(selectedCategoryIndex.value!!)?.id
+        val title = taskTitle.value
+
+        if (day == null || startAt == null || methodId == null || catId == null || title == null) {
+            // generate some error event
+            return
+        }
+        val task = Task(
+            day = day,
+            startAt = startAt,
+            methodId = methodId,
+            title = title,
+            catId = catId,
+            completed = false
+        )
+
+        Log.i(TAG, "saveNewTask: $task")
+
         showSnackBarMessage(R.string.schedule_task_snackbar_text)
         newTaskAdded()
-        repository.saveTask(task)
+        viewModelScope.launch { repository.saveTask(task) }
+        newTaskAdded()
     }
 
     private fun newTaskAdded() {
         _taskAddedEvent.value = Event(true)
     }
 
-    private fun showSnackBarMessage(message: Int) {
+    private fun showSnackBarMessage(@StringRes message: Int) {
         _snackBarText.value = Event(message)
+    }
+
+    fun selectTime(time: Time) {
+        _selectedTime.value = time
     }
 }
 

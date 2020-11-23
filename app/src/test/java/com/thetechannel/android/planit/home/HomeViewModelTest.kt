@@ -76,7 +76,7 @@ class HomeViewModelTest {
     fun openPendingTasks_setsUpLoadTasksEventToLoadPendingTasks() {
         viewModel.openPendingTasks()
 
-        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+        val event = viewModel.openTasksEvent.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
         assertThat(event.peekContent(), `is`(TaskFilterType.PENDING))
@@ -86,19 +86,17 @@ class HomeViewModelTest {
     fun openCompletedTasks_setsUpLoadTasksEventToLoadCompletedTasks() {
         viewModel.openCompletedTasks()
 
-        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+        val event = viewModel.openTasksEvent.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
         assertThat(event.peekContent(), `is`(TaskFilterType.COMPLETED))
-
-
     }
 
     @Test
     fun openCompletedTodayTasks_setsUpLoadTaskEventToCompletedTodayTasks() {
         viewModel.openTasksCompletedToday()
 
-        val event = viewModel.eventOpenTasks.getOrAwaitValue()
+        val event = viewModel.openTasksEvent.getOrAwaitValue()
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
         assertThat(event.peekContent(), `is`(TaskFilterType.COMPLETED_TODAY))

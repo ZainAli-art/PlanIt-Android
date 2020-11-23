@@ -7,16 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.thetechannel.android.planit.EventObserver
 import com.thetechannel.android.planit.MyApplication
-import com.thetechannel.android.planit.R
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.databinding.FragmentHomeBinding
-import com.thetechannel.android.planit.tasks.TasksFragmentArgs
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
@@ -42,6 +39,7 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
+        viewModel.refresh()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,8 +51,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun setUpNavigation() {
-        viewModel.eventOpenTasks.observe(viewLifecycleOwner, EventObserver {
+        viewModel.openTasksEvent.observe(viewLifecycleOwner, EventObserver {
             openTasks(it)
+        })
+        viewModel.addNewTaskEvent.observe(viewLifecycleOwner, EventObserver { newTask ->
+            if (newTask) {
+                val action = HomeFragmentDirections.actionHomeFragmentToNewTaskFragment()
+                findNavController().navigate(action)
+            }
         })
     }
 

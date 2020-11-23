@@ -109,4 +109,21 @@ class HomeFragmentTest {
             HomeFragmentDirections.actionHomeFragmentToTasksFragment(TaskFilterType.COMPLETED)
         )
     }
+
+    @Test
+    fun clickAddNewTaskFab_navigatesToNewTaskFragment() {
+        val scenario = launchFragmentInContainer<HomeFragment>(Bundle(), R.style.AppTheme)
+        val navController = mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withId(R.id.addNewTaskFab))
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        verify(navController).navigate(
+            HomeFragmentDirections.actionHomeFragmentToNewTaskFragment()
+        )
+    }
 }

@@ -42,5 +42,6 @@ ext {
     lifecycleVersion = '2.2.0'
     mockitoVersion = '2.8.9'
     roomVersion = '2.2.5'
+    retrofitCoroutineAdapter = '0.9.2'
     retrofitVersion = '2.6.2'
 }

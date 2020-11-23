@@ -13,6 +13,7 @@ import com.thetechannel.android.planit.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
 import org.junit.Before
@@ -105,5 +106,13 @@ class NewTaskViewModelTest {
         assertThat(message.getContentIfNotHandled(), `is`(R.string.schedule_task_snackbar_text))
         val taskAddedEvent: Event<Boolean> = viewModel.taskAddedEvent.getOrAwaitValue()
         assertThat(taskAddedEvent.getContentIfNotHandled(), `is`(true))
+    }
+
+    @Test
+    fun scheduletTask_updatesScheduleTaskEvent() {
+        viewModel::scheduleTask
+
+        val event = viewModel.scheduleTaskEvent.getOrAwaitValue()
+        assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
     }
 }
