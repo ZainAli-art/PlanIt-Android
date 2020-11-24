@@ -146,8 +146,12 @@ class NewTaskViewModel(
 
         showSnackBarMessage(R.string.schedule_task_snackbar_text)
         newTaskAdded()
-        viewModelScope.launch { repository.saveTask(task) }
+        saveNewTask(task)
         newTaskAdded()
+    }
+
+    fun saveNewTask(task: Task) = viewModelScope.launch {
+        repository.saveTask(task)
     }
 
     private fun newTaskAdded() {

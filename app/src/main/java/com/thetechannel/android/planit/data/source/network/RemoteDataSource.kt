@@ -1,5 +1,6 @@
 package com.thetechannel.android.planit.data.source.network
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
@@ -10,7 +11,11 @@ import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.util.asDataTransferObject
+import com.thetechannel.android.planit.util.asDomainModel
 import java.util.*
+
+private const val TAG = "RemoteDataSource"
 
 class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource {
 
@@ -65,7 +70,7 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     override suspend fun getCategories(): Result<List<Category>> {
         return try {
             val categories = remoteService.getCategories().await()
-            Result.Success(categories)
+            Result.Success(categories.map { it.asDomainModel() })
         } catch (e: Exception) {
             Result.Error(e)
         }
@@ -78,7 +83,7 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
         return try {
             val methods = remoteService.getTaskMethods().await()
-            Result.Success(methods)
+            Result.Success(methods.map { it.asDomainModel() })
         } catch (e: Exception) {
             Result.Error(e)
         }
@@ -89,7 +94,12 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getTasks(): Result<List<Task>> {
-        TODO("Not yet implemented")
+        return try {
+            val tasks = remoteService.getTasks().await()
+            Result.Success(tasks.map { it.asDomainModel() })
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTasks(day: Date): Result<List<Task>> {
@@ -97,7 +107,12 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getTask(id: String): Result<Task> {
-        TODO("Not yet implemented")
+        return try {
+            val task = remoteService.getTask(id).await()
+            Result.Success(task.asDomainModel())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getTaskDetails(): Result<List<TaskDetail>> {
@@ -121,7 +136,7 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun saveCategory(category: Category) {
-        remoteService.insertCategory(category).await()
+        remoteService.insertCategory(category.asDataTransferObject()).await()
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
@@ -129,7 +144,12 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun saveTask(task: Task) {
-        TODO("Not yet implemented")
+        Log.d(TAG, "saveTask: $task")
+        try {
+            remoteService.insertTask(task.asDataTransferObject()).await()
+        } catch (e: Exception) {
+            Log.e(TAG, "saveTask: error ${e.message}")
+        }
     }
 
     override suspend fun completeTask(task: Task) {

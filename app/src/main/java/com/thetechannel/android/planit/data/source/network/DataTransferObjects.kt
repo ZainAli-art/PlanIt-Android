@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit.data.source.network
 
 import com.google.gson.annotations.SerializedName
+import java.util.Date
 import java.sql.Timestamp
 import java.util.*
 
@@ -11,7 +12,7 @@ data class NetworkCategory(
 
 data class NetworkTask(
     @SerializedName("id") var id: String = UUID.randomUUID().toString(),
-    @SerializedName("day") var day: Date = Calendar.getInstance().time,
+    @SerializedName("day") var day: Timestamp = Timestamp(System.currentTimeMillis()),
     @SerializedName("start_at") var startAt: Timestamp = Timestamp(System.currentTimeMillis()),
     @SerializedName("method_id") var methodId: Int = 1,
     @SerializedName("title") var title: String = "",

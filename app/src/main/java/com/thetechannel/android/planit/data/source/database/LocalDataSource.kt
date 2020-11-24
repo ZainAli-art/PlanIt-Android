@@ -1,5 +1,6 @@
 package com.thetechannel.android.planit.data.source.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.github.mikephil.charting.data.PieEntry
@@ -17,6 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
+
+private const val TAG = "LocalDataSource"
 
 class LocalDataSource(
     private val categoriesDao: CategoriesDao,
@@ -251,6 +254,7 @@ class LocalDataSource(
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) = withContext(ioDispatcher) {
+        Log.i(TAG, "saveTaskMethod: $taskMethod")
         taskMethodsDao.insert(taskMethod.asDatabaseEntity())
     }
 

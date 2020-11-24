@@ -78,7 +78,7 @@ class DomainUtilTest {
         val networkTask = domainTask.asDataTransferObject()
 
         assertThat(domainTask.id, `is`(networkTask.id))
-        assertThat(domainTask.day, `is`(networkTask.day))
+        assertThat(domainTask.day.time, `is`(networkTask.day.time))
         assertThat(domainTask.startAt.time, `is`(networkTask.startAt.time))
         assertThat(domainTask.methodId, `is`(networkTask.methodId))
         assertThat(domainTask.title, `is`(networkTask.title))
