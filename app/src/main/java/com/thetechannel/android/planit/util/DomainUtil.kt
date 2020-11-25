@@ -46,7 +46,7 @@ fun Task.asDataTransferObject() = NetworkTask(
     methodId = methodId,
     title = title,
     catId = catId,
-    completed = completed
+    completed = completed.toInt()
 )
 
 fun Task.asDatabaseEntity() = DbTask(

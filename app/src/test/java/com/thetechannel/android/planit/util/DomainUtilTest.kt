@@ -83,7 +83,7 @@ class DomainUtilTest {
         assertThat(domainTask.methodId, `is`(networkTask.methodId))
         assertThat(domainTask.title, `is`(networkTask.title))
         assertThat(domainTask.catId, `is`(networkTask.catId))
-        assertThat(domainTask.completed, `is`(networkTask.completed))
+        assertThat(domainTask.completed, `is`(networkTask.completed.toBoolean()))
     }
 
     @Test

@@ -43,6 +43,6 @@ class NetworkUtilTest {
         assertThat(netTask.methodId, `is`(dbTask.methodId))
         assertThat(netTask.title, `is`(dbTask.title))
         assertThat(netTask.catId, `is`(dbTask.catId))
-        assertThat(netTask.completed, `is`(dbTask.completed))
+        assertThat(netTask.completed, `is`(dbTask.completed.toInt()))
     }
 }

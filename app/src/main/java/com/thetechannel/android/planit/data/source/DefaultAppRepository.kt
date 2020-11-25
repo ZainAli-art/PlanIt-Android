@@ -55,7 +55,9 @@ class DefaultAppRepository(
     }
 
     override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
-        TODO("Not yet implemented")
+        wrapEspressoIdlingResource {
+            return localDataSource.observeTaskDetails()
+        }
     }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {

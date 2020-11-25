@@ -46,7 +46,7 @@ fun NetworkTask.asDatabaseEntity() = DbTask(
     methodId = methodId,
     title = title,
     catId = catId,
-    completed = completed
+    completed = completed.toBoolean()
 )
 
 fun NetworkTask.asDomainModel() = Task(
@@ -56,5 +56,5 @@ fun NetworkTask.asDomainModel() = Task(
     methodId = methodId,
     title = title,
     catId = catId,
-    completed = completed
+    completed = completed.toBoolean()
 )

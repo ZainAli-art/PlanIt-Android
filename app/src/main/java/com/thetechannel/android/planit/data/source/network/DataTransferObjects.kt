@@ -17,7 +17,7 @@ data class NetworkTask(
     @SerializedName("method_id") var methodId: Int = 1,
     @SerializedName("title") var title: String = "",
     @SerializedName("cat_id") var catId: Int = 1,
-    @SerializedName("completed") var completed: Boolean = false
+    @SerializedName("completed") var completed: Int = 0
 )
 
 data class NetworkTaskMethod(

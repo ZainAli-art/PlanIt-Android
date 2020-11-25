@@ -2,7 +2,6 @@ package com.thetechannel.android.planit
 
 import android.widget.DatePicker
 import android.widget.TimePicker
-import androidx.navigation.NavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -11,7 +10,6 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.PickerActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -30,7 +28,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
 import java.net.URI
 import java.sql.Time
 
@@ -99,7 +96,6 @@ class MainActivityTest {
     fun addNewTask_addsOnePendingTask() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-        val navController = mock(NavController::class.java)
 
         // click add new task floating action button
         onView(withId(R.id.addNewTaskFab))
@@ -113,12 +109,12 @@ class MainActivityTest {
             ViewActions.closeSoftKeyboard()
         )
         onView(withId(R.id.scheduleButton)).perform(click())
-        onView(ViewMatchers.withClassName(Matchers.`is`(DatePicker::class.java.name)))
+        onView(withClassName(Matchers.`is`(DatePicker::class.java.name)))
             .perform(PickerActions.setDate(2000, 5, 26))
-        onView(ViewMatchers.withText("OK")).perform(click())
-        onView(ViewMatchers.withClassName(Matchers.`is`(TimePicker::class.java.name)))
+        onView(withText("OK")).perform(click())
+        onView(withClassName(Matchers.`is`(TimePicker::class.java.name)))
             .perform(PickerActions.setTime(11, 56))
-        onView(ViewMatchers.withText("OK")).perform(click())
+        onView(withText("OK")).perform(click())
 
         onView(withId(R.id.homeFragmentSwipeRefreshLayout))
             .check(matches(isDisplayed()))

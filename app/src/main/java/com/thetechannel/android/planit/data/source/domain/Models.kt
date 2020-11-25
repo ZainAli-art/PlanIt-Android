@@ -51,10 +51,12 @@ data class TaskDetail(
 
     fun timeRequired(): String {
         val sb = StringBuilder()
-        val hours: Long = TimeUnit.MILLISECONDS.toHours(timeLapse.time)
-        if (hours > 0L) sb.append("$hours hrs")
-        val mins: Long = TimeUnit.MILLISECONDS.toMinutes(timeLapse.time)
-        if (mins > 0L) sb.append("$mins min")
+        var time = timeLapse.time
+        val hours: Long = time / 3600000
+        if (hours > 0) sb.append("$hours hrs ")
+        time -= hours * 3600000
+        val mins: Long = time / 60000
+        if (mins > 0) sb.append("$mins min")
 
         return sb.toString()
     }

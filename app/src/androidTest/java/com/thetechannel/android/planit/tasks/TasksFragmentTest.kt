@@ -9,7 +9,6 @@ import androidx.test.filters.MediumTest
 import com.thetechannel.android.planit.R
 import com.thetechannel.android.planit.ServiceLocator
 import com.thetechannel.android.planit.TaskFilterType
-import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.FakeAndroidTestRepository
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
@@ -28,7 +27,7 @@ import java.util.*
 @MediumTest
 @ExperimentalCoroutinesApi
 class TasksFragmentTest {
-    private lateinit var repository: AppRepository
+    private lateinit var repository: FakeAndroidTestRepository
     private lateinit var studyCategory: Category
     private lateinit var businessCategory: Category
     private lateinit var sportCategory: Category

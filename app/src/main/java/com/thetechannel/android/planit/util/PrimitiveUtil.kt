@@ -14,3 +14,7 @@ fun Date.isSameDay(that: Date): Boolean {
     return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) &&
             c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)
 }
+
+fun Int.toBoolean() = this != 0
+
+fun Boolean.toInt() = if (this) 1 else 0
