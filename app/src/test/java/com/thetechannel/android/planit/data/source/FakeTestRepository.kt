@@ -120,6 +120,7 @@ class FakeTestRepository : AppRepository {
                         if (o1.day.equals(o2.day)) o1.startAt.compareTo(o2.startAt)
                         else o1.day.compareTo(o2.day)
                     }).forEach { task ->
+                        var error = false;
                         runBlocking {
                             val category = getCategory(task.catId, true)
                             val method = getTaskMethod(task.methodId, true)
@@ -127,9 +128,10 @@ class FakeTestRepository : AppRepository {
                             if (category is Result.Success && method is Result.Success) {
                                 details.add(com.thetechannel.android.planit.getTaskDetail(category.data, method.data, task))
                             } else {
-                                return@runBlocking Result.Error(Exception("invalid details"))
+                                error = true
                             }
                         }
+                        if (error) return@map Result.Error(Exception("invalid details"))
                     }
                     Result.Success(details)
                 }

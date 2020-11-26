@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.thetechannel.android.planit.MainCoroutineRule
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.FakeTestRepository
 import com.thetechannel.android.planit.data.source.database.TasksOverView
@@ -32,6 +33,10 @@ class HomeViewModelTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    val mainCoroutineRule =  MainCoroutineRule()
 
     @Before
     fun setUp() = runBlocking {
@@ -100,5 +105,18 @@ class HomeViewModelTest {
 
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))
         assertThat(event.peekContent(), `is`(TaskFilterType.COMPLETED_TODAY))
+    }
+
+    @Test
+    fun loadData_Loading() {
+        mainCoroutineRule.pauseDispatcher()
+
+        viewModel.refresh()
+
+        assertThat(viewModel.dataLoading.getOrAwaitValue(), `is`(true))
+
+        mainCoroutineRule.resumeDispatcher()
+
+        assertThat(viewModel.dataLoading.getOrAwaitValue(), `is`(false))
     }
 }

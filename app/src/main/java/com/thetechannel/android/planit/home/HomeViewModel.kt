@@ -14,6 +14,10 @@ class HomeViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
+    private val _dataLoading = MutableLiveData<Boolean>()
+    val dataLoading: LiveData<Boolean>
+        get() = _dataLoading
+
     private val _openTasksEvent: MutableLiveData<Event<TaskFilterType>> = MutableLiveData()
     val openTasksEvent: LiveData<Event<TaskFilterType>>
         get() = _openTasksEvent
@@ -59,10 +63,14 @@ class HomeViewModel(
         _addNewTaskEvent.value = Event(true)
     }
 
-    fun refresh() = viewModelScope.launch {
-        repository.refreshCategories()
-        repository.refreshTaskMethods()
-        repository.refreshTasks()
+    fun refresh() {
+        _dataLoading.value = true
+        viewModelScope.launch {
+            repository.refreshCategories()
+            repository.refreshTaskMethods()
+            repository.refreshTasks()
+            _dataLoading.value = false
+        }
     }
 }
 
