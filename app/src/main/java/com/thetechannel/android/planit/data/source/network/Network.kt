@@ -2,8 +2,6 @@ package com.thetechannel.android.planit.data.source.network
 
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.thetechannel.android.planit.data.source.domain.Category
-import com.thetechannel.android.planit.data.source.domain.Task
 import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,14 +18,11 @@ interface RemoteService {
     fun getTasks(): Deferred<List<NetworkTask>>
 
     @FormUrlEncoded
-    @POST
-    fun getTask(@Query("id") id: String): Deferred<NetworkTask>
-
-    @POST("insert-category.php")
-    fun insertCategory(@Body category: NetworkCategory): Deferred<Void>
+    @POST("get-task-by-id.php")
+    fun getTask(@Field("id") id: String): Deferred<NetworkTask>
 
     @POST("insert-task.php")
-    fun insertTask(@Body task: NetworkTask): Deferred<Void>
+    fun insertTask(@Body task: NetworkTask): Deferred<Unit>
 }
 
 object Network {

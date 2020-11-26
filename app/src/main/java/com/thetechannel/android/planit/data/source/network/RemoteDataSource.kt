@@ -13,6 +13,8 @@ import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.util.asDataTransferObject
 import com.thetechannel.android.planit.util.asDomainModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 private const val TAG = "RemoteDataSource"
@@ -67,8 +69,8 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategories(): Result<List<Category>> {
-        return try {
+    override suspend fun getCategories(): Result<List<Category>> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val categories = remoteService.getCategories().await()
             Result.Success(categories.map { it.asDomainModel() })
         } catch (e: Exception) {
@@ -80,8 +82,8 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTaskMethods(): Result<List<TaskMethod>> {
-        return try {
+    override suspend fun getTaskMethods(): Result<List<TaskMethod>> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val methods = remoteService.getTaskMethods().await()
             Result.Success(methods.map { it.asDomainModel() })
         } catch (e: Exception) {
@@ -93,8 +95,8 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasks(): Result<List<Task>> {
-        return try {
+    override suspend fun getTasks(): Result<List<Task>> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val tasks = remoteService.getTasks().await()
             Result.Success(tasks.map { it.asDomainModel() })
         } catch (e: Exception) {
@@ -106,8 +108,8 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTask(id: String): Result<Task> {
-        return try {
+    override suspend fun getTask(id: String): Result<Task> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val task = remoteService.getTask(id).await()
             Result.Success(task.asDomainModel())
         } catch (e: Exception) {
@@ -136,7 +138,7 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun saveCategory(category: Category) {
-        remoteService.insertCategory(category.asDataTransferObject()).await()
+        TODO("Not yet implemented")
     }
 
     override suspend fun saveTaskMethod(taskMethod: TaskMethod) {
@@ -144,9 +146,10 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun saveTask(task: Task) {
-        Log.d(TAG, "saveTask: $task")
         try {
-            remoteService.insertTask(task.asDataTransferObject()).await()
+            withContext(Dispatchers.IO) {
+                remoteService.insertTask(task.asDataTransferObject()).await()
+            }
         } catch (e: Exception) {
             Log.e(TAG, "saveTask: error ${e.message}")
         }

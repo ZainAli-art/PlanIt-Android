@@ -33,10 +33,10 @@ class HomeViewModel(
         }
     }
 
-    val todayProgress: LiveData<TodayProgress> = repository.observeTodayProgress().map {
+    val todayProgress: LiveData<Int> = repository.observeTodayProgress().map {
         when (it) {
-            is Result.Success -> it.data
-            else -> TodayProgress(0)
+            is Result.Success -> it.data.percentage
+            else -> 0
         }
     }
 

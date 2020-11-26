@@ -145,17 +145,16 @@ class NewTaskViewModel(
         Log.i(TAG, "saveNewTask: $task")
 
         showSnackBarMessage(R.string.schedule_task_snackbar_text)
-        newTaskAdded()
         saveNewTask(task)
-        newTaskAdded()
     }
 
     fun saveNewTask(task: Task) = viewModelScope.launch {
         repository.saveTask(task)
+        newTaskAdded()
     }
 
     private fun newTaskAdded() {
-        _taskAddedEvent.value = Event(true)
+        _taskAddedEvent.postValue(Event(true))
     }
 
     private fun showSnackBarMessage(@StringRes message: Int) {

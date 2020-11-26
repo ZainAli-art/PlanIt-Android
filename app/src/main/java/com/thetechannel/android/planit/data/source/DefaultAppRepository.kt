@@ -1,7 +1,6 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.database.TasksOverView

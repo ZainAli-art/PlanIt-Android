@@ -97,6 +97,10 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        // pendingTasks shows 0
+        onView(withId(R.id.pendingTasks))
+            .check(matches(withText("0")))
+
         // click add new task floating action button
         onView(withId(R.id.addNewTaskFab))
             .check(matches(isDisplayed()))
@@ -116,8 +120,11 @@ class MainActivityTest {
             .perform(PickerActions.setTime(11, 56))
         onView(withText("OK")).perform(click())
 
+        // navigated up successfully
         onView(withId(R.id.homeFragmentSwipeRefreshLayout))
             .check(matches(isDisplayed()))
+
+        // pendingTasks is updated to 1
         onView(withId(R.id.pendingTasks))
             .check(matches(allOf(isDisplayed(), withText("1"))))
     }

@@ -114,6 +114,7 @@ class FakeAndroidTestRepository : AppRepository {
                 is Result.Success -> {
                     val details = mutableListOf<TaskDetail>()
                     tasks.data.forEach { task ->
+                        var flag = false
                         runBlocking {
                             val category = getCategory(task.catId, false)
                             val method = getTaskMethod(task.methodId, false)
@@ -121,9 +122,10 @@ class FakeAndroidTestRepository : AppRepository {
                             if (category is Result.Success && method is Result.Success) {
                                 details.add(getTaskDetail(category.data, method.data, task))
                             } else {
-                                return@runBlocking Result.Error(Exception("invalid details"))
+                                flag = true
                             }
                         }
+                        if (flag) return@map Result.Error(Exception("invalid details"))
                     }
                     Result.Success(details)
                 }

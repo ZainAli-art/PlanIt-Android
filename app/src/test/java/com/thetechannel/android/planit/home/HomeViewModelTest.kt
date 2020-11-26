@@ -65,7 +65,7 @@ class HomeViewModelTest {
     fun getTodayProgress_returnsFifty() {
         val progress = viewModel.todayProgress.getOrAwaitValue()
 
-        assertThat(progress.percentage, `is`(50))
+        assertThat(progress, `is`(50))
     }
 
     @Test
