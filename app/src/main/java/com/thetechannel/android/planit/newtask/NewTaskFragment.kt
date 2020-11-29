@@ -1,29 +1,34 @@
 package com.thetechannel.android.planit.newtask
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.thetechannel.android.planit.EventObserver
-import com.thetechannel.android.planit.MyApplication
-import com.thetechannel.android.planit.R
+import com.thetechannel.android.planit.*
+import com.thetechannel.android.planit.broadcast.AppBroadcastReceiver
 import com.thetechannel.android.planit.databinding.FragmentNewTaskBinding
 import java.sql.Time
 import java.util.*
 
+private const val TAG = "NewTaskFragment"
+
 class NewTaskFragment : Fragment(), View.OnClickListener {
 
     private val viewModel by viewModels<NewTaskViewModel> {
-        NewTaskViewModelFactory((requireActivity().applicationContext as MyApplication).repository)
+        NewTaskViewModelFactory((requireContext().applicationContext as MyApplication).repository)
     }
 
     private lateinit var viewDataBinding: FragmentNewTaskBinding
@@ -46,12 +51,39 @@ class NewTaskFragment : Fragment(), View.OnClickListener {
         setUpScheduling()
         setUpNavigation()
         setUpSnackBar()
+        setUpReminder()
     }
 
     private fun setUpNavigation() {
         viewModel.taskAddedEvent.observe(viewLifecycleOwner, EventObserver { added ->
-            if (added) findNavController().navigateUp()
+            if (added) {
+                findNavController().navigateUp()
+            }
         })
+    }
+
+    private fun setUpReminder() {
+        viewModel.reminderTimeMillis.observe(viewLifecycleOwner, EventObserver {
+            setUpReminderBroadcast(it)
+        })
+    }
+
+    private fun setUpReminderBroadcast(millis: Long) {
+        Log.d(TAG, "broadcast sent")
+        val intent = Intent(requireContext(), AppBroadcastReceiver::class.java)
+        intent.putExtra(
+            AppBroadcastReceiver.BROADCAST_NAME_KEY,
+            AppBroadcastReceiver.REMINDER_BROADCAST_EXTRA
+        )
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+
+        val alarmManager =
+            requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            millis,
+            pendingIntent
+        )
     }
 
     private fun setUpSnackBar() {

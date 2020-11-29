@@ -20,6 +20,10 @@ class NewTaskViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
+    private val _reminderTimeMillis = MutableLiveData<Event<Long>>()
+    val reminderTimeMillis: LiveData<Event<Long>>
+        get() = _reminderTimeMillis
+
     val selectedCategoryIndex = MutableLiveData<Int>()
     val selectedTaskMethodIndex = MutableLiveData<Int>()
     val taskTitle = MutableLiveData<String>()
@@ -130,7 +134,6 @@ class NewTaskViewModel(
         val title = taskTitle.value
 
         if (day == null || startAt == null || methodId == null || catId == null || title == null) {
-            // generate some error event
             return
         }
         val task = Task(
@@ -144,6 +147,7 @@ class NewTaskViewModel(
 
         Log.i(TAG, "saveNewTask: $task")
 
+        _reminderTimeMillis.value = Event(task.startAt.time)
         showSnackBarMessage(R.string.schedule_task_snackbar_text)
         saveNewTask(task)
     }

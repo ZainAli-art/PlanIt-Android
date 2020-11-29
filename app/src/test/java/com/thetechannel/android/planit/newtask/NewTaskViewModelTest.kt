@@ -7,7 +7,6 @@ import com.thetechannel.android.planit.R
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.FakeTestRepository
 import com.thetechannel.android.planit.data.source.domain.Category
-import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +33,7 @@ class NewTaskViewModelTest {
     private lateinit var eatTheDevilMethod: TaskMethod
     private lateinit var methods: List<TaskMethod>
 
-    private lateinit var repository: AppRepository
+    private lateinit var repository: FakeTestRepository
     private lateinit var viewModel: NewTaskViewModel
 
     // Set the main coroutines dispatcher for unit testing.
@@ -99,8 +98,15 @@ class NewTaskViewModelTest {
 
     @Test
     fun saveNewTask_snackBarTextAndNavigateBackEventUpdated() {
-        val task = Task("task", Calendar.getInstance().time, Time(System.currentTimeMillis()), pomodoroMethod.id, "Maths Assignment", studyCategory.id, false)
-        viewModel.saveNewTask(task)
+//        val task = Task("task", Calendar.getInstance().time, Time(System.currentTimeMillis()), pomodoroMethod.id, "Maths Assignment", studyCategory.id, false)
+        viewModel.apply {
+            selectDay(Calendar.getInstance().time)
+            selectTime(Time(System.currentTimeMillis()))
+            selectedTaskMethodIndex.value = 1
+            taskTitle.value = "Maths Assignment"
+            selectedCategoryIndex.value = 1
+        }
+        viewModel.saveNewTask()
 
         val message: Event<Int> = viewModel.snackBarText.getOrAwaitValue()
         assertThat(message.getContentIfNotHandled(), `is`(R.string.schedule_task_snackbar_text))
@@ -110,7 +116,7 @@ class NewTaskViewModelTest {
 
     @Test
     fun scheduletTask_updatesScheduleTaskEvent() {
-        viewModel::scheduleTask
+        viewModel.scheduleTask()
 
         val event = viewModel.scheduleTaskEvent.getOrAwaitValue()
         assertThat(event.getContentIfNotHandled(), `is`(notNullValue()))

@@ -19,4 +19,7 @@
     <string name="week_button_text">Weekly</string>
     <string name="month_button_text">Monthly</string>
     <string name="schedule_task_snackbar_text">Your task is scheduled!</string>
+    <string name="reminder_channel_name">com.thetechannel.android.planit.broadcast.reminder_channel_name</string>
+    <string name="reminder_channel_description">Reminds of the planned tasks</string>
+    <string name="reminder_notication_title">Let\'s do it!</string>
 </resources>
