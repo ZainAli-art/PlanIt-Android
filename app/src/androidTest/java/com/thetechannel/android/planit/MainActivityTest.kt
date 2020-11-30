@@ -50,8 +50,6 @@ class MainActivityTest {
 
     @Before
     fun init() = runBlocking {
-        ServiceLocator.setRemoteDataSource(FakeRemoteDataSource)
-
         repository = ServiceLocator.provideRepository(
             getApplicationContext()
         )

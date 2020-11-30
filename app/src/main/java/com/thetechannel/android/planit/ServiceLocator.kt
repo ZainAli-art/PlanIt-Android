@@ -8,15 +8,14 @@ import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.DefaultAppRepository
 import com.thetechannel.android.planit.data.source.database.LocalDataSource
 import com.thetechannel.android.planit.data.source.database.PlanItDatabase
-import com.thetechannel.android.planit.data.source.network.Network
+import com.thetechannel.android.planit.data.source.network.FakeRemoteDataSource
 import com.thetechannel.android.planit.data.source.network.Network.remoteService
 import com.thetechannel.android.planit.data.source.network.RemoteDataSource
-import kotlinx.coroutines.runBlocking
 
 object ServiceLocator {
     private val lock = Any()
     private var database: PlanItDatabase? = null
-    private var remoteDataSource: AppDataSource = RemoteDataSource(remoteService)
+    private var remoteDataSource: AppDataSource? = null
 
     @Volatile
     var repository: AppRepository? = null
@@ -28,10 +27,16 @@ object ServiceLocator {
     private fun createAppRepository(context: Context): AppRepository {
         val newRepo = DefaultAppRepository(
             createLocalDataSource(context),
-            remoteDataSource
+            createRemoteDataSource()
         )
         repository = newRepo
         return newRepo
+    }
+
+    private fun createRemoteDataSource(): AppDataSource {
+        return remoteDataSource ?: FakeRemoteDataSource.also {
+            remoteDataSource = it
+        }
     }
 
     private fun createLocalDataSource(context: Context): AppDataSource {
@@ -63,10 +68,5 @@ object ServiceLocator {
             database = null
             repository = null
         }
-    }
-
-    @VisibleForTesting
-    fun setRemoteDataSource(source: AppDataSource) {
-        remoteDataSource = source
     }
 }

@@ -126,16 +126,25 @@ class NewTaskViewModel(
         _selectedDay.value = day
     }
 
-    fun saveNewTask() {
+    fun saveNewTask() = viewModelScope.launch {
         val day = _selectedDay.value
         val startAt = _selectedTime.value
-        val methodId = taskMethods.value?.get(selectedTaskMethodIndex.value!!)?.id
-        val catId = categories.value?.get(selectedCategoryIndex.value!!)?.id
+
+        val methodList = repository.getTaskMethods(false)
+        val catList = repository.getCategories(false)
+
+        if (methodList !is Result.Success || catList !is Result.Success) {
+            TODO("show some error")
+        }
+
+        val methodId = methodList.data[selectedTaskMethodIndex.value!!].id
+        val catId = catList.data[selectedCategoryIndex.value!!].id
         val title = taskTitle.value
 
-        if (day == null || startAt == null || methodId == null || catId == null || title == null) {
-            return
+        if (day == null || startAt == null || title == null) {
+            TODO("show some error")
         }
+
         val task = Task(
             day = day,
             startAt = startAt,
@@ -152,7 +161,7 @@ class NewTaskViewModel(
         saveNewTask(task)
     }
 
-    fun saveNewTask(task: Task) = viewModelScope.launch {
+    suspend fun saveNewTask(task: Task) {
         repository.saveTask(task)
         newTaskAdded()
     }

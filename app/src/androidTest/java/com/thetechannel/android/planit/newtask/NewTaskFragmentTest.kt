@@ -124,7 +124,7 @@ class NewTaskFragmentTest {
     }
 
     @Test
-    fun enterTitleAndClickScheduleButton_displaysDatePickerDialogue() {
+    fun enterTitleAndClickScheduleButton_displaysDateAndTimePickerDialogues() {
         launchFragmentInContainer<NewTaskFragment>(Bundle(), R.style.AppTheme)
 
         val title = "Do Maths Assignment"
@@ -132,11 +132,13 @@ class NewTaskFragmentTest {
         onView(withId(R.id.scheduleButton)).perform(click())
         onView(withClassName(`is`(DatePicker::class.java.name)))
             .perform(setDate(2000, 5, 26))
-        onView(withText("OK")).perform(click())
+        onView(withText("OK"))
+            .check(matches(isDisplayed()))
+            .perform(click())
         onView(withClassName(`is`(TimePicker::class.java.name)))
             .perform(setTime(11, 56))
-        onView(withText("OK")).perform(click())
-
-        Thread.sleep(5000)
+        onView(withText("OK"))
+            .check(matches(isDisplayed()))
+        // clicking pops the fragment resulting in crash
     }
 }
