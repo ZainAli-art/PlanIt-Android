@@ -15,7 +15,9 @@ import com.thetechannel.android.planit.ServiceLocator
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.AppRepository
 import com.thetechannel.android.planit.data.source.FakeAndroidTestRepository
+import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -24,6 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.net.URI
 import java.sql.Time
 import java.util.*
 
@@ -33,11 +36,20 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class HomeFragmentTest {
 
+    private lateinit var category: Category
+    private lateinit var method: TaskMethod
+
     private lateinit var repository: AppRepository
 
     @Before
-    fun initRepository() {
+    fun initRepository() = runBlockingTest {
         repository = FakeAndroidTestRepository()
+        category = Category(1, "Study")
+        method = TaskMethod(1, "Pomodoro", Time(25 * 60000), Time(5 * 60000), URI("null"))
+
+        repository.saveCategory(category)
+        repository.saveTaskMethod(method)
+
         ServiceLocator.repository = repository
     }
 
@@ -49,10 +61,10 @@ class HomeFragmentTest {
     @Test
     fun insertTasks_updatesTasksCountInTasksOverview() = runBlockingTest {
         arrayOf(
-            Task("task_1", Calendar.getInstance().time, Time(1000L), 1, "Maths Assignment", 1, false),
-            Task("task_2", Calendar.getInstance().time, Time(2030L), 1, "Read Emails", 2, true),
-            Task("task_3", Date(23L), Time(4300L), 1, "Half an hour jog", 3, true),
-            Task("task_4", Calendar.getInstance().time, Time(1000L), 1, "Prepare Slides", 1, false)
+            Task("task_1", Calendar.getInstance().time, Time(1000L), method.id, "Maths Assignment", category.id, false),
+            Task("task_2", Calendar.getInstance().time, Time(2030L), method.id, "Read Emails", category.id, true),
+            Task("task_3", Date(23L), Time(4300L), 1, "Half an hour jog", category.id, true),
+            Task("task_4", Calendar.getInstance().time, Time(1000L), method.id, "Prepare Slides", category.id, false)
         ).forEach { repository.saveTask(it) }
 
         val scenario = launchFragmentInContainer<HomeFragment>(Bundle(), R.style.AppTheme)

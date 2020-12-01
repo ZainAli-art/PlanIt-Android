@@ -4,9 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.thetechannel.android.planit.MainCoroutineRule
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.FakeTestRepository
-import com.thetechannel.android.planit.data.source.database.TasksOverView
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
+import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import com.thetechannel.android.planit.data.source.domain.TasksOverView
 import com.thetechannel.android.planit.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -17,6 +18,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
+import java.net.URI
 import java.sql.Time
 import java.util.*
 
@@ -27,6 +29,7 @@ class HomeViewModelTest {
     private lateinit var task2: Task
     private lateinit var task3: Task
     private lateinit var category: Category
+    private lateinit var method: TaskMethod
 
     private lateinit var repository: FakeTestRepository
     private lateinit var viewModel: HomeViewModel
@@ -45,8 +48,10 @@ class HomeViewModelTest {
         task2 = Task(UUID.randomUUID().toString(), Calendar.getInstance().time, Time(1540), 1, "Read Emails", 1, false)
         task3 = Task(UUID.randomUUID().toString(), Date(25L), Time(100), 1, "Clean my room", 1, true)
         category = Category(1, "Study")
+        method = TaskMethod(1, "Pomodoro", Time(25 * 60000), Time(5 * 60000), URI("null"))
 
         repository.saveCategory(category)
+        repository.saveTaskMethod(method)
         arrayOf(task1, task2, task3).forEach { repository.saveTask(it) }
 
         viewModel = HomeViewModel(repository)

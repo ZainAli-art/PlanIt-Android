@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [DbCategory::class, DbTaskMethod::class, DbTask::class],
-    views = [TasksOverView::class, TodayProgress::class, TodayPieDataView::class],
     version = 1, exportSchema = false)
 abstract class PlanItDatabase : RoomDatabase() {
     abstract val taskMethodsDao: TaskMethodsDao

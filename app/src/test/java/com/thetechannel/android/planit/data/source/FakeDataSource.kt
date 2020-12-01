@@ -1,15 +1,11 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
-import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
-import com.thetechannel.android.planit.util.isToday
 import java.lang.Exception
 import java.util.*
 
@@ -51,18 +47,6 @@ class FakeDataSource(
     }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTasksOverView(): LiveData<Result<TasksOverView>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
         TODO("Not yet implemented")
     }
 
@@ -148,58 +132,6 @@ class FakeDataSource(
         } else {
             return Result.Error(Exception("detail id not found"))
         }
-    }
-
-    override suspend fun getTasksOverView(): Result<TasksOverView> {
-        val result = getTasks()
-        when (result) {
-            is Result.Success -> {
-                val tasks = result.data
-                val completed = tasks.filter { it.completed }.size
-                val pending = tasks.filter { !it.completed }.size
-                val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
-
-                return Result.Success(TasksOverView(completed, pending, completedToday))
-            }
-            else -> return Result.Error(Exception("error fetching tasks"))
-        }
-    }
-
-    override suspend fun getTodayProgress(): Result<TodayProgress> {
-        if (tasks == null) return Result.Error(Exception("no tasks"))
-
-        val list = tasks?.toList() as List<Task>
-        val total = list.filter { it.day.isToday() }.size
-        val completed = list.filter { it.day.isToday() && it.completed }.size
-
-        return Result.Success(TodayProgress(completed * 100 / total))
-    }
-
-    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> {
-        val catMap = mutableMapOf<Int, Category>()
-        categories?.forEach { catMap[it.id] = it }
-        val taskCount = mutableMapOf<Int, Int>()
-        val todayTasks = tasks?.filter { it.day.isToday() }
-
-        todayTasks?.forEach {
-            taskCount[it.catId] = taskCount.getOrDefault(it.catId, 0) + 1
-        }
-
-        val entries = mutableListOf<PieEntry>()
-        categories?.forEach {
-            if (taskCount.containsKey(it.id)) {
-                val count = taskCount[it.id]
-                val name = it.name
-
-                if (count == null) {
-                    return Result.Error(Exception("invalid data in pie entry"))
-                }
-
-                entries.add(PieEntry(count.toFloat(), name))
-            }
-        }
-
-        return Result.Success(entries)
     }
 
     override suspend fun saveCategory(category: Category) {

@@ -2,11 +2,8 @@ package com.thetechannel.android.planit.data.source.network
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppDataSource
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -54,18 +51,6 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTasksOverView(): LiveData<Result<TasksOverView>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
         TODO("Not yet implemented")
     }
 
@@ -122,18 +107,6 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getTaskDetail(id: String): Result<TaskDetail> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTasksOverView(): Result<TasksOverView> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTodayProgress(): Result<TodayProgress> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTodayPieEntries(): Result<List<PieEntry>> {
         TODO("Not yet implemented")
     }
 

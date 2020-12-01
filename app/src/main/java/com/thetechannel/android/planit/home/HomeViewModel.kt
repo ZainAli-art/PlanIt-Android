@@ -6,8 +6,9 @@ import com.thetechannel.android.planit.Event
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
+import com.thetechannel.android.planit.data.source.domain.TasksOverView
+import com.thetechannel.android.planit.util.getPieEntries
+import com.thetechannel.android.planit.util.isToday
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -26,23 +27,40 @@ class HomeViewModel(
     val addNewTaskEvent: LiveData<Event<Boolean>>
         get() = _addNewTaskEvent
 
-    val tasksOverView: LiveData<TasksOverView> = repository.observeTasksOverView().map {
+    private val taskDetails = repository.observeTaskDetails()
+
+    val tasksOverView: LiveData<TasksOverView> = taskDetails.map {
         when (it) {
-            is Result.Success -> it.data
+            is Result.Success -> {
+                val pending = it.data.filter { !it.completed }
+                val completed = it.data.filter { it.completed }
+                val completedToday = completed.filter { it.day.isToday() }
+
+                TasksOverView(completed.size, pending.size, completedToday.size)
+            }
             else -> TasksOverView(0, 0, 0)
         }
     }
 
-    val todayProgress: LiveData<Int> = repository.observeTodayProgress().map {
+    val todayProgress: LiveData<Int> = taskDetails.map {
         when (it) {
-            is Result.Success -> it.data.percentage
+            is Result.Success -> {
+                val totalTasks = it.data.filter { it.day.isToday() }
+                if (totalTasks.isEmpty()) return@map 0
+
+                val completedTasks = totalTasks.filter { it.completed }
+
+                completedTasks.size * 100 / totalTasks.size
+            }
             else -> 0
         }
     }
 
-    val todayPieEntries: LiveData<List<PieEntry>> = repository.observeTodayPieEntries().map {
+    val todayPieEntries: LiveData<List<PieEntry>> = taskDetails.map {
         when (it) {
-            is Result.Success -> it.data
+            is Result.Success -> {
+                getPieEntries(it.data.filter { it.day.isToday() })
+            }
             else -> emptyList()
         }
     }

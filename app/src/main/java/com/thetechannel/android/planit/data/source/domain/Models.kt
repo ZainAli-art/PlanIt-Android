@@ -61,3 +61,14 @@ data class TaskDetail(
         return sb.toString()
     }
 }
+
+data class TasksOverView(
+    val completedTasks: Int,
+    val pendingTasks: Int,
+    val tasksCompletedToday: Int
+)
+
+data class TodayPieDataView(
+    val name: String,
+    val count: Int
+)

@@ -157,41 +157,6 @@ class TasksDaoTest {
         }
 
     @Test
-    fun insertTasks_getTasksOverview_returnsOverviewOfInsertedTasks() = runBlockingTest {
-        val tasks = getVersatileTasks()
-        tasks.forEach { tasksDao.insert(it) }
-
-        val views = tasksDao.getTasksOverView()
-        assertThat(views.completedTasks, `is`(2))
-        assertThat(views.pendingTasks, `is`(4))
-        assertThat(views.tasksCompletedToday, `is`(1))
-    }
-
-    @Test
-    fun insertTasks_get_TodayProgress_returnsTodayCompletedTasksPercentage() = runBlockingTest {
-        val tasks = getVersatileTasks()
-        tasks.forEach { tasksDao.insert(it) }
-
-        val progress = tasksDao.getTodayProgress()
-        assertThat(progress.percentage, `is`(20))
-    }
-
-    @Test
-    fun getTodayPieDataViews_returnCategoriesAndNumberOfTodayTasksLyingThoseCategories() = runBlockingTest {
-        val tasks = getVersatileTasks()
-        tasks.forEach { tasksDao.insert(it) }
-
-        val views = tasksDao.getTodayPieDataViews()
-        val viewData = mutableMapOf<String, TodayPieDataView>()
-        for (v in views) viewData[v.name] = v
-
-        assertThat(views.size, `is`(3))
-        assertThat(viewData["Study"]?.count, `is`(2))
-        assertThat(viewData["Business"]?.count, `is`(2))
-        assertThat(viewData["Sport"]?.count, `is`(1))
-    }
-
-    @Test
     fun insertTasks_deleteAll_deletedAllInsertedTasks() = runBlockingTest {
         val tasks = getVersatileTasks()
         tasks.forEach { tasksDao.insert(it) }

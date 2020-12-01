@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -139,36 +137,6 @@ class FakeAndroidTestRepository : AppRepository {
         TODO("Not implemented yet")
     }
 
-    override fun observeTasksOverView(): LiveData<Result<TasksOverView>> = observableTasks.map {
-        when (it) {
-            is Result.Loading -> Result.Loading
-            is Result.Error -> Result.Error(it.exception)
-            is Result.Success -> {
-                val tasks = it.data
-                val completed = tasks.filter { it.completed }.size
-                val pending = tasks.filter { !it.completed }.size
-                val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
-                Result.Success(TasksOverView(completed, pending, completedToday))
-            }
-        }
-    }
-
-    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> = observableTasks.map {
-        when (it) {
-            is Result.Loading -> Result.Loading
-            is Result.Error -> Result.Error(it.exception)
-            is Result.Success -> Result.Success(getTodayProgress(it.data))
-        }
-    }
-
-    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> = observableTasks.map {
-        when (it) {
-            is Result.Loading -> Result.Loading
-            is Result.Error -> Result.Error(it.exception)
-            is Result.Success -> Result.Success(getTodayPieEntries(it.data))
-        }
-    }
-
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
         return Result.Success(categoriesServiceData.values.toList())
     }
@@ -242,32 +210,6 @@ class FakeAndroidTestRepository : AppRepository {
         breakEnd = Time(task.startAt.time + method.workLapse.time + method.breakLapse.time),
         completed = task.completed
     )
-
-    override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
-        val tasks = (getTasks(false) as Result.Success).data
-
-        val completed = tasks.filter { it.completed }.size
-        val pending = tasks.filter { !it.completed }.size
-        val completedToday = tasks.filter { it.completed && it.day.isToday() }.size
-
-        return Result.Success(TasksOverView(completed, pending, completedToday))
-    }
-
-    override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
-        return Result.Success(getTodayProgress(ArrayList(tasksServiceData.values)))
-    }
-
-    private fun getTodayProgress(tasks: List<Task>): TodayProgress {
-        val todayTasks = tasks.filter { it.day.isToday() }
-        val totalTasks = todayTasks.size
-        val completed = todayTasks.filter { it.completed }.size
-
-        return TodayProgress(completed * 100 / totalTasks)
-    }
-
-    override suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>> {
-        return Result.Success(getTodayPieEntries(ArrayList(tasksServiceData.values)))
-    }
 
     private fun getTodayPieEntries(tasks: List<Task>): List<PieEntry> {
         val map = mutableMapOf<Int, Int>()

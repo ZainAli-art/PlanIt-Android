@@ -1,10 +1,7 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
-import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -61,24 +58,6 @@ class DefaultAppRepository(
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         TODO("Not yet implemented")
-    }
-
-    override fun observeTasksOverView(): LiveData<Result<TasksOverView>> {
-        wrapEspressoIdlingResource {
-            return localDataSource.observeTasksOverView()
-        }
-    }
-
-    override fun observeTodayProgress(): LiveData<Result<TodayProgress>> {
-        wrapEspressoIdlingResource {
-            return localDataSource.observeTodayProgress()
-        }
-    }
-
-    override fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>> {
-        wrapEspressoIdlingResource {
-            return localDataSource.observeTodayPieEntries()
-        }
     }
 
     override suspend fun getCategories(forceUpdate: Boolean): Result<List<Category>> {
@@ -220,34 +199,6 @@ class DefaultAppRepository(
                 }
             }
             return localDataSource.getTaskDetail(id)
-        }
-    }
-
-    override suspend fun getTasksOverView(forceUpdate: Boolean): Result<TasksOverView> {
-        wrapEspressoIdlingResource {
-            if (forceUpdate) {
-                updateTasksFromRemoteDataSource()
-            }
-            return localDataSource.getTasksOverView()
-        }
-    }
-
-    override suspend fun getTodayProgress(forceUpdate: Boolean): Result<TodayProgress> {
-        wrapEspressoIdlingResource {
-            if (forceUpdate) {
-                updateTasksFromRemoteDataSource()
-            }
-            return localDataSource.getTodayProgress()
-        }
-    }
-
-    override suspend fun getTodayPieEntries(forceUpdate: Boolean): Result<List<PieEntry>> {
-        wrapEspressoIdlingResource {
-            if (forceUpdate) {
-                updateTasksFromRemoteDataSource()
-                updateCategoriesFromRemoteDataSouce()
-            }
-            return localDataSource.getTodayPieEntries()
         }
     }
 

@@ -111,15 +111,6 @@ interface TasksDao {
     )
     fun observeTaskDetailsByTaskId(id: String): LiveData<DbTaskDetail>
 
-    @Query("SELECT * FROM TasksOverView")
-    fun observeTasksOverView(): LiveData<TasksOverView>
-
-    @Query("SELECT * FROM TodayProgress")
-    fun observeTodayProgress(): LiveData<TodayProgress>
-
-    @Query("SELECT * FROM TodayPieDataView")
-    fun observeTodayPieDataViews(): LiveData<List<TodayPieDataView>>
-
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getById(id: String): DbTask?
 
@@ -174,15 +165,6 @@ interface TasksDao {
     """
     )
     suspend fun getTaskDetailsByTaskId(id: String): DbTaskDetail
-
-    @Query("SELECT * FROM TasksOverView")
-    suspend fun getTasksOverView(): TasksOverView
-
-    @Query("SELECT * FROM TodayProgress")
-    suspend fun getTodayProgress(): TodayProgress
-
-    @Query("SELECT * FROM TodayPieDataView")
-    suspend fun getTodayPieDataViews(): List<TodayPieDataView>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: DbTask)

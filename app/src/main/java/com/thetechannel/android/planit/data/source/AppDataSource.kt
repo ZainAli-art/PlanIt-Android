@@ -1,10 +1,7 @@
 package com.thetechannel.android.planit.data.source
 
 import androidx.lifecycle.LiveData
-import com.github.mikephil.charting.data.PieEntry
 import com.thetechannel.android.planit.data.Result
-import com.thetechannel.android.planit.data.source.database.TasksOverView
-import com.thetechannel.android.planit.data.source.database.TodayProgress
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
@@ -30,12 +27,6 @@ interface AppDataSource {
 
     fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>>
 
-    fun observeTasksOverView(): LiveData<Result<TasksOverView>>
-
-    fun observeTodayProgress(): LiveData<Result<TodayProgress>>
-
-    fun observeTodayPieEntries(): LiveData<Result<List<PieEntry>>>
-
     suspend fun getCategories(): Result<List<Category>>
 
     suspend fun getCategory(id: Int): Result<Category>
@@ -53,12 +44,6 @@ interface AppDataSource {
     suspend fun getTaskDetails(): Result<List<TaskDetail>>
 
     suspend fun getTaskDetail(id: String): Result<TaskDetail>
-
-    suspend fun getTasksOverView(): Result<TasksOverView>
-
-    suspend fun getTodayProgress(): Result<TodayProgress>
-
-    suspend fun getTodayPieEntries(): Result<List<PieEntry>>
 
     suspend fun saveCategory(category: Category)
 
