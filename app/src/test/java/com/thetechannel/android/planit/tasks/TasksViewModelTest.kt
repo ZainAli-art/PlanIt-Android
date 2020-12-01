@@ -1,6 +1,7 @@
 package com.thetechannel.android.planit.tasks
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.thetechannel.android.planit.MainCoroutineRule
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.source.FakeTestRepository
 import com.thetechannel.android.planit.data.source.domain.Category
@@ -22,6 +23,7 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class TasksViewModelTest {
 
+    private lateinit var viewModel: TasksViewModel
     private lateinit var category: Category
     private lateinit var method: TaskMethod
     private lateinit var task3: Task
@@ -32,6 +34,10 @@ class TasksViewModelTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun setUp() = runBlocking {
@@ -70,14 +76,14 @@ class TasksViewModelTest {
         repository.saveTaskMethod(method)
         tasks = listOf(task1, task2, task3)
         tasks.forEach { repository.saveTask(it) }
+
+        viewModel = TasksViewModel(repository)
     }
 
     @Test
     fun setFilteringAsAll_setsUpTaskDetailsFromAllInsertedTasks() {
-        val viewModel = TasksViewModel(repository)
-
         viewModel.setFiltering(TaskFilterType.ALL)
-        val details: List<TaskDetail> = viewModel.taskDetails.getOrAwaitValue()
+        val details: List<TaskDetail> = viewModel.observableTaskDetails.getOrAwaitValue()
 
         assertThat(details.size, `is`(3))
         details[0].assertBelongsTo(category, method, task1)
@@ -87,10 +93,9 @@ class TasksViewModelTest {
 
     @Test
     fun setFilteringAsPending_setsUpTaskDetailsFromPendingTasks() {
-        val viewModel = TasksViewModel(repository)
         viewModel.setFiltering(TaskFilterType.PENDING)
 
-        val loaded = viewModel.taskDetails.getOrAwaitValue()
+        val loaded = viewModel.observableTaskDetails.getOrAwaitValue()
 
         assertThat(loaded.size, `is`(1))
         loaded[0].assertBelongsTo(category, method, task3)
@@ -98,10 +103,9 @@ class TasksViewModelTest {
 
     @Test
     fun setFilteringAsCompleted_setsUpTaskDetailsFromCompletedTasks() {
-        val viewModel = TasksViewModel(repository)
         viewModel.setFiltering(TaskFilterType.COMPLETED)
 
-        val loaded = viewModel.taskDetails.getOrAwaitValue()
+        val loaded = viewModel.observableTaskDetails.getOrAwaitValue()
 
         assertThat(loaded.size, `is`(2))
         loaded[0].assertBelongsTo(category, method, task1)
@@ -110,10 +114,9 @@ class TasksViewModelTest {
 
     @Test
     fun setFilteringAsCompletedToday_setsUpTaskDetailsFromCompletedTodayTasks() {
-        val viewModel = TasksViewModel(repository)
         viewModel.setFiltering(TaskFilterType.COMPLETED_TODAY)
 
-        val loaded = viewModel.taskDetails.getOrAwaitValue()
+        val loaded = viewModel.observableTaskDetails.getOrAwaitValue()
 
         assertThat(loaded.size, `is`(1))
         loaded[0].assertBelongsTo(category, method, task2)
@@ -143,5 +146,14 @@ class TasksViewModelTest {
             `is`(Time(task.startAt.time + method.workLapse.time + method.breakLapse.time))
         )
         assertThat(completed, `is`(task.completed))
+    }
+
+    @Test
+    fun loadTasksWhenUnavailable_callErrorToDisplay() {
+        repository.setReturnError(true)
+        viewModel.refresh()
+
+        assertThat(viewModel.error.getOrAwaitValue(), `is`(true))
+        assertThat(viewModel.empty.getOrAwaitValue(), `is`(true))
     }
 }

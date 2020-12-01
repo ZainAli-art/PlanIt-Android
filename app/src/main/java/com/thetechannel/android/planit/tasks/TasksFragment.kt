@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.thetechannel.android.planit.MyApplication
-import com.thetechannel.android.planit.R
 import com.thetechannel.android.planit.databinding.FragmentTasksBinding
 
 class TasksFragment : Fragment() {
@@ -51,7 +50,7 @@ class TasksFragment : Fragment() {
         viewDataBinding.tasksList.adapter
         listAdapter = TasksAdapter(viewModel)
         viewDataBinding.tasksList.adapter = this.listAdapter
-        viewModel.taskDetails.observe(viewLifecycleOwner, Observer {
+        viewModel.observableTaskDetails.observe(viewLifecycleOwner, Observer {
             listAdapter.submitList(it)
         })
     }

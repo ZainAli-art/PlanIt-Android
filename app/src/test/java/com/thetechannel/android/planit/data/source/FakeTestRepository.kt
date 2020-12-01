@@ -15,13 +15,16 @@ import com.thetechannel.android.planit.data.source.domain.TaskMethod
 import com.thetechannel.android.planit.util.isToday
 import kotlinx.coroutines.runBlocking
 import java.lang.Error
-import java.lang.Exception
 import java.sql.Time
 import java.util.*
+import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class FakeTestRepository : AppRepository {
+
+    private var shouldReturnError: Boolean = false
+
     private val observableCategories: MutableLiveData<Result<List<Category>>> = MutableLiveData()
     private val observableTaskMethods: MutableLiveData<Result<List<TaskMethod>>> = MutableLiveData()
     private val observableTasks: MutableLiveData<Result<List<Task>>> = MutableLiveData()
@@ -29,6 +32,10 @@ class FakeTestRepository : AppRepository {
     var categoriesServiceData: HashMap<Int, Category> = HashMap()
     var taskMethodsServiceData: HashMap<Int, TaskMethod> = HashMap()
     var tasksServiceData: HashMap<String, Task> = HashMap()
+
+    fun setReturnError(value: Boolean) {
+        shouldReturnError = value
+    }
 
     override fun observeCategories(): LiveData<Result<List<Category>>> {
         runBlocking { refreshCategories() }
@@ -105,39 +112,50 @@ class FakeTestRepository : AppRepository {
     }
 
     override fun observeTaskDetails(): LiveData<Result<List<TaskDetail>>> {
+
         runBlocking {
             refreshCategories()
             refreshTaskMethods()
             refreshTasks()
         }
         return observableTasks.map { tasks ->
-            when (tasks) {
-                is Result.Loading -> Result.Loading
-                is Result.Error -> Result.Error(tasks.exception)
-                is Result.Success -> {
-                    val details = mutableListOf<TaskDetail>()
-                    tasks.data.sortedWith(Comparator { o1, o2 ->
-                        if (o1.day.equals(o2.day)) o1.startAt.compareTo(o2.startAt)
-                        else o1.day.compareTo(o2.day)
-                    }).forEach { task ->
-                        var error = false;
-                        runBlocking {
-                            val category = getCategory(task.catId, true)
-                            val method = getTaskMethod(task.methodId, true)
-
-                            if (category is Result.Success && method is Result.Success) {
-                                details.add(com.thetechannel.android.planit.getTaskDetail(category.data, method.data, task))
-                            } else {
-                                error = true
-                            }
-                        }
-                        if (error) return@map Result.Error(Exception("invalid details"))
-                    }
-                    Result.Success(details)
-                }
-            }
+            getTaskDetails(tasks)
         }
     }
+
+    private fun getTaskDetails(tasks: Result<List<Task>>?) =
+        when (tasks) {
+            is Result.Loading -> Result.Loading
+            is Result.Error -> Result.Error(tasks.exception)
+            is Result.Success -> {
+                val details = mutableListOf<TaskDetail>()
+                tasks.data.sortedWith(Comparator { o1, o2 ->
+                    if (o1.day.equals(o2.day)) o1.startAt.compareTo(o2.startAt)
+                    else o1.day.compareTo(o2.day)
+                }).forEach { task ->
+                    var error = false;
+                    runBlocking {
+                        val category = getCategory(task.catId, true)
+                        val method = getTaskMethod(task.methodId, true)
+
+                        if (category is Result.Success && method is Result.Success) {
+                            details.add(
+                                com.thetechannel.android.planit.getTaskDetail(
+                                    category.data,
+                                    method.data,
+                                    task
+                                )
+                            )
+                        } else {
+                            error = true
+                        }
+                    }
+                    if (error) return Result.Error(Exception("invalid details"))
+                }
+                Result.Success(details)
+            }
+            else -> Result.Error(Exception("empty tasks"))
+        }
 
     override fun observeTaskDetail(id: String): LiveData<Result<TaskDetail>> {
         TODO("Not implemented yet")
@@ -196,7 +214,7 @@ class FakeTestRepository : AppRepository {
     }
 
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
-        if (forceUpdate) refreshTasks()
+        if (shouldReturnError) return Result.Error(Exception("error loading data"))
         return Result.Success(ArrayList(tasksServiceData.values))
     }
 
@@ -216,7 +234,7 @@ class FakeTestRepository : AppRepository {
     }
 
     override suspend fun getTaskDetails(forceUpdate: Boolean): Result<List<TaskDetail>> {
-        TODO("Not yet implemented")
+        TODO("Not implemented yet")
     }
 
     override suspend fun getTaskDetail(id: String, forceUpdate: Boolean): Result<TaskDetail> {
@@ -225,7 +243,7 @@ class FakeTestRepository : AppRepository {
         val method = taskMethodsServiceData.get(task?.methodId)
 
         if (task == null || category == null || method == null) {
-            return return Result.Error(Exception("Could not find task detail"))
+            return Result.Error(Exception("Could not find task detail"))
         }
 
         val detail = com.thetechannel.android.planit.getTaskDetail(category, method, task)

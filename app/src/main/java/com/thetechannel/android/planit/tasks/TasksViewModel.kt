@@ -4,66 +4,64 @@ import androidx.lifecycle.*
 import com.thetechannel.android.planit.TaskFilterType
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppRepository
-import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.util.isToday
+import kotlinx.coroutines.launch
 
 class TasksViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
-    private val _tasksFilterType = MutableLiveData<TaskFilterType>()
-    val tasksFilterType: LiveData<TaskFilterType>
-        get() = _tasksFilterType
+    private val tasksFilterType = MutableLiveData<TaskFilterType>()
 
-    val taskDetails: LiveData<List<TaskDetail>> = _tasksFilterType.switchMap { filter ->
-        repository.observeTaskDetails().switchMap { details -> filterTaskDetails(details, filter) }
+    private val taskDetails = repository.observeTaskDetails()
+
+    val observableTaskDetails: LiveData<List<TaskDetail>> = tasksFilterType.switchMap { filter ->
+        taskDetails.switchMap { details -> filterTaskDetails(details, filter) }
     }
 
-    private val _dataLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val dataLoading: LiveData<Boolean>
-        get() = _dataLoading
+    val error = taskDetails.map { it is Result.Error }
+    val empty =
+        taskDetails.map { (it as? Result.Success)?.data.isNullOrEmpty() }
 
-    private val _errorLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val errorLoading: LiveData<Boolean>
-        get() = _errorLoading
+    private val _loading = MutableLiveData<Boolean>(false)
+    val loading: LiveData<Boolean>
+        get() = _loading
 
     fun setFiltering(filter: TaskFilterType) {
-        _tasksFilterType.value = filter
+        tasksFilterType.value = filter
     }
 
     private fun filterTaskDetails(
         details: Result<List<TaskDetail>>,
         filter: TaskFilterType?
-    ): LiveData<List<TaskDetail>> {
+    ): LiveData<List<TaskDetail>> = MutableLiveData<List<TaskDetail>>(
+        getFilteredTaskDetails(details, filter)
+    )
 
-        val result = MutableLiveData<List<TaskDetail>>()
-
-        result.value = when (details) {
-            is Result.Success -> {
-                _dataLoading.value = false
-                _errorLoading.value = false
-                when (filter) {
-                    TaskFilterType.ALL -> details.data
-                    TaskFilterType.PENDING -> details.data.filter { !it.completed }
-                    TaskFilterType.COMPLETED -> details.data.filter { it.completed }
-                    TaskFilterType.COMPLETED_TODAY -> details.data.filter { it.completed && it.day.isToday() }
-                    else -> emptyList()
-                }
-            }
-            is Result.Loading -> {
-                _dataLoading.value = true
-                _errorLoading.value = false
-                emptyList()
-            }
-            is Result.Error -> {
-                _dataLoading.value = false
-                _errorLoading.value = true
-                emptyList()
+    private fun getFilteredTaskDetails(
+        details: Result<List<TaskDetail>>,
+        filter: TaskFilterType?
+    ) = when (details) {
+        is Result.Success -> {
+            when (filter) {
+                TaskFilterType.ALL -> details.data
+                TaskFilterType.PENDING -> details.data.filter { !it.completed }
+                TaskFilterType.COMPLETED -> details.data.filter { it.completed }
+                TaskFilterType.COMPLETED_TODAY -> details.data.filter { it.completed && it.day.isToday() }
+                else -> emptyList()
             }
         }
+        else -> emptyList()
+    }
 
-        return result
+    fun refresh() {
+        println("refreshing tasks")
+        _loading.value = true
+        viewModelScope.launch {
+            repository.refreshTasks()
+            _loading.value = true
+        }
     }
 }
 
