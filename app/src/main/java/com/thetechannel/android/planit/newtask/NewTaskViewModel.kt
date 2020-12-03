@@ -20,6 +20,10 @@ class NewTaskViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
+    private val _saveProcessing = MutableLiveData<Boolean>(false)
+    val saveProcessing: LiveData<Boolean>
+        get() = _saveProcessing
+
     private val _reminderTimeMillis = MutableLiveData<Event<Long>>()
     val reminderTimeMillis: LiveData<Event<Long>>
         get() = _reminderTimeMillis
@@ -126,39 +130,43 @@ class NewTaskViewModel(
         _selectedDay.value = day
     }
 
-    fun saveNewTask() = viewModelScope.launch {
+    fun saveNewTask() {
+        _saveProcessing.value = true
+
         val day = _selectedDay.value
         val startAt = _selectedTime.value
 
-        val methodList = repository.getTaskMethods(false)
-        val catList = repository.getCategories(false)
+        viewModelScope.launch {
+            val methodList = repository.getTaskMethods(false)
+            val catList = repository.getCategories(false)
 
-        if (methodList !is Result.Success || catList !is Result.Success) {
-            TODO("show some error")
+            if (methodList !is Result.Success || catList !is Result.Success) {
+                TODO("show some error")
+            }
+
+            val methodId = methodList.data[selectedTaskMethodIndex.value!!].id
+            val catId = catList.data[selectedCategoryIndex.value!!].id
+            val title = taskTitle.value
+
+            if (day == null || startAt == null || title == null) {
+                TODO("show some error")
+            }
+
+            val task = Task(
+                day = day,
+                startAt = startAt,
+                methodId = methodId,
+                title = title,
+                catId = catId,
+                completed = false
+            )
+
+            Log.i(TAG, "saveNewTask: $task")
+
+            _reminderTimeMillis.value = Event(task.startAt.time)
+            showSnackBarMessage(R.string.schedule_task_snackbar_text)
+            saveNewTask(task)
         }
-
-        val methodId = methodList.data[selectedTaskMethodIndex.value!!].id
-        val catId = catList.data[selectedCategoryIndex.value!!].id
-        val title = taskTitle.value
-
-        if (day == null || startAt == null || title == null) {
-            TODO("show some error")
-        }
-
-        val task = Task(
-            day = day,
-            startAt = startAt,
-            methodId = methodId,
-            title = title,
-            catId = catId,
-            completed = false
-        )
-
-        Log.i(TAG, "saveNewTask: $task")
-
-        _reminderTimeMillis.value = Event(task.startAt.time)
-        showSnackBarMessage(R.string.schedule_task_snackbar_text)
-        saveNewTask(task)
     }
 
     suspend fun saveNewTask(task: Task) {
@@ -167,6 +175,7 @@ class NewTaskViewModel(
     }
 
     private fun newTaskAdded() {
+        _saveProcessing.value = false
         _taskAddedEvent.postValue(Event(true))
     }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="viewmodel"
             type="com.thetechannel.android.planit.newtask.NewTaskViewModel" />
@@ -15,6 +16,15 @@
         android:padding="@dimen/small_padding"
         tools:context=".newtask.NewTaskFragment">
 
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/newTaskSelectionGroup"
+            android:visibility="@{viewmodel.saveProcessing ? View.INVISIBLE : View.VISIBLE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="categorySpinner,scheduleButton,methodSpinner,editTitle"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp" />
 
         <Spinner
             android:id="@+id/categorySpinner"
@@ -62,12 +72,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/background_semi_round_rect"
-            android:drawableLeft="@drawable/ic_baseline_access_time_24"
+            android:drawableStart="@drawable/ic_baseline_access_time_24"
             android:text="@string/schedule"
             android:textColor="@color/secondaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="@{viewmodel.saveProcessing ? View.VISIBLE : View.INVISIBLE}"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

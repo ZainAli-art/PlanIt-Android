@@ -36,14 +36,14 @@ class NewTaskViewModelTest {
     private lateinit var repository: FakeTestRepository
     private lateinit var viewModel: NewTaskViewModel
 
+    /** Synchronizes all operations */
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
     // Set the main coroutines dispatcher for unit testing.
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
-
-    /** Synchronizes all operations */
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun initRepository() = runBlocking {
@@ -106,7 +106,14 @@ class NewTaskViewModelTest {
             taskTitle.value = "Maths Assignment"
             selectedCategoryIndex.value = 1
         }
+
+        mainCoroutineRule.pauseDispatcher()
+
         viewModel.saveNewTask()
+        assertThat(viewModel.saveProcessing.getOrAwaitValue(), `is`(true))
+
+        mainCoroutineRule.resumeDispatcher()
+        assertThat(viewModel.saveProcessing.getOrAwaitValue(), `is`(false))
 
         val message: Event<Int> = viewModel.snackBarText.getOrAwaitValue()
         assertThat(message.getContentIfNotHandled(), `is`(R.string.schedule_task_snackbar_text))

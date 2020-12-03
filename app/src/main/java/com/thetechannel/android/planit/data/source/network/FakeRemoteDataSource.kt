@@ -106,6 +106,7 @@ object FakeRemoteDataSource : AppDataSource {
     }
 
     override suspend fun saveTask(task: Task) {
+        delay(NETWORK_LATENCY_IN_MILLIS)
         taskServiceData[task.id] = task
     }
 
