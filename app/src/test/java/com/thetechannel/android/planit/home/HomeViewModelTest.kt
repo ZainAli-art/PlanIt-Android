@@ -124,4 +124,13 @@ class HomeViewModelTest {
 
         assertThat(viewModel.dataLoading.getOrAwaitValue(), `is`(false))
     }
+
+    @Test
+    fun refreshWhenDataUnavailable_callsErrorsToDisplay() {
+        repository.setReturnError(true)
+        viewModel.refresh()
+
+        assertThat(viewModel.error.getOrAwaitValue(), `is`(true))
+        assertThat(viewModel.empty.getOrAwaitValue(), `is`(true))
+    }
 }

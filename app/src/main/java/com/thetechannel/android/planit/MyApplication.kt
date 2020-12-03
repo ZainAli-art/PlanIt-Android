@@ -6,9 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.thetechannel.android.planit.data.source.AppRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 const val REMINDER_CHANNEL_ID = "com.thetechannel.android.planit.newtask.REMINDER_CHANNEL_ID"
 
@@ -16,15 +13,8 @@ class MyApplication : Application() {
     val repository : AppRepository
         get() = ServiceLocator.provideRepository(this)
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
     override fun onCreate() {
         super.onCreate()
-        scope.launch {
-            repository.refreshCategories()
-            repository.refreshTaskMethods()
-            repository.refreshTasks()
-        }
         createReminderNotificationChannel()
     }
 

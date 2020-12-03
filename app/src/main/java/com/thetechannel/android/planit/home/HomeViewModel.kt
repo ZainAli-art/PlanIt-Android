@@ -15,6 +15,11 @@ class HomeViewModel(
     private val repository: AppRepository
 ) : ViewModel() {
 
+    private val taskDetails = repository.observeTaskDetails()
+
+    val error: LiveData<Boolean> = taskDetails.map { it is Result.Error }
+    val empty: LiveData<Boolean> = taskDetails.map { (it as? Result.Success)?.data.isNullOrEmpty() }
+
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean>
         get() = _dataLoading
@@ -26,8 +31,6 @@ class HomeViewModel(
     private val _addNewTaskEvent = MutableLiveData<Event<Boolean>>()
     val addNewTaskEvent: LiveData<Event<Boolean>>
         get() = _addNewTaskEvent
-
-    private val taskDetails = repository.observeTaskDetails()
 
     val tasksOverView: LiveData<TasksOverView> = taskDetails.map {
         when (it) {

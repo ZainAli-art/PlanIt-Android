@@ -9,10 +9,13 @@ import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
+import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.collections.HashMap
 
 object FakeRemoteDataSource : AppDataSource {
+    private const val NETWORK_LATENCY_IN_MILLIS: Long = 2000L
+
     private val categoryServiceData = HashMap<Int, Category>()
     private val methodServiceData = HashMap<Int, TaskMethod>()
     private val taskServiceData = HashMap<String, Task>()
@@ -54,6 +57,7 @@ object FakeRemoteDataSource : AppDataSource {
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
+        delay(NETWORK_LATENCY_IN_MILLIS)
         return Result.Success(categoryServiceData.values.toList())
     }
 
