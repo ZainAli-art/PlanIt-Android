@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "340036261466",
+    "project_id": "planit-f6228",
+    "storage_bucket": "planit-f6228.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340036261466:android:cf3270539d0ab8658eea63",
+        "android_client_info": {
+          "package_name": "com.example.testapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "340036261466-kdeq6vgg3v4ra2o2kbhag3244hetss5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdxRrItirwh6ilrZXIpAKsO-jF2bLktWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "340036261466-kdeq6vgg3v4ra2o2kbhag3244hetss5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340036261466:android:bb5c3b18696b16c08eea63",
+        "android_client_info": {
+          "package_name": "com.thetechannel.android.planit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "340036261466-kdeq6vgg3v4ra2o2kbhag3244hetss5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdxRrItirwh6ilrZXIpAKsO-jF2bLktWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "340036261466-kdeq6vgg3v4ra2o2kbhag3244hetss5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

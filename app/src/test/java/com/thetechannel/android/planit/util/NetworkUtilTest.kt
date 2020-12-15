@@ -26,8 +26,8 @@ class NetworkUtilTest {
 
         assertThat(netMethod.id, `is`(dbMethod.id))
         assertThat(netMethod.name, `is`(dbMethod.name))
-        assertThat(netMethod.breakLapse.time, `is`(dbMethod.breakLapse))
-        assertThat(netMethod.workLapse.time, `is`(dbMethod.workLapse))
+        assertThat(netMethod.breakLapse, `is`(dbMethod.breakLapse))
+        assertThat(netMethod.workLapse, `is`(dbMethod.workLapse))
         assertThat(netMethod.iconUrl, `is`(dbMethod.iconUrl))
     }
 
@@ -38,8 +38,8 @@ class NetworkUtilTest {
         val dbTask = netTask.asDatabaseEntity()
 
         assertThat(netTask.id, `is`(dbTask.id))
-        assertThat(netTask.day.time, `is`(dbTask.day))
-        assertThat(netTask.startAt.time, `is`(dbTask.startAt))
+        assertThat(netTask.day, `is`(dbTask.day))
+        assertThat(netTask.startAt, `is`(dbTask.startAt))
         assertThat(netTask.methodId, `is`(dbTask.methodId))
         assertThat(netTask.title, `is`(dbTask.title))
         assertThat(netTask.catId, `is`(dbTask.catId))

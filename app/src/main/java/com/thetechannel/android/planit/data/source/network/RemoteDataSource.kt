@@ -2,21 +2,27 @@ package com.thetechannel.android.planit.data.source.network
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.thetechannel.android.planit.data.Result
 import com.thetechannel.android.planit.data.source.AppDataSource
 import com.thetechannel.android.planit.data.source.domain.Category
 import com.thetechannel.android.planit.data.source.domain.Task
 import com.thetechannel.android.planit.data.source.domain.TaskDetail
 import com.thetechannel.android.planit.data.source.domain.TaskMethod
-import com.thetechannel.android.planit.util.asDataTransferObject
 import com.thetechannel.android.planit.util.asDomainModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
 
 private const val TAG = "RemoteDataSource"
 
-class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource {
+object RemoteDataSource : AppDataSource {
+    private val db = Firebase.firestore
+    private val categoriesCollection = db.collection("categories")
+    private val taskMethodsCollection = db.collection("taskMethods")
+    private val tasksCollection = db.collection("tasks")
 
     override fun observeCategories(): LiveData<Result<List<Category>>> {
         TODO("Not yet implemented")
@@ -55,11 +61,14 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     }
 
     override suspend fun getCategories(): Result<List<Category>> = withContext(Dispatchers.IO) {
+        Log.d(TAG, "getCategories: called")
         return@withContext try {
-            val categories = remoteService.getCategories().await()
+            val categories = categoriesCollection.get().await()
+                .toObjects(NetworkCategory::class.java)
+            Log.d(TAG, "fetched categoreis: $categories")
             Result.Success(categories.map { it.asDomainModel() })
-        } catch (e: Exception) {
-            Result.Error(e)
+        } catch (ex: Exception) {
+            Result.Error(ex)
         }
     }
 
@@ -69,10 +78,11 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
 
     override suspend fun getTaskMethods(): Result<List<TaskMethod>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val methods = remoteService.getTaskMethods().await()
+            val methods = taskMethodsCollection.get().await()
+                .toObjects(NetworkTaskMethod::class.java)
             Result.Success(methods.map { it.asDomainModel() })
-        } catch (e: Exception) {
-            Result.Error(e)
+        } catch (ex: Exception) {
+            Result.Error(ex)
         }
     }
 
@@ -82,10 +92,10 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
 
     override suspend fun getTasks(): Result<List<Task>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val tasks = remoteService.getTasks().await()
+            val tasks = tasksCollection.get().await().toObjects(NetworkTask::class.java)
             Result.Success(tasks.map { it.asDomainModel() })
-        } catch (e: Exception) {
-            Result.Error(e)
+        } catch (ex: Exception) {
+            Result.Error(ex)
         }
     }
 
@@ -95,10 +105,14 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
 
     override suspend fun getTask(id: String): Result<Task> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val task = remoteService.getTask(id).await()
-            Result.Success(task.asDomainModel())
-        } catch (e: Exception) {
-            Result.Error(e)
+            val task = tasksCollection.document(id).get().await()
+                .toObject(NetworkTask::class.java)
+            task?.let {
+                return@withContext Result.Success(it.asDomainModel())
+            }
+            Result.Error(Exception("Task with requested id not found"))
+        } catch (ex: Exception) {
+            Result.Error(ex)
         }
     }
 
@@ -121,7 +135,7 @@ class RemoteDataSource(private val remoteService: RemoteService) : AppDataSource
     override suspend fun saveTask(task: Task) {
         try {
             withContext(Dispatchers.IO) {
-                remoteService.insertTask(task.asDataTransferObject()).await()
+                tasksCollection.document(task.id).set(task).await()
             }
         } catch (e: Exception) {
             Log.e(TAG, "saveTask: error ${e.message}")

@@ -10,6 +10,7 @@ import com.thetechannel.android.planit.data.source.network.NetworkCategory
 import com.thetechannel.android.planit.data.source.network.NetworkTask
 import com.thetechannel.android.planit.data.source.network.NetworkTaskMethod
 import java.net.URI
+import java.sql.Date
 import java.sql.Time
 import java.sql.Timestamp
 
@@ -26,23 +27,23 @@ fun NetworkCategory.asDomainModel() = Category(
 fun NetworkTaskMethod.asDatabaseEntity() = DbTaskMethod(
     id = id,
     name = name,
-    workLapse = workLapse.time,
-    breakLapse = breakLapse.time,
+    workLapse = workLapse,
+    breakLapse = breakLapse,
     iconUrl = iconUrl
 )
 
 fun NetworkTaskMethod.asDomainModel() = TaskMethod(
     id = id,
     name = name,
-    workLapse =  Time(workLapse.time),
-    breakLapse = Time(breakLapse.time),
+    workLapse =  Time(workLapse),
+    breakLapse = Time(breakLapse),
     iconUrl = URI(iconUrl)
 )
 
 fun NetworkTask.asDatabaseEntity() = DbTask(
     id = id,
-    day = day.time,
-    startAt = startAt.time,
+    day = day,
+    startAt = startAt,
     methodId = methodId,
     title = title,
     catId = catId,
@@ -51,8 +52,8 @@ fun NetworkTask.asDatabaseEntity() = DbTask(
 
 fun NetworkTask.asDomainModel() = Task(
     id = id,
-    day = day,
-    startAt =  Time(startAt.time),
+    day = Date(day),
+    startAt =  Time(startAt),
     methodId = methodId,
     title = title,
     catId = catId,

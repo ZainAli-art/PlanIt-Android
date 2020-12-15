@@ -46,8 +46,8 @@ class DomainUtilTest {
 
         assertThat(domainMethod.id, `is`(networkMethod.id))
         assertThat(domainMethod.name, `is`(networkMethod.name))
-        assertThat(domainMethod.workLapse.time, `is`(networkMethod.workLapse.time))
-        assertThat(domainMethod.breakLapse.time, `is`(networkMethod.breakLapse.time))
+        assertThat(domainMethod.workLapse.time, `is`(networkMethod.workLapse))
+        assertThat(domainMethod.breakLapse.time, `is`(networkMethod.breakLapse))
         assertThat(domainMethod.iconUrl.toString(), `is`(networkMethod.iconUrl))
     }
 
@@ -78,8 +78,8 @@ class DomainUtilTest {
         val networkTask = domainTask.asDataTransferObject()
 
         assertThat(domainTask.id, `is`(networkTask.id))
-        assertThat(domainTask.day.time, `is`(networkTask.day.time))
-        assertThat(domainTask.startAt.time, `is`(networkTask.startAt.time))
+        assertThat(domainTask.day.time, `is`(networkTask.day))
+        assertThat(domainTask.startAt.time, `is`(networkTask.startAt))
         assertThat(domainTask.methodId, `is`(networkTask.methodId))
         assertThat(domainTask.title, `is`(networkTask.title))
         assertThat(domainTask.catId, `is`(networkTask.catId))

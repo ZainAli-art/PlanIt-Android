@@ -9,8 +9,6 @@ import com.thetechannel.android.planit.data.source.DefaultAppRepository
 import com.thetechannel.android.planit.data.source.database.LocalDataSource
 import com.thetechannel.android.planit.data.source.database.PlanItDatabase
 import com.thetechannel.android.planit.data.source.network.FakeRemoteDataSource
-import com.thetechannel.android.planit.data.source.network.Network.remoteService
-import com.thetechannel.android.planit.data.source.network.RemoteDataSource
 
 object ServiceLocator {
     private val lock = Any()

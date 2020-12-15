@@ -28,8 +28,8 @@ fun Category.asDatabaseEntity() = DbCategory(
 fun TaskMethod.asDataTransferObject() = NetworkTaskMethod(
     id = id,
     name = name,
-    workLapse = Timestamp(workLapse.time),
-    breakLapse = Timestamp(breakLapse.time),
+    workLapse = workLapse.time,
+    breakLapse = breakLapse.time,
     iconUrl = iconUrl.toString()
 )
 
@@ -43,8 +43,8 @@ fun TaskMethod.asDatabaseEntity() = DbTaskMethod(
 
 fun Task.asDataTransferObject() = NetworkTask(
     id = id,
-    day = Timestamp(day.time),
-    startAt = Timestamp(startAt.time),
+    day = day.time,
+    startAt = startAt.time,
     methodId = methodId,
     title = title,
     catId = catId,
